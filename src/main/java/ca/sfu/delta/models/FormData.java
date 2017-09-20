@@ -2,17 +2,18 @@ package ca.sfu.delta.models;
 
 import java.lang.String;
 import java.util.Optional;
+import java.util.ArrayList;
 
 public class FormData {
     //Date of the form yyyy-mm-dd for the time being.
-    private String eventDate;
+    private ArrayList<String> eventDates;
     private String requesterName;
     private String phoneNumber;
     private String faxNumber;
     private String emailAddress;
 
-    public FormData(String date, String name, Optional<String> phoneNum, Optional<String> faxNum, String email){
-        eventDate = date;
+    public FormData(ArrayList<String> dates, String name, Optional<String> phoneNum, Optional<String> faxNum, String email){
+        eventDates = dates;
         requesterName = name;
         phoneNumber = phoneNum.orElse("Unspecified");
         faxNumber = faxNum.orElse("Unspecified");
@@ -20,12 +21,16 @@ public class FormData {
     }
 
     //Getter and Setter methods
-    public String getDate() {
-        return eventDate;
+    public ArrayList<String> getDates() {
+        return eventDates;
     }
 
-    public void setDate(String newDate) {
-        eventDate = newDate;
+    public void setDates(ArrayList<String> newDates) {
+        eventDates = newDates;
+    }
+
+    public void addDate(String newDate){
+    	eventDates.add(newDate);
     }
 
     public String getRequesterName() {

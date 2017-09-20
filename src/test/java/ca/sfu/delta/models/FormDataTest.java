@@ -2,12 +2,14 @@ package ca.sfu.delta.models;
 
 import org.junit.Before;
 import org.junit.Test;
+import java.util.ArrayList;
 import static org.junit.Assert.*;
 
 import java.util.Optional;
 
 public class FormDataTest {
     private String date = "2017-09-19";
+    private ArrayList<String> dates;
     private String name = "Billy";
     private String phoneNum = "778-555-5555";
     private String faxNum = "604-555-5555";
@@ -19,19 +21,30 @@ public class FormDataTest {
 
     @Before
     public void setUp() throws Exception {
-        data = new FormData(date, name, Optional.of(phoneNum), Optional.of(faxNum), email);
+        dates.add(date);
+        data = new FormData(dates, name, Optional.of(phoneNum), Optional.of(faxNum), email);
         dataNoNumbers = new FormData(date, name, Optional.empty(), Optional.empty(), email);
     }
 
     @Test
-    public void getDate() throws Exception {
-        assertEquals(date, data.getDate());
+    public void getDates() throws Exception {
+        assertEquals(dates, data.getDates());
     }
 
     @Test
-    public void setDate() throws Exception {
-        data.setDate("2017-09-20");
-        assertEquals("2017-09-20", data.getDate());
+    public void setDates() throws Exception {
+        ArrayList<String> newDates;
+        newDates.add("2017-09-20");
+        data.setDate(newDates);
+        assertEquals(newDates, data.getDates());
+    }
+
+    @Test
+    public void addDate() throws Exception {
+        assertEquals(dates, data.getDates());
+        data.addDate("2017-09-20");
+        dates.add("2017-09-20");
+        assertEquals(dates, data.getDates());
     }
 
     @Test
