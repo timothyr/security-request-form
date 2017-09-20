@@ -73,7 +73,7 @@ public class AuthController {
      * @param req an HTTP request
      * @return the base URL of the server issuing this request
      */
-    String getBaseUrl(HttpServletRequest req) {
+    private String getBaseUrl(HttpServletRequest req) {
         return req.getScheme() + "://" + req.getServerName() + ":" + req.getServerPort() + req.getContextPath();
     }
 
