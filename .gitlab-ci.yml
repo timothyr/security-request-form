@@ -1,3 +1,10 @@
+before_script:
+  - apt-get update -y && apt-get install -y gradle
+
 build:
   script:
-    - gradle build
+    - gradle build -x test
+
+test:
+  script:
+    - gradle test
