@@ -1,5 +1,5 @@
 before_script:
-  - apt-get update -y && apt-get install -y gradle
+  - apt-get update -y && apt-get install -y gradle openjdk-8-jdk
 
 build:
   script:
