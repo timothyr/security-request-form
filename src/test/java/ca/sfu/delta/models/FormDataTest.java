@@ -9,7 +9,7 @@ import java.util.Optional;
 
 public class FormDataTest {
     private String date = "2017-09-19";
-    private ArrayList<String> dates;
+    private ArrayList<String> dates = new ArrayList<String>();
     private String name = "Billy";
     private String phoneNum = "778-555-5555";
     private String faxNum = "604-555-5555";
@@ -23,7 +23,7 @@ public class FormDataTest {
     public void setUp() throws Exception {
         dates.add(date);
         data = new FormData(dates, name, Optional.of(phoneNum), Optional.of(faxNum), email);
-        dataNoNumbers = new FormData(date, name, Optional.empty(), Optional.empty(), email);
+        dataNoNumbers = new FormData(dates, name, Optional.empty(), Optional.empty(), email);
     }
 
     @Test
@@ -33,9 +33,9 @@ public class FormDataTest {
 
     @Test
     public void setDates() throws Exception {
-        ArrayList<String> newDates;
+        ArrayList<String> newDates = new ArrayList<String>();
         newDates.add("2017-09-20");
-        data.setDate(newDates);
+        data.setDates(newDates);
         assertEquals(newDates, data.getDates());
     }
 
