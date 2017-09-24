@@ -12,6 +12,10 @@ public class FormData {
     private String faxNumber;
     private String emailAddress;
 
+    public FormData() {
+
+    }
+
     public FormData(ArrayList<String> dates, String name, Optional<String> phoneNum, Optional<String> faxNum, String email){
         eventDates = dates;
         requesterName = name;
