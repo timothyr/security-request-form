@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Security Service Request</title>
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/css/bootstrap.min.css">
+	<link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+	<link href="https://fonts.googleapis.com/css?family=Open+Sans" rel="stylesheet">
+	<link rel="stylesheet" href="css/style.css">
+</head>
+<body class="grey-background">
+
+	<header>
+		<img class="logo" src="img/sfu-logo@2x.png" alt="sfu-logo">
+	</header>
+
+	<div class="container col-md-10 offset-md-1 wrapper mb-5 col-lg-10">
+		<div class="container col-md-10">
+			<div class="row mt-5">
+				<h1 class="mt-5">Requests #2314</h1>
+			</div>
+			<div class="row mt-2">
+				<span>status:</span>
+				<span class="badge badge-warning ml-2 white-text">Waiting</span>
+			</div>
+			<div class="row">
+				<div class="col-md-4">
+					<div class="row">
+						<h3>Regular Rate</h3>
+					</div>
+					<div class="row">
+						<div class="form-group col-md-6">
+							<label for="guard-reg-input">Guard</label>
+							<input type="text" id="guard-input" class="form-control">
+						</div>
+						<div class="form-group col-md-6">
+							<label for="hours-guard-reg-input">Hours</label>
+							<input type="text" id="hours-guard-reg-input" class="form-control">
+						</div>
+					</div>
+					<div class="row">
+						<div class="form-group col-md-6">
+							<label for="SCSP-reg-input">SCSP</label>
+							<input type="text" id="SCSP-reg-input" class="form-control">
+						</div>
+						<div class="form-group col-md-6">
+							<label for="hours-SCSP-reg-input">Hours</label>
+							<input type="text" id="hours-SCPS-reg-input" class="form-control">
+						</div>
+					</div>
+				</div>
+				<div class="col-md-4">
+					<div class="row">
+						<h3>Overtime Rate</h3>
+					</div>
+					<div class="row">
+						<div class="form-group col-md-6">
+							<label for="guard-ot-input">Guard</label>
+							<input type="text" id="guard-ot-input" class="form-control">
+						</div>
+						<div class="form-group col-md-6">
+							<label for="hours-guard-ot-input">Hours</label>
+							<input type="text" id="hours-guard-ot-input" class="form-control">
+						</div>
+					</div>
+					<div class="row">
+						<div class="form-group col-md-6">
+							<label for="SCSP-ot-input">SCSP</label>
+							<input type="text" id="SCSP-ot-input" class="form-control">
+						</div>
+						<div class="form-group col-md-6">
+							<label for="hours-SCSP-ot-input">Hours</label>
+							<input type="text" id="hours-SCPS-ot-input" class="form-control">
+						</div>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-md-4">
+						<div class="row">
+							<h3>Total</h3>	
+						</div>
+						<div class="row">
+							<h3>$369.12</h3>
+						</div>
+						<div class="row">
+							<h3>$469.10</h3>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="row">
+				<div class="form-group col-md-4">
+					<label for="prepared-by-input">Prepared By</label>
+					<input type="text" id="prepared-by-input" class="form-control">
+				</div>
+			</div>
+			<div class="row">
+				<div class="form-group col-md-12">
+					<label for="remarks-input">Remarks</label>
+					<input type="text" id="remarks-input" class="form-control">
+				</div>
+			</div>
+			<div class="row">
+				<button class="btn btn-danger">Reject</button>
+				<button class="btn btn-success" type="button" data-toggle="modal" data-target="#exampleModal">Approve</button>
+
+				<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        ...
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-primary">Save changes</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+			</div>
+			<div class="bottom-space"></div>
+		</div>
+	</div>
+	
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+</body>
+</html>

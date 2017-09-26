@@ -92,3 +92,7 @@ th {
 .nav-pills .nav-link {
 	border-radius: 0;
 }
+
+.white-text {
+	color: white;
+}
