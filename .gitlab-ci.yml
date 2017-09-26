@@ -1,0 +1,10 @@
+before_script:
+  - apt-get update -y && apt-get install -y gradle openjdk-8-jdk
+
+build:
+  script:
+    - gradle build -x test
+
+test:
+  script:
+    - gradle test
