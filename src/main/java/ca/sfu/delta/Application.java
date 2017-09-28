@@ -8,7 +8,7 @@ import org.springframework.context.annotation.ComponentScan;
 @ComponentScan(basePackages = {
         "ca.sfu.delta.ui",
         "ca.sfu.delta.data",
-        "ca.sfu.delta.auth",
+        "ca.sfu.delta.controllers",
 })
 public class Application {
 
