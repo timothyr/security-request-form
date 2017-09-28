@@ -44,7 +44,7 @@ $ java -jar build/libs/*.jar
 With the application running, open your browser to http://localhost:8080 to see it.
 
 To see the database demo navigate to:
-http://localhost:8080/demo/add?name=Fin the Human&email=fin@domain.ooo
+[http://localhost:8080/demo/add?name=Fin the Human&email=fin@domain.ooo](http://localhost:8080/demo/add?name=Fin the Human&email=fin@domain.ooo)
 
 Then navigate to:
 http://localhost:8080/demo/all
