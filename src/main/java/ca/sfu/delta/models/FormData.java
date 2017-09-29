@@ -5,14 +5,14 @@ import java.util.Optional;
 import java.util.ArrayList;
 
 public class FormData {
-    //Date of the form yyyy-mm-dd for the time being.
-    private ArrayList<String> eventDates;
     private String requesterName;
     private String phoneNumber;
     private String faxNumber;
     private String emailAddress;
+    //Date of the form yyyy-mm-dd for the time being.
+    private ArrayList<Date> eventDates;
 
-    public FormData(ArrayList<String> dates, String name, Optional<String> phoneNum, Optional<String> faxNum, String email){
+    public FormData(ArrayList<Date> dates, String name, Optional<String> phoneNum, Optional<String> faxNum, String email){
         eventDates = dates;
         requesterName = name;
         phoneNumber = phoneNum.orElse("Unspecified");
@@ -21,15 +21,15 @@ public class FormData {
     }
 
     //Getter and Setter methods
-    public ArrayList<String> getDates() {
+    public ArrayList<Date> getDates() {
         return eventDates;
     }
 
-    public void setDates(ArrayList<String> newDates) {
+    public void setDates(ArrayList<Date> newDates) {
         eventDates = newDates;
     }
 
-    public void addDate(String newDate){
+    public void addDate(Date newDate){
     	eventDates.add(newDate);
     }
 

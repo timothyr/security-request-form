@@ -8,8 +8,8 @@ import static org.junit.Assert.*;
 import java.util.Optional;
 
 public class FormDataTest {
-    private String date = "2017-09-19";
-    private ArrayList<String> dates = new ArrayList<String>();
+    private Date date = new Date(2017,9,19);
+    private ArrayList<Date> dates = new ArrayList<Date>();
     private String name = "Billy";
     private String phoneNum = "778-555-5555";
     private String faxNum = "604-555-5555";
@@ -33,8 +33,8 @@ public class FormDataTest {
 
     @Test
     public void setDates() throws Exception {
-        ArrayList<String> newDates = new ArrayList<String>();
-        newDates.add("2017-09-20");
+        ArrayList<Date> newDates = new ArrayList<Date>();
+        newDates.add(new Date(2017,9,20));
         data.setDates(newDates);
         assertEquals(newDates, data.getDates());
     }
@@ -42,8 +42,8 @@ public class FormDataTest {
     @Test
     public void addDate() throws Exception {
         assertEquals(dates, data.getDates());
-        data.addDate("2017-09-20");
-        dates.add("2017-09-20");
+        data.addDate(new Date(2017,9,20));
+        dates.add(new Date(2017,9,20));
         assertEquals(dates, data.getDates());
     }
 
