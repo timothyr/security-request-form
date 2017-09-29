@@ -22,8 +22,12 @@ public class FormDataTest {
     @Before
     public void setUp() throws Exception {
         dates.add(date);
-        data = new FormData(dates, name, Optional.of(phoneNum), Optional.of(faxNum), email);
-        dataNoNumbers = new FormData(dates, name, Optional.empty(), Optional.empty(), email);
+        data = new FormData(dates, name, "Unspecified", Optional.of(phoneNum), Optional.of(faxNum), email, date,
+                "unspecified", false, 0, "Unspecified", "Unspecified",
+                false, "Unspecified");
+        dataNoNumbers = new FormData(dates, name, "Unspecified", Optional.empty(), Optional.empty(), email, date,
+                "unspecified", false, 0, "Unspecified", "Unspecified",
+                false, "Unspecified");
     }
 
     @Test
