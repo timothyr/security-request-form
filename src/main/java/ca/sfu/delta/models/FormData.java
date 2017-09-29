@@ -220,7 +220,7 @@ public class FormData {
     }
 
     public String getPreparedBy(){
-    	reuturn preparedBy;
+    	return preparedBy;
     }
 
     public String getSecurityRemarks(){
