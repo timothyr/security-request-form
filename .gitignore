@@ -26,3 +26,6 @@ nbdist/
 
 ### Build Products ###
 out/
+
+## Merge Products ##
+*.orig
