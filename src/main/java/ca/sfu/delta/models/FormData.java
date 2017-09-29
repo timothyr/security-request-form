@@ -21,6 +21,12 @@ public class FormData {
     private String paymentAccountCode;
     private Boolean invoiceRequested;
     private String eventDetails;
+    private String serviceRequestNumber; //Generated automatically, pre-populate.
+    private String recievingSecuritySupervisor;
+    private ArrayList<Guard> guards; //Things like total billable and grand total can be calculated from these
+    private ArrayList<String> distributionList;
+    private String preparedBy;
+    private String securityRemarks;
 
     public FormData() {
 
@@ -191,4 +197,44 @@ public class FormData {
     public Boolean isAuthorized(){
         return isAuthorized;
     }
+
+    public void setServiceRequestNumber(String newNumber){
+    	serviceRequestNumber = newNumber;
+    }
+
+    public String getServiceRequestNumber(){
+    	return serviceRequestNumber;
+    }
+
+
+    public String getRecievingSecuritySupervisor(){
+    	return recievingSecuritySupervisor;
+    }
+
+    public ArrayList<Guard> getGuards(){
+    	return guards;
+    }
+
+    public ArrayList<String> getDistributionList(){
+    	return distributionList;
+    }
+
+    public String getPreparedBy(){
+    	reuturn preparedBy;
+    }
+
+    public String getSecurityRemarks(){
+    	return securityRemarks;
+    }
+
+    public void setSecurityFields(String recievingSecuritySupervisor, ArrayList<Guard> guards, ArrayList<String> distributionList,
+    							  String preparedBy, String securityRemarks){
+    	this.recievingSecuritySupervisor = recievingSecuritySupervisor;
+    	this.guards = guards;
+    	this.distributionList = distributionList;
+    	this.preparedBy = preparedBy;
+    	this.securityRemarks = securityRemarks;
+
+    }
+
 }
