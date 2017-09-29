@@ -33,6 +33,8 @@ spring.datasource.username=springuser
 spring.datasource.password=ThePassword
 ```
 
+**Note:** Don't change the `application.properties` file in `src/test/resources`. This is file is only for tests.
+
 Build this application with [gradle](https://gradle.org/install/), and run the resulting jar file.
 
 On Linux you may do this in the terminal:
