@@ -5,11 +5,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.ComponentScan;
 
 @SpringBootApplication
-@ComponentScan(basePackages = {
-        "ca.sfu.delta.ui",
-        "ca.sfu.delta.data",
-        "ca.sfu.delta.controllers",
-})
+@ComponentScan(basePackages = {})
 public class Application {
 
 	public static void main(String[] args) {

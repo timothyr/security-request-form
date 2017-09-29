@@ -22,12 +22,17 @@ public class FormData {
     private Boolean invoiceRequested;
     private String eventDetails;
 
+    public FormData() {
+
+    }
+
     //Specified by Authorizer
     private String authorizerName;
     private String authorizerID; //SFU ID or BCDL
     private Date authorizationDate;
     private String authorizerPhoneNumber;
     private Boolean isAuthorized;
+
 
     //Constructor takes all info that a requester can provide (optional or no)
     public FormData(ArrayList<Date> dates, String requestorName, String requesterID, Optional<String> phoneNumber,
