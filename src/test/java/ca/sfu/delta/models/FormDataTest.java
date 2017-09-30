@@ -16,7 +16,7 @@ public class FormDataTest {
     private String unspecifiedNum = "Unspecified";
     private String email = "Billy@sfu.ca";
     private Date requestedOnDate = new Date(2017,9,30);
-    //private String eventLocation = "BBY AQ3290";
+    private String eventLocation = "BBY AQ3019";
     private String eventName = "Networking Night";
     private String requesterID = "301248474";
     private boolean licensed = false;
@@ -25,8 +25,6 @@ public class FormDataTest {
     private String paymentAccountCode = "ASD12345";
     private boolean invoiceRequested = false;
     private String eventDetails = "details of the event.";
-
-    private boolean isAuthorized = false;
 
     private String serviceRequestNumber = "99999999";
     private String recievingSecuritySupervisor = "Aaron Judge";
@@ -44,14 +42,15 @@ public class FormDataTest {
         data = new FormData(dates, name, requesterID, Optional.of(phoneNum), Optional.of(faxNum), email, requestedOnDate,
                 eventName, licensed, numAttendees, times, paymentAccountCode,
                 invoiceRequested, eventDetails);
+        data.setEventLocation(eventLocation);
+        data.setServiceRequestNumber(serviceRequestNumber);
+        data.setSecurityFields(recievingSecuritySupervisor,guards,distributionList,preparedBy,securityRemarks);
+
         dataNoNumbers = new FormData(dates, name, requesterID, Optional.empty(), Optional.empty(), email, requestedOnDate,
                 eventName, licensed, numAttendees, times, paymentAccountCode,
                 invoiceRequested, eventDetails);
-
-        data.setServiceRequestNumber(serviceRequestNumber);
+        dataNoNumbers.setEventLocation(eventLocation);
         dataNoNumbers.setServiceRequestNumber(unspecifiedNum);
-
-        data.setSecurityFields(recievingSecuritySupervisor,guards,distributionList,preparedBy,securityRemarks);
         dataNoNumbers.setSecurityFields(recievingSecuritySupervisor,guards,distributionList,preparedBy,securityRemarks);
     }
 
@@ -125,7 +124,7 @@ public class FormDataTest {
 
 
     //More Test functions.-ska158
-    @Test //expected date and actual date dont match
+    @Test
     public void getRequestedOnDate() throws Exception  {
         assertEquals(requestedOnDate, data.getRequestedOnDate());
     }
@@ -137,10 +136,10 @@ public class FormDataTest {
         assertEquals(newDate, data.getRequestedOnDate());
     }
 
-//    @Test //event location is temp
-//    public void getEventLocation() throws Exception  {
-//        assertEquals(eventLocation, data.getEventLocation());
-//    }
+    @Test
+    public void getEventLocation() throws Exception  {
+        assertEquals(eventLocation, data.getEventLocation());
+    }
 
     @Test
     public void setEventLocation() throws Exception  {
@@ -240,6 +239,10 @@ public class FormDataTest {
     public void setAuthorizationFields() throws Exception {
         Date newDate = new Date(2017,9,30);
         data.setAuthorizationFields("Kelly Jensen","6666666",newDate,"778-777-7777");
+        assertEquals("Kelly Jensen",data.getAuthorizerName());
+        assertEquals("6666666",data.getAuthorizerID());
+        assertEquals(newDate,data.getAuthorizationDate());
+        assertEquals("778-777-7777",data.getAuthorizerPhoneNumber());
         assertEquals(true,data.isAuthorized());
     }
 
