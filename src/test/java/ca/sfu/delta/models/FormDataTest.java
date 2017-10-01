@@ -8,8 +8,12 @@ import static org.junit.Assert.*;
 import java.util.Optional;
 
 public class FormDataTest {
-    private Date date = new Date(2017,9,19);
-    private ArrayList<Date> dates = new ArrayList<Date>();
+	//Todo: re-enable once dates are implemented in the front and back end
+//    private Date date = new Date(2017,9,19);
+//    private ArrayList<Date> dates = new ArrayList<Date>();
+    private String eventDate = "August 19, 2017";
+    private String requestDate = "January 1, 2017";
+    private String department = "Computer Science";
     private String name = "Billy";
     private String phoneNum = "778-555-5555";
     private String faxNum = "604-555-5555";
@@ -21,35 +25,49 @@ public class FormDataTest {
 
     @Before
     public void setUp() throws Exception {
-        dates.add(date);
-        data = new FormData(dates, name, "Unspecified", Optional.of(phoneNum), Optional.of(faxNum), email, date,
+//        dates.add(date);
+        data = new FormData(department, eventDate, name, "Unspecified", Optional.of(phoneNum), Optional.of(faxNum), email, requestDate,
                 "unspecified", false, 0, "Unspecified", "Unspecified",
                 false, "Unspecified");
-        dataNoNumbers = new FormData(dates, name, "Unspecified", Optional.empty(), Optional.empty(), email, date,
+        dataNoNumbers = new FormData(department, eventDate, name, "Unspecified", Optional.empty(), Optional.empty(), email, requestDate,
                 "unspecified", false, 0, "Unspecified", "Unspecified",
                 false, "Unspecified");
     }
 
     @Test
     public void getDates() throws Exception {
-        assertEquals(dates, data.getDates());
+        assertEquals(eventDate, data.getEventDates());
     }
 
     @Test
     public void setDates() throws Exception {
-        ArrayList<Date> newDates = new ArrayList<Date>();
-        newDates.add(new Date(2017,9,20));
-        data.setDates(newDates);
-        assertEquals(newDates, data.getDates());
+//        ArrayList<Date> newDates = new ArrayList<Date>();
+//        newDates.add(new Date(2017,9,20));
+	    String newEventDate = "December 31, 2017";
+        data.setEventDates(newEventDate);
+        assertEquals(newEventDate, data.getEventDates());
     }
 
-    @Test
-    public void addDate() throws Exception {
-        assertEquals(dates, data.getDates());
-        data.addDate(new Date(2017,9,20));
-        dates.add(new Date(2017,9,20));
-        assertEquals(dates, data.getDates());
-    }
+	//Todo: re-enable once dates are implemented in the front and back end
+//    @Test
+//    public void addDate() throws Exception {
+//        assertEquals(dates, data.getDates());
+//        data.addDate(new Date(2017,9,20));
+//        dates.add(new Date(2017,9,20));
+//        assertEquals(dates, data.getDates());
+//    }
+
+	@Test
+	public void getDepartment() throws Exception {
+		assertEquals(department, data.getDepartment());
+	}
+
+	@Test
+	public void setDepartment() throws Exception {
+    	department = "Arts";
+		data.setDepartment(department);
+		assertEquals(department, data.getDepartment());
+	}
 
     @Test
     public void getRequesterName() throws Exception {

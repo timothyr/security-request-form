@@ -15,124 +15,148 @@
 		<img class="logo" src="/img/sfu-logo@2x.png" alt="sfu-logo"/>
 	</nav>
 
-		<div class="container col-md-10 offset-md-1 wrapper mb-5 col-lg-10">
-			<div class="container col-md-10 mt-5">
-				<div class="row">
-					<h1 class="text-center form-heading">Security Service Request</h1>
+<form action="#" th:action="@{/}" th:object="${FormData}" method="post">
+	<div class="container col-md-10 offset-md-1 wrapper mb-5 col-lg-10">
+		<div class="container col-md-10 mt-5">
+			<div class="row">
+				<h1 class="text-center form-heading">Security Service Request</h1>
+			</div>
+			<div class="row">
+				<div class="form-group col-md-4">
+					<label for="requested-by-input">Requested By</label>
+					<input type="text" th:field="*{requesterName}" id="requested-by-input" class="form-control"/>
+					<td th:if="${#fields.hasErrors('requesterName')}" th:errors="*{requesterName}"></td>
 				</div>
-				<div class="row">
-					<div class="form-group col-md-4">
-						<label for="requested-by-input">Requested By</label>
-						<input type="text" id="requested-by-input" class="form-control"/>
-					</div>
-					<div class="form-group dropdown col-md-4">
-						<label for="department-input">Department</label>
-						<select id="department-input" class="form-control">
-							<option value="">Applied Sciences</option>
-							<option value="">Science</option>
-							<option value="">Business</option>
-							<option value="">Other</option>
-						</select>
-					</div>
-					<div class="form-group col-md-4">
-						<label for="sfu-id-or-bcdl-input">SFU ID or BCDL</label>
-						<input type="text" id="sfu-id-or-bcdl-input" class="form-control"/>
-					</div>
+				<div class="form-group col-md-4">
+					<label for="department-input">Department</label>
+					<input type="text" th:field="*{department}" id="department-input" class="form-control"/>
+					<td th:if="${#fields.hasErrors('department')}" th:errors="*{department}"></td>
 				</div>
-				<div class="row">
-					<div class="form-group col-md-4">
-						<label for="phone-input">Phone</label>
-						<input type="text" id="phone-input" class="form-control"/>
-					</div>
-					<div class="form-group col-md-4">
-						<label for="email-input">Email</label>
-						<input type="email" id="email-input" class="form-control"/>
-					</div>
-					<div class="form-group col-md-4">
-						<label for="fax-input">Fax (optional)</label>
-						<input type="text" id="fax-input" class="form-control"/>
-					</div>
+				<div class="form-group col-md-4">
+					<label for="sfu-id-or-bcdl-input">SFU ID or BCDL</label>
+					<input type="text" th:field="*{requesterID}" id="sfu-id-or-bcdl-input" class="form-control"/>
+					<td th:if="${#fields.hasErrors('requesterID')}" th:errors="*{requesterID}"></td>
 				</div>
-				<div class="row">
-					<div class="form-group col-md-4">
-						<label for="type-name-of-event-input">Type/Name of Event</label>
-						<input type="text" id="type-name-of-event-input" class="form-control"/>
-					</div>
-					<div class="form-group col-md-4">
-						<label for="location-input">Location</label>
-						<input type="email" id="location-input" class="form-control"/>
-					</div>
-					<div class="form-group col-md-4">
-						<label for="number-of-attendees-input"># of Attendees</label>
-						<input type="text" id="number-of-attendees-input" class="form-control"/>
-					</div>
+			</div>
+			<div class="row">
+				<div class="form-group col-md-4">
+					<label for="phone-input">Phone</label>
+					<input type="text" th:field="*{phoneNumber}" id="phone-input" class="form-control"/>
+					<td th:if="${#fields.hasErrors('phoneNumber')}" th:errors="*{phoneNumber}"></td>
 				</div>
-				<div class="row">
-					<div class="form-group col-md-12">
-						<label for="details-input" placeholder="">Details</label>
-						<input type="textbox" id="details-input" class="form-control"/>
-					</div>
+				<div class="form-group col-md-4">
+					<label for="email-input">Email</label>
+					<input type="email" th:field="*{emailAddress}" id="email-input" class="form-control"/>
+					<td th:if="${#fields.hasErrors('emailAddress')}" th:errors="*{emailAddress}"></td>
 				</div>
-				<div class="row">
-					<div class="form-group col-md-12">
-						<input type="checkbox" id="licensed-input" class="mr-1 mt-4"/>
-						<label for="licensed-input">Licensed</label>
-					</div>
+				<div class="form-group col-md-4">
+					<label for="fax-input">Fax (optional)</label>
+					<input type="text" th:field="*{faxNumber}" id="fax-input" class="form-control"/>
+					<td th:if="${#fields.hasErrors('faxNumber')}" th:errors="*{faxNumber}"></td>
 				</div>
+			</div>
+			<div class="row">
+				<div class="form-group col-md-4">
+					<label for="type-name-of-event-input">Type/Name of Event</label>
+					<input type="text" th:field="*{eventName}" id="type-name-of-event-input" class="form-control"/>
+					<td th:if="${#fields.hasErrors('eventName')}" th:errors="*{eventName}"></td>
+				</div>
+				<div class="form-group col-md-4">
+					<label for="location-input">Location</label>
+					<input type="text" th:field="*{eventLocation}" id="location-input" class="form-control"/>
+					<td th:if="${#fields.hasErrors('eventLocation')}" th:errors="*{eventLocation}"></td>
+				</div>
+				<div class="form-group col-md-4">
+					<label for="number-of-attendees-input"># of Attendees</label>
+					<input type="text" th:field="*{numAttendees}" id="number-of-attendees-input" class="form-control"/>
+					<td th:if="${#fields.hasErrors('numAttendees')}" th:errors="*{numAttendees}"></td>
+				</div>
+			</div>
+			<div class="row">
+				<div class="form-group col-md-12">
+					<label for="details-input" placeholder="">Details</label>
+					<input type="textbox" th:field="*{eventDetails}" id="details-input" class="form-control"/>
+					<td th:if="${#fields.hasErrors('eventDetails')}" th:errors="*{eventDetails}"></td>
+				</div>
+			</div>
+			<div class="row">
+				<div class="form-group col-md-12">
+					<input type="checkbox" th:field="*{isLicensed}" id="licensed-input" class="mr-1 mt-4"/>
+					<td th:if="${#fields.hasErrors('isLicensed')}" th:errors="*{isLicensed}"></td>
+					<label for="licensed-input">Licensed</label>
+				</div>
+			</div>
+			<div class="row mt-4">
+				<table class="table table-striped">
+					<thead>
+					<tr>
+						<th>Date</th>
+						<th>Time</th>
+					</tr>
+					</thead>
+					<tbody>
+					<tr>
+						<td>
+							<input type="text" th:field="*{eventDates}" id="date" class="form-control"/>
+							<td th:if="${#fields.hasErrors('eventDates')}" th:errors="*{eventDates}">Date</td>
+						</td>
+						<td>
+							<input type="text" th:field="*{times}" id="time" class="form-control"/>
+						<td th:if="${#fields.hasErrors('times')}" th:errors="*{times}">Time</td>
+						</td>
+					</tr>
+					</tbody>
+				</table>
 				<div class="row mt-4">
 					<i class="fa fa-calendar calendar-icon mr-3"></i>
 					<button class="btn btn-danger">Add Date</button>
 				</div>
-				<div class="row mt-4">
-					<table class="table table-striped">
-						<thead>
-							<tr>
-								<th>Date</th>
-								<th>Time</th>
-							</tr>
-						</thead>
-						<tbody>
-							<tr>
-								<td>Aug 22, 2017</td>
-								<td>8:00am - 2:00pm</td>
-							</tr>
-							<tr>
-								<td>Sept 12, 2017</td>
-								<td>10:30am - 4:00pm</td>
-							</tr>
-						</tbody>
-					</table>
-				</div>
-				<div>
-					<h3 class="auth-heading mt-4">Authorization</h3>
-				</div>
-				<div class="row mt-5">
-					<div class="form-group col-md-4">
-						<label for="account-code-input">Account code</label>
-						<input type="text" id="account-code-input" class="form-control"/>
-					</div>
-					<div class="form-group col-md-4">
-						<label for="sfu-id-or-bcdl-of-authorizee-input">SFU ID or BCDL of Authorizee</label>
-						<input type="text" id="sfu-id-or-bcdl-of-authorizee-input" class="form-control"/>
-					</div>
-					<div class="form-group col-md-4">
-						<label for="phone-of-authorizee-input">Phone</label>
-						<input type="text" id="phone-of-authorizee-input" class="form-control"/>
-					</div>
-				</div>
-				<div class="row">
-					<div class="form-group col-md-12">
-						<input type="checkbox" id="invoice-input" class="mr-1"/>
-						<label for="invoice-input">Please Invoice</label>
-					</div>
-				</div>
-				<div class="row mt-5">
-					<div class="col-md-12 text-center">
-						<button class="btn btn-danger btn-lg col-md-8">Submit</button>
-					</div>
-				</div>
-				<div class="bottom-space"></div>
 			</div>
+			<div>
+				<h3 class="auth-heading mt-4">Authorization</h3>
+			</div>
+			<div class="row mt-5">
+				<div class="form-group col-md-4">
+					<label for="account-code-input">Account code</label>
+					<input type="text" th:field="*{paymentAccountCode}" id="account-code-input" class="form-control"/>
+					<td th:if="${#fields.hasErrors('paymentAccountCode')}" th:errors="*{paymentAccountCode}"></td>
+				</div>
+				<div class="form-group col-md-4">
+					<label for="name-of-authorizee-input">Authorized by</label>
+					<input type="text" th:field="*{authorizerName}" id="name-of-authorizee-input" class="form-control"/>
+					<td th:if="${#fields.hasErrors('authorizerName')}" th:errors="*{authorizerName}"></td>
+				</div>
+				<div class="form-group col-md-4">
+					<label for="sfu-id-or-bcdl-of-authorizee-input">SFU ID or BCDL of Authorizee</label>
+					<input type="text" th:field="*{authorizerID}" id="sfu-id-or-bcdl-of-authorizee-input" class="form-control"/>
+					<td th:if="${#fields.hasErrors('authorizerID')}" th:errors="*{authorizerID}"></td>
+				</div>
+				<div class="form-group col-md-4">
+					<label for="date-of-authorization-input">Date</label>
+					<input type="text" th:field="*{authorizationDate}" id="date-of-authorization-input" class="form-control"/>
+					<td th:if="${#fields.hasErrors('authorizationDate')}" th:errors="*{authorizationDate}"></td>
+				</div>
+				<div class="form-group col-md-4">
+					<label for="phone-of-authorizee-input">Phone</label>
+					<input type="text" th:field="*{authorizerPhoneNumber}" id="phone-of-authorizee-input" class="form-control"/>
+					<td th:if="${#fields.hasErrors('authorizerPhoneNumber')}" th:errors="*{authorizerPhoneNumber}"></td>
+				</div>
+			</div>
+			<div class="row">
+				<div class="form-group col-md-12">
+					<input type="checkbox" th:field="*{invoiceRequested}" id="invoice-input" class="mr-1"/>
+					<td th:if="${#fields.hasErrors('invoiceRequested')}" th:errors="*{invoiceRequested}"></td>
+					<label for="invoice-input">Please Invoice</label>
+				</div>
+			</div>
+			<div class="row mt-5">
+				<div class="col-md-12 text-center">
+					<button class="btn btn-danger btn-lg col-md-8">Submit</button>
+				</div>
+			</div>
+			<div class="bottom-space"></div>
 		</div>
+	</div>
+</form>
 </body>
 </html>
