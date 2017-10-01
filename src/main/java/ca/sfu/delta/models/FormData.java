@@ -235,7 +235,7 @@ public class FormData {
         this.isAuthorized = true;
     }
 
-    public Boolean isAuthorized(){
+    public Boolean getIsAuthorized(){
         return isAuthorized;
     }
 
@@ -246,7 +246,6 @@ public class FormData {
     public String getServiceRequestNumber(){
     	return serviceRequestNumber;
     }
-
 
     public String getRecievingSecuritySupervisor(){
     	return recievingSecuritySupervisor;
