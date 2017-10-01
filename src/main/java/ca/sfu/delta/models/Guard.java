@@ -17,13 +17,14 @@ public class Guard{
 
 	// Constructor and setters accept doubles instead of BigDecimals for ease of use
 	// doubles shouldn't be used for currency due to inaccuracy
-	public Guard(String name, String id, int regularHours, double regularRate, int overtimeHours, double overtimeRate) {
-		this.name = name;
-		this.id = id;
-		this.regularHours = regularHours;
-		this.regularRate = BigDecimal.valueOf(regularRate);
-		this.overtimeHours = overtimeHours;
-		this.overtimeRate = BigDecimal.valueOf(overtimeRate);
+	public Guard(String name, String id, int regularHours, double regularRate, int overtimeHours, double overtimeRate)
+			throws IllegalArgumentException {
+		setName(name);
+		setId(id);
+		setRegularHours(regularHours);
+		setRegularRate(regularRate);
+		setOvertimeHours(overtimeHours);
+		setOvertimeRate(overtimeRate);
 	}
 
 	public BigDecimal calculateTotalPay() {

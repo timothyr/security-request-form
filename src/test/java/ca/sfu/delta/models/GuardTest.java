@@ -17,6 +17,11 @@ public class GuardTest {
 
 	private Guard guard = new Guard(name, id, regularHours, regularRate, overtimeHours, overtimeRate);
 
+	@Test(expected = IllegalArgumentException.class)
+	public void constructorException() throws Exception {
+		Guard newGuard = new Guard(null, null, 0, 0.0, 0, 0.0);
+	}
+
 	@Test
 	public void calculateTotalPay() throws Exception {
 		assertEquals(BigDecimal.valueOf((regularHours * regularRate) + (overtimeHours * overtimeRate)),
