@@ -31,12 +31,18 @@ public class ServiceRequestController extends WebMvcConfigurerAdapter {
         if (bindingResult.hasErrors()) {
             return "form";
         }
-        //Todo: call to save the form serviceRequestForm to the database
+
+        saveFormToDatabase(serviceRequestForm);
 
         return "redirect:/results";
     }
 
-	@ModelAttribute("FormData")
+    private void saveFormToDatabase(FormData formData) {
+        System.out.printf("Form submitted: " + String.valueOf(formData));
+        //Todo: save formData to database
+    }
+
+    @ModelAttribute("FormData")
 	public FormData createModel() {
 		return new FormData();
 	}

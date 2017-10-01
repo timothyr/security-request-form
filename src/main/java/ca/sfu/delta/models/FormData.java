@@ -275,4 +275,37 @@ public class FormData {
     	this.preparedBy = preparedBy;
     	this.securityRemarks = securityRemarks;
     }
+
+    @Override
+    public String toString() {
+        return "FormData{" +
+                "department='" + department + '\'' +
+                ", requesterName='" + requesterName + '\'' +
+                ", phoneNumber='" + phoneNumber + '\'' +
+                ", faxNumber='" + faxNumber + '\'' +
+                ", emailAddress='" + emailAddress + '\'' +
+                ", eventName='" + eventName + '\'' +
+                ", requesterID='" + requesterID + '\'' +
+                ", eventLocation='" + eventLocation + '\'' +
+                ", isLicensed=" + isLicensed +
+                ", numAttendees=" + numAttendees +
+                ", times='" + times + '\'' +
+                ", eventDates='" + eventDates + '\'' +
+                ", requestedOnDate='" + requestedOnDate + '\'' +
+                ", paymentAccountCode='" + paymentAccountCode + '\'' +
+                ", invoiceRequested=" + invoiceRequested +
+                ", eventDetails='" + eventDetails + '\'' +
+                ", serviceRequestNumber='" + serviceRequestNumber + '\'' +
+                ", recievingSecuritySupervisor='" + recievingSecuritySupervisor + '\'' +
+                ", guards=" + guards +
+                ", distributionList=" + distributionList +
+                ", preparedBy='" + preparedBy + '\'' +
+                ", securityRemarks='" + securityRemarks + '\'' +
+                ", authorizerName='" + authorizerName + '\'' +
+                ", authorizerID='" + authorizerID + '\'' +
+                ", authorizationDate='" + authorizationDate + '\'' +
+                ", authorizerPhoneNumber='" + authorizerPhoneNumber + '\'' +
+                ", isAuthorized=" + isAuthorized +
+                '}';
+    }
 }
