@@ -6,6 +6,7 @@ import java.util.ArrayList;
 
 public class FormData {
     //Specified by user
+    private String department;
     private String requesterName;
     private String phoneNumber;
     private String faxNumber;
@@ -16,8 +17,10 @@ public class FormData {
     private Boolean isLicensed;
     private int numAttendees;
     private String times; //Unsure of how we want to store times, String for now.
-    private ArrayList<Date> eventDates;
-    private Date requestedOnDate;
+	//Todo: these will need to be changed back to arrays of dates once the front end supports dates
+    private String eventDates;
+    private String requestedOnDate;
+
     private String paymentAccountCode;
     private Boolean invoiceRequested;
     private String eventDetails;
@@ -35,16 +38,18 @@ public class FormData {
     //Specified by Authorizer
     private String authorizerName;
     private String authorizerID; //SFU ID or BCDL
-    private Date authorizationDate;
+	//Todo: this will need to be changed back to a date once the front end supports dates
+    private String authorizationDate;
     private String authorizerPhoneNumber;
     private Boolean isAuthorized;
 
 
     //Constructor takes all info that a requester can provide (optional or no)
-    public FormData(ArrayList<Date> dates, String requestorName, String requesterID, Optional<String> phoneNumber,
-                    Optional<String> faxNumber, String emailAddress, Date requestedOnDate, String eventName, Boolean isLicensed,
+    public FormData(String department, String dates, String requestorName, String requesterID, Optional<String> phoneNumber,
+                    Optional<String> faxNumber, String emailAddress, String requestedOnDate, String eventName, Boolean isLicensed,
                     int numAttendees, String times, String paymentAccountCode, Boolean invoiceRequested, String eventDetails){
-        this.eventDates = dates;
+        this.department = department;
+    	this.eventDates = dates;
         this.requesterName = requestorName;
         this.phoneNumber = phoneNumber.orElse("Unspecified");
         this.faxNumber = faxNumber.orElse("Unspecified");
@@ -62,16 +67,20 @@ public class FormData {
 
     //Getter and Setter methods
     //Set by requester
-    public ArrayList<Date> getDates() {
+    public String getEventDates() {
         return eventDates;
     }
 
-    public void setDates(ArrayList<Date> newDates) {
+    public void setEventDates(String newDates) {
         eventDates = newDates;
     }
 
-    public void addDate(Date newDate){
-    	eventDates.add(newDate);
+    public String getDepartment() {
+    	return department;
+    }
+
+    public void setDepartment(String newDepartment) {
+    	department = newDepartment;
     }
 
     public String getRequesterName() {
@@ -106,11 +115,11 @@ public class FormData {
         emailAddress = newEmail;
     }
 
-    public Date getRequestedOnDate() {
+    public String getRequestedOnDate() {
         return requestedOnDate;
     }
 
-    public void setRequestedOnDate(Date newDate) {
+    public void setRequestedOnDate(String newDate) {
         requestedOnDate = newDate;
     }
 
@@ -138,12 +147,12 @@ public class FormData {
         requesterID = newRequesterID;
     }
 
-    public void setLicensed(Boolean licensed) {
-        isLicensed = licensed;
-    }
+	public Boolean getIsLicensed() {
+		return isLicensed;
+	}
 
-    public Boolean isLicensed() {
-        return isLicensed;
+	public void setIsLicensed(Boolean licensed) {
+        isLicensed = licensed;
     }
 
     public int getNumAttendees() {
@@ -170,7 +179,7 @@ public class FormData {
         paymentAccountCode = newPaymentAccountCode;
     }
 
-    public Boolean isInvoiceRequested() {
+    public Boolean getInvoiceRequested() {
         return invoiceRequested;
     }
 
@@ -186,23 +195,39 @@ public class FormData {
         this.eventDetails = newEventDetails;
     }
 
-    public String getAuthorizerName(){
-        return this.authorizerName;
+    public String getAuthorizerID() {
+    	return authorizerID;
     }
 
-    public String getAuthorizerID(){
-        return this.authorizerID;
+    public void setAuthorizerID(String newAuthorizerID) {
+    	authorizerID = newAuthorizerID;
     }
 
-    public Date getAuthorizationDate(){
-        return this.authorizationDate;
-    }
+	public String getAuthorizerPhoneNumber() {
+		return authorizerPhoneNumber;
+	}
 
-    public String getAuthorizerPhoneNumber(){
-        return this.authorizerPhoneNumber;
-    }
+	public void setAuthorizerPhoneNumber(String newAuthorizerPhoneNumber) {
+		authorizerPhoneNumber = newAuthorizerPhoneNumber;
+	}
 
-    public void setAuthorizationFields(String authorizerName, String authorizerID, Date authorizationDate, String authorizerPhoneNumber){
+	public String getAuthorizerName() {
+    	return authorizerName;
+	}
+
+	public void setAuthorizerName(String newAuthorizerName) {
+		authorizerName = newAuthorizerName;
+	}
+
+	public String getAuthorizationDate() {
+    	return authorizationDate;
+	}
+
+	public void setAuthorizationDate(String newAuthorizationDate) {
+    	authorizationDate = newAuthorizationDate;
+	}
+
+    public void setAuthorizationFields(String authorizerName, String authorizerID, String authorizationDate, String authorizerPhoneNumber){
         this.authorizerName = authorizerName;
         this.authorizerID = authorizerID;
         this.authorizationDate = authorizationDate;
@@ -210,7 +235,7 @@ public class FormData {
         this.isAuthorized = true;
     }
 
-    public Boolean isAuthorized(){
+    public Boolean getIsAuthorized(){
         return isAuthorized;
     }
 
@@ -221,7 +246,6 @@ public class FormData {
     public String getServiceRequestNumber(){
     	return serviceRequestNumber;
     }
-
 
     public String getRecievingSecuritySupervisor(){
     	return recievingSecuritySupervisor;
@@ -250,7 +274,38 @@ public class FormData {
     	this.distributionList = distributionList;
     	this.preparedBy = preparedBy;
     	this.securityRemarks = securityRemarks;
-
     }
 
+    @Override
+    public String toString() {
+        return "FormData{" +
+                "department='" + department + '\'' +
+                ", requesterName='" + requesterName + '\'' +
+                ", phoneNumber='" + phoneNumber + '\'' +
+                ", faxNumber='" + faxNumber + '\'' +
+                ", emailAddress='" + emailAddress + '\'' +
+                ", eventName='" + eventName + '\'' +
+                ", requesterID='" + requesterID + '\'' +
+                ", eventLocation='" + eventLocation + '\'' +
+                ", isLicensed=" + isLicensed +
+                ", numAttendees=" + numAttendees +
+                ", times='" + times + '\'' +
+                ", eventDates='" + eventDates + '\'' +
+                ", requestedOnDate='" + requestedOnDate + '\'' +
+                ", paymentAccountCode='" + paymentAccountCode + '\'' +
+                ", invoiceRequested=" + invoiceRequested +
+                ", eventDetails='" + eventDetails + '\'' +
+                ", serviceRequestNumber='" + serviceRequestNumber + '\'' +
+                ", recievingSecuritySupervisor='" + recievingSecuritySupervisor + '\'' +
+                ", guards=" + guards +
+                ", distributionList=" + distributionList +
+                ", preparedBy='" + preparedBy + '\'' +
+                ", securityRemarks='" + securityRemarks + '\'' +
+                ", authorizerName='" + authorizerName + '\'' +
+                ", authorizerID='" + authorizerID + '\'' +
+                ", authorizationDate='" + authorizationDate + '\'' +
+                ", authorizerPhoneNumber='" + authorizerPhoneNumber + '\'' +
+                ", isAuthorized=" + isAuthorized +
+                '}';
+    }
 }

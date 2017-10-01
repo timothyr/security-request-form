@@ -6,6 +6,7 @@ import ca.sfu.delta.models.FormData;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.servlet.config.annotation.ViewControllerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
@@ -31,6 +32,18 @@ public class ServiceRequestController extends WebMvcConfigurerAdapter {
             return "form";
         }
 
+        saveFormToDatabase(serviceRequestForm);
+
         return "redirect:/results";
     }
+
+    private void saveFormToDatabase(FormData formData) {
+        System.out.printf("Form submitted: " + String.valueOf(formData));
+        //Todo: save formData to database
+    }
+
+    @ModelAttribute("FormData")
+	public FormData createModel() {
+		return new FormData();
+	}
 }
