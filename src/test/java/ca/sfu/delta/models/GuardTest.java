@@ -27,7 +27,7 @@ public class GuardTest {
 	}
 
 	@Test
-	public void calculcateRegularPay() throws Exception {
+	public void calculateRegularPay() throws Exception {
 		assertEquals(BigDecimal.valueOf(regularHours * regularRate), guard.calculateRegularPay());
 		System.out.println(guard.getRegularHours() + "*" + guard.getRegularRate() + "=" + guard.calculateRegularPay());
 	}
@@ -48,12 +48,16 @@ public class GuardTest {
 		String newName = "Andy";
 		guard.setName(newName);
 		assertEquals(newName, guard.getName());
+	}
 
+	@Test(expected = IllegalArgumentException.class)
+	public void setNameEmptyException() throws Exception {
 		guard.setName("");
-		assertEquals(newName, guard.getName());
+	}
 
+	@Test(expected = IllegalArgumentException.class)
+	public void setNameNullException() throws Exception {
 		guard.setName(null);
-		assertEquals(newName, guard.getName());
 	}
 
 	@Test
@@ -66,12 +70,16 @@ public class GuardTest {
 		String newId = "789xyz";
 		guard.setId(newId);
 		assertEquals(newId, guard.getId());
+	}
 
+	@Test(expected = IllegalArgumentException.class)
+	public void setIdEmptyException() throws Exception {
 		guard.setId("");
-		assertEquals(newId, guard.getId());
+	}
 
+	@Test(expected = IllegalArgumentException.class)
+	public void setIdNullException() throws Exception {
 		guard.setId(null);
-		assertEquals(newId, guard.getId());
 	}
 
 	@Test
@@ -84,10 +92,12 @@ public class GuardTest {
 		int newRegularHours = 10;
 		guard.setRegularHours(newRegularHours);
 		assertEquals(newRegularHours, guard.getRegularHours());
+	}
 
-		newRegularHours = -10;
+	@Test(expected = IllegalArgumentException.class)
+	public void setRegularHoursException() throws Exception {
+		int newRegularHours = -10;
 		guard.setRegularHours(newRegularHours);
-		assertNotEquals(newRegularHours, guard.getRegularHours());
 	}
 
 	@Test
@@ -100,10 +110,12 @@ public class GuardTest {
 		int newOvertimeHours = 10;
 		guard.setOvertimeHours(newOvertimeHours);
 		assertEquals(newOvertimeHours, guard.getOvertimeHours());
+	}
 
-		newOvertimeHours = -10;
-		guard.setOvertimeHours(newOvertimeHours);
-		assertNotEquals(newOvertimeHours, guard.getOvertimeHours());
+	@Test(expected = IllegalArgumentException.class)
+	public void setOvertimeHoursException() throws Exception {
+		int newOvertimeHours = -10;
+		guard.setRegularHours(newOvertimeHours);
 	}
 
 	@Test
@@ -116,10 +128,12 @@ public class GuardTest {
 		double newRegularRate = 25.25;
 		guard.setRegularRate(newRegularRate);
 		assertEquals(BigDecimal.valueOf(newRegularRate), guard.getRegularRate());
+	}
 
-		newRegularRate = -10.5;
+	@Test(expected = IllegalArgumentException.class)
+	public void setRegularRateException() throws Exception {
+		double newRegularRate = -25.25;
 		guard.setRegularRate(newRegularRate);
-		assertNotEquals(BigDecimal.valueOf(newRegularRate), guard.getRegularRate());
 	}
 
 	@Test
@@ -132,10 +146,12 @@ public class GuardTest {
 		double newOvertimeRate = 25.66;
 		guard.setOvertimeRate(newOvertimeRate);
 		assertEquals(BigDecimal.valueOf(newOvertimeRate), guard.getOvertimeRate());
+	}
 
-		newOvertimeRate = -15;
+	@Test(expected = IllegalArgumentException.class)
+	public void setOvertimeRateException() throws IllegalArgumentException {
+		double newOvertimeRate = -25.66;
 		guard.setOvertimeRate(newOvertimeRate);
-		assertNotEquals(BigDecimal.valueOf(newOvertimeRate), guard.getOvertimeRate());
 	}
 
 	@Test

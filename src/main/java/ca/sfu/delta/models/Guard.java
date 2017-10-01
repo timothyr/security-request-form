@@ -43,9 +43,11 @@ public class Guard{
 		return name;
 	}
 
-	public void setName(String name) {
+	public void setName(String name) throws IllegalArgumentException {
 		if (name != null && !name.isEmpty()) {
 			this.name = name;
+		} else {
+			throw new IllegalArgumentException("String must be non-null & non-empty");
 		}
 	}
 
@@ -53,9 +55,11 @@ public class Guard{
 		return id;
 	}
 
-	public void setId(String id) {
+	public void setId(String id) throws IllegalArgumentException {
 		if (id != null && !id.isEmpty()) {
 			this.id = id;
+		} else {
+			throw new IllegalArgumentException("String must be non-null & non-empty");
 		}
 	}
 
@@ -63,9 +67,11 @@ public class Guard{
 		return regularHours;
 	}
 
-	public void setRegularHours(int regularHours) {
+	public void setRegularHours(int regularHours) throws IllegalArgumentException {
 		if (regularHours >= 0) {
 			this.regularHours = regularHours;
+		} else {
+			throw new IllegalArgumentException("Only non-negative values are permitted");
 		}
 	}
 
@@ -73,9 +79,11 @@ public class Guard{
 		return overtimeHours;
 	}
 
-	public void setOvertimeHours(int overtimeHours) {
+	public void setOvertimeHours(int overtimeHours) throws IllegalArgumentException {
 		if (overtimeHours >= 0) {
 			this.overtimeHours = overtimeHours;
+		} else {
+			throw new IllegalArgumentException("Only non-negative values are permitted");
 		}
 	}
 
@@ -83,11 +91,12 @@ public class Guard{
 		return regularRate;
 	}
 
-	public void setRegularRate(double regularRate) {
-		// allow only non-negative in setter
+	public void setRegularRate(double regularRate) throws IllegalArgumentException {
 		BigDecimal newRate = BigDecimal.valueOf(regularRate);
 		if (newRate.compareTo(BigDecimal.ZERO) >= 0) {
 			this.regularRate = newRate;
+		} else {
+			throw new IllegalArgumentException("Only non-negative values are permitted");
 		}
 	}
 
@@ -95,11 +104,12 @@ public class Guard{
 		return overtimeRate;
 	}
 
-	public void setOvertimeRate(double overtimeRate) {
-		// allow only non-negative in setter
+	public void setOvertimeRate(double overtimeRate) throws IllegalArgumentException {
 		BigDecimal newRate = BigDecimal.valueOf(overtimeRate);
 		if (newRate.compareTo(BigDecimal.ZERO) >= 0) {
 			this.overtimeRate = newRate;
+		} else {
+			throw new IllegalArgumentException("Only non-negative values are permitted");
 		}
 	}
 }
