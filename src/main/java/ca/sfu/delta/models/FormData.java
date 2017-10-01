@@ -186,6 +186,22 @@ public class FormData {
         this.eventDetails = newEventDetails;
     }
 
+    public String getAuthorizerName(){
+        return this.authorizerName;
+    }
+
+    public String getAuthorizerID(){
+        return this.authorizerID;
+    }
+
+    public Date getAuthorizationDate(){
+        return this.authorizationDate;
+    }
+
+    public String getAuthorizerPhoneNumber(){
+        return this.authorizerPhoneNumber;
+    }
+
     public void setAuthorizationFields(String authorizerName, String authorizerID, Date authorizationDate, String authorizerPhoneNumber){
         this.authorizerName = authorizerName;
         this.authorizerID = authorizerID;

@@ -15,6 +15,23 @@ public class FormDataTest {
     private String faxNum = "604-555-5555";
     private String unspecifiedNum = "Unspecified";
     private String email = "Billy@sfu.ca";
+    private Date requestedOnDate = new Date(2017,9,30);
+    private String eventLocation = "BBY AQ3019";
+    private String eventName = "Networking Night";
+    private String requesterID = "301248474";
+    private boolean licensed = false;
+    private int numAttendees = 4;
+    private String times = "14:30:00";
+    private String paymentAccountCode = "ASD12345";
+    private boolean invoiceRequested = false;
+    private String eventDetails = "details of the event.";
+
+    private String serviceRequestNumber = "99999999";
+    private String recievingSecuritySupervisor = "Aaron Judge";
+    private ArrayList<Guard> guards = new ArrayList<Guard>();
+    private ArrayList<String> distributionList = new ArrayList<String>();
+    private String preparedBy = "SFU Security";
+    private String securityRemarks = "Security remarks";
 
     private FormData data;
     private FormData dataNoNumbers;
@@ -22,12 +39,19 @@ public class FormDataTest {
     @Before
     public void setUp() throws Exception {
         dates.add(date);
-        data = new FormData(dates, name, "Unspecified", Optional.of(phoneNum), Optional.of(faxNum), email, date,
-                "unspecified", false, 0, "Unspecified", "Unspecified",
-                false, "Unspecified");
-        dataNoNumbers = new FormData(dates, name, "Unspecified", Optional.empty(), Optional.empty(), email, date,
-                "unspecified", false, 0, "Unspecified", "Unspecified",
-                false, "Unspecified");
+        data = new FormData(dates, name, requesterID, Optional.of(phoneNum), Optional.of(faxNum), email, requestedOnDate,
+                eventName, licensed, numAttendees, times, paymentAccountCode,
+                invoiceRequested, eventDetails);
+        data.setEventLocation(eventLocation);
+        data.setServiceRequestNumber(serviceRequestNumber);
+        data.setSecurityFields(recievingSecuritySupervisor,guards,distributionList,preparedBy,securityRemarks);
+
+        dataNoNumbers = new FormData(dates, name, requesterID, Optional.empty(), Optional.empty(), email, requestedOnDate,
+                eventName, licensed, numAttendees, times, paymentAccountCode,
+                invoiceRequested, eventDetails);
+        dataNoNumbers.setEventLocation(eventLocation);
+        dataNoNumbers.setServiceRequestNumber(unspecifiedNum);
+        dataNoNumbers.setSecurityFields(recievingSecuritySupervisor,guards,distributionList,preparedBy,securityRemarks);
     }
 
     @Test
@@ -96,6 +120,179 @@ public class FormDataTest {
         data.setEmailAddress("Brian@sfu.ca");
         assertEquals("Brian@sfu.ca", data.getEmailAddress());
 
+    }
+
+
+    //More Test functions.-ska158
+    @Test
+    public void getRequestedOnDate() throws Exception  {
+        assertEquals(requestedOnDate, data.getRequestedOnDate());
+    }
+
+    @Test
+    public void setRequestedOnDate() throws Exception  {
+        Date newDate = new Date(2017,9,22);
+        data.setRequestedOnDate(newDate);
+        assertEquals(newDate, data.getRequestedOnDate());
+    }
+
+    @Test
+    public void getEventLocation() throws Exception  {
+        assertEquals(eventLocation, data.getEventLocation());
+    }
+
+    @Test
+    public void setEventLocation() throws Exception  {
+        data.setEventLocation("SUR 5200");
+        assertEquals("SUR 5200", data.getEventLocation());
+    }
+
+    @Test
+    public void getEventName() throws Exception  {
+        assertEquals(eventName, data.getEventName());
+    }
+
+    @Test
+    public void setEventName() throws Exception  {
+        data.setEventName("formal event one");
+        assertEquals("formal event one", data.getEventName());
+    }
+
+    @Test
+    public void getRequesterID() throws Exception  {
+        assertEquals(requesterID, data.getRequesterID());
+    }
+
+    @Test
+    public void setRequesterID() throws Exception  {
+        data.setRequesterID("30123456");
+        assertEquals("30123456",data.getRequesterID());
+    }
+
+    @Test
+    public void setLicensed() throws Exception  {
+        data.setLicensed(true);
+        assertEquals(true, data.isLicensed());
+    }
+
+    @Test
+    public void isLicensed() throws Exception  {
+        assertEquals(licensed, data.isLicensed());
+    }
+
+    @Test
+    public void getNumAttendees() throws Exception  {
+        assertEquals(numAttendees, data.getNumAttendees());
+    }
+
+    @Test
+    public void setNumAttendees() throws Exception  {
+        data.setNumAttendees(10);
+        assertEquals(10, data.getNumAttendees());
+    }
+
+    @Test
+    public void getTimes() throws Exception  {
+        assertEquals(times, data.getTimes());
+    }
+
+    @Test
+    public void setTimes() throws Exception  {
+        data.setTimes("19:20:00");
+        assertEquals("19:20:00", data.getTimes());
+    }
+
+    @Test
+    public void getPaymentAccountCode() throws Exception  {
+        assertEquals(paymentAccountCode, data.getPaymentAccountCode());
+    }
+
+    @Test
+    public void setPaymentAccountCode() throws Exception  {
+        data.setPaymentAccountCode("QWE45678");
+        assertEquals("QWE45678",data.getPaymentAccountCode());
+    }
+
+    @Test
+    public void isInvoiceRequested() throws Exception  {
+        assertEquals(invoiceRequested, data.isInvoiceRequested());
+    }
+
+    @Test
+    public void setInvoiceRequested() throws Exception  {
+        data.setInvoiceRequested(true);
+        assertEquals(true,data.isInvoiceRequested());
+    }
+
+    @Test
+    public void getEventDetails() throws Exception  {
+        assertEquals(eventDetails,data.getEventDetails());
+    }
+
+    @Test
+    public void setEventDetails() throws Exception  {
+        data.setEventDetails("Following details are..");
+        assertEquals("Following details are..",data.getEventDetails());
+    }
+
+    @Test
+    public void setAuthorizationFields() throws Exception {
+        Date newDate = new Date(2017,9,30);
+        data.setAuthorizationFields("Kelly Jensen","6666666",newDate,"778-777-7777");
+        assertEquals("Kelly Jensen",data.getAuthorizerName());
+        assertEquals("6666666",data.getAuthorizerID());
+        assertEquals(newDate,data.getAuthorizationDate());
+        assertEquals("778-777-7777",data.getAuthorizerPhoneNumber());
+        assertEquals(true,data.isAuthorized());
+    }
+
+    @Test
+    public void setServiceRequestNumber() throws Exception {
+        data.setServiceRequestNumber("00000000");
+        assertEquals("00000000",data.getServiceRequestNumber());
+    }
+
+    @Test
+    public void getServiceRequestNumber() throws Exception {
+        assertEquals(serviceRequestNumber, data.getServiceRequestNumber());
+        assertEquals(unspecifiedNum,dataNoNumbers.getServiceRequestNumber());
+    }
+
+    @Test
+    public void getRecievingSecuritySupervisor() throws Exception {
+        assertEquals(recievingSecuritySupervisor,data.getRecievingSecuritySupervisor());
+    }
+
+    @Test
+    public void getGuards() throws Exception {
+        assertEquals(guards,data.getGuards());
+    }
+
+    @Test
+    public void getDistributionList() throws Exception {
+        assertEquals(distributionList,data.getDistributionList());
+    }
+
+    @Test
+    public void getPreparedBy() throws Exception {
+        assertEquals(preparedBy,data.getPreparedBy());
+    }
+
+    @Test
+    public void getSecurityRemarks() throws Exception {
+        assertEquals(securityRemarks,data.getSecurityRemarks());
+    }
+
+    @Test
+    public void setSecurityFields() throws Exception {
+        ArrayList<Guard> newGuardList = new ArrayList<Guard>();
+        ArrayList<String> newDistributionList = new ArrayList<String>();
+        data.setSecurityFields("Justin Turner",newGuardList,newDistributionList,"Parladin","security remark");
+        assertEquals("Justin Turner",data.getRecievingSecuritySupervisor());
+        assertEquals(newGuardList,data.getGuards());
+        assertEquals(newDistributionList,data.getDistributionList());
+        assertEquals("Parladin",data.getPreparedBy());
+        assertEquals("security remark",data.getSecurityRemarks());
     }
 
 }
