@@ -8,14 +8,18 @@ import static org.junit.Assert.*;
 import java.util.Optional;
 
 public class FormDataTest {
-    private Date date = new Date(2017,9,19);
-    private ArrayList<Date> dates = new ArrayList<Date>();
+	//Todo: re-enable once dates are implemented in the front and back end
+//    private Date date = new Date(2017,9,19);
+//    private ArrayList<Date> dates = new ArrayList<Date>();
+    private String eventDate = "August 19, 2017";
+    private String department = "Computer Science";
     private String name = "Billy";
     private String phoneNum = "778-555-5555";
     private String faxNum = "604-555-5555";
     private String unspecifiedNum = "Unspecified";
     private String email = "Billy@sfu.ca";
-    private Date requestedOnDate = new Date(2017,9,30);
+//    private Date requestedOnDate = new Date(2017,9,30);
+	private String requestedOnDate = "September 30, 2017";
     private String eventLocation = "BBY AQ3019";
     private String eventName = "Networking Night";
     private String requesterID = "301248474";
@@ -38,15 +42,15 @@ public class FormDataTest {
 
     @Before
     public void setUp() throws Exception {
-        dates.add(date);
-        data = new FormData(dates, name, requesterID, Optional.of(phoneNum), Optional.of(faxNum), email, requestedOnDate,
+//        dates.add(date);
+        data = new FormData(department, eventDate, name, requesterID, Optional.of(phoneNum), Optional.of(faxNum), email, requestedOnDate,
                 eventName, licensed, numAttendees, times, paymentAccountCode,
                 invoiceRequested, eventDetails);
         data.setEventLocation(eventLocation);
         data.setServiceRequestNumber(serviceRequestNumber);
         data.setSecurityFields(recievingSecuritySupervisor,guards,distributionList,preparedBy,securityRemarks);
 
-        dataNoNumbers = new FormData(dates, name, requesterID, Optional.empty(), Optional.empty(), email, requestedOnDate,
+        dataNoNumbers = new FormData(department, eventDate, name, requesterID, Optional.empty(), Optional.empty(), email, requestedOnDate,
                 eventName, licensed, numAttendees, times, paymentAccountCode,
                 invoiceRequested, eventDetails);
         dataNoNumbers.setEventLocation(eventLocation);
@@ -56,24 +60,38 @@ public class FormDataTest {
 
     @Test
     public void getDates() throws Exception {
-        assertEquals(dates, data.getDates());
+        assertEquals(eventDate, data.getEventDates());
     }
 
     @Test
     public void setDates() throws Exception {
-        ArrayList<Date> newDates = new ArrayList<Date>();
-        newDates.add(new Date(2017,9,20));
-        data.setDates(newDates);
-        assertEquals(newDates, data.getDates());
+//        ArrayList<Date> newDates = new ArrayList<Date>();
+//        newDates.add(new Date(2017,9,20));
+	    String newEventDate = "December 31, 2017";
+        data.setEventDates(newEventDate);
+        assertEquals(newEventDate, data.getEventDates());
     }
 
-    @Test
-    public void addDate() throws Exception {
-        assertEquals(dates, data.getDates());
-        data.addDate(new Date(2017,9,20));
-        dates.add(new Date(2017,9,20));
-        assertEquals(dates, data.getDates());
-    }
+	//Todo: re-enable once dates are implemented in the front and back end
+//    @Test
+//    public void addDate() throws Exception {
+//        assertEquals(dates, data.getDates());
+//        data.addDate(new Date(2017,9,20));
+//        dates.add(new Date(2017,9,20));
+//        assertEquals(dates, data.getDates());
+//    }
+
+	@Test
+	public void getDepartment() throws Exception {
+		assertEquals(department, data.getDepartment());
+	}
+
+	@Test
+	public void setDepartment() throws Exception {
+    	department = "Arts";
+		data.setDepartment(department);
+		assertEquals(department, data.getDepartment());
+	}
 
     @Test
     public void getRequesterName() throws Exception {
@@ -131,7 +149,8 @@ public class FormDataTest {
 
     @Test
     public void setRequestedOnDate() throws Exception  {
-        Date newDate = new Date(2017,9,22);
+//        Date newDate = new Date(2017,9,22);
+	    String newDate = "September 22, 2017";
         data.setRequestedOnDate(newDate);
         assertEquals(newDate, data.getRequestedOnDate());
     }
@@ -171,13 +190,13 @@ public class FormDataTest {
 
     @Test
     public void setLicensed() throws Exception  {
-        data.setLicensed(true);
-        assertEquals(true, data.isLicensed());
+        data.setIsLicensed(true);
+        assertEquals(true, data.getIsLicensed());
     }
 
     @Test
     public void isLicensed() throws Exception  {
-        assertEquals(licensed, data.isLicensed());
+        assertEquals(licensed, data.getIsLicensed());
     }
 
     @Test
@@ -215,13 +234,13 @@ public class FormDataTest {
 
     @Test
     public void isInvoiceRequested() throws Exception  {
-        assertEquals(invoiceRequested, data.isInvoiceRequested());
+        assertEquals(invoiceRequested, data.getInvoiceRequested());
     }
 
     @Test
     public void setInvoiceRequested() throws Exception  {
         data.setInvoiceRequested(true);
-        assertEquals(true,data.isInvoiceRequested());
+        assertEquals(true,data.getInvoiceRequested());
     }
 
     @Test
@@ -237,13 +256,14 @@ public class FormDataTest {
 
     @Test
     public void setAuthorizationFields() throws Exception {
-        Date newDate = new Date(2017,9,30);
+//        Date newDate = new Date(2017,9,30);
+	    String newDate = "September 30, 2017";
         data.setAuthorizationFields("Kelly Jensen","6666666",newDate,"778-777-7777");
         assertEquals("Kelly Jensen",data.getAuthorizerName());
         assertEquals("6666666",data.getAuthorizerID());
         assertEquals(newDate,data.getAuthorizationDate());
         assertEquals("778-777-7777",data.getAuthorizerPhoneNumber());
-        assertEquals(true,data.isAuthorized());
+        assertEquals(true,data.getIsAuthorized());
     }
 
     @Test
