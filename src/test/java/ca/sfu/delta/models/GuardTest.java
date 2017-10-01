@@ -22,14 +22,14 @@ public class GuardTest {
 		assertEquals(BigDecimal.valueOf((regularHours * regularRate) + (overtimeHours * overtimeRate)),
 				guard.calculateTotalPay());
 
-		System.out.println(guard.calculcateRegularPay() + "+" +
+		System.out.println(guard.calculateRegularPay() + "+" +
 				guard.calculateOvertimePay() + "=" + guard.calculateTotalPay());
 	}
 
 	@Test
 	public void calculcateRegularPay() throws Exception {
-		assertEquals(BigDecimal.valueOf(regularHours * regularRate), guard.calculcateRegularPay());
-		System.out.println(guard.getRegularHours() + "*" + guard.getRegularRate() + "=" + guard.calculcateRegularPay());
+		assertEquals(BigDecimal.valueOf(regularHours * regularRate), guard.calculateRegularPay());
+		System.out.println(guard.getRegularHours() + "*" + guard.getRegularRate() + "=" + guard.calculateRegularPay());
 	}
 
 	@Test
@@ -48,6 +48,12 @@ public class GuardTest {
 		String newName = "Andy";
 		guard.setName(newName);
 		assertEquals(newName, guard.getName());
+
+		guard.setName("");
+		assertEquals(newName, guard.getName());
+
+		guard.setName(null);
+		assertEquals(newName, guard.getName());
 	}
 
 	@Test
@@ -59,6 +65,12 @@ public class GuardTest {
 	public void setId() throws Exception {
 		String newId = "789xyz";
 		guard.setId(newId);
+		assertEquals(newId, guard.getId());
+
+		guard.setId("");
+		assertEquals(newId, guard.getId());
+
+		guard.setId(null);
 		assertEquals(newId, guard.getId());
 	}
 
@@ -124,6 +136,17 @@ public class GuardTest {
 		newOvertimeRate = -15;
 		guard.setOvertimeRate(newOvertimeRate);
 		assertNotEquals(BigDecimal.valueOf(newOvertimeRate), guard.getOvertimeRate());
+	}
+
+	@Test
+	public void testZeroValues() throws Exception {
+		guard.setRegularRate(0);
+		assertEquals(BigDecimal.valueOf(0.0), guard.calculateRegularPay());
+
+		guard.setOvertimeRate(0);
+		assertEquals(BigDecimal.valueOf(0.0), guard.calculateOvertimePay());
+
+		assertEquals(BigDecimal.valueOf(0.0), guard.calculateTotalPay());
 	}
 
 }

@@ -27,10 +27,10 @@ public class Guard{
 	}
 
 	public BigDecimal calculateTotalPay() {
-		return (calculcateRegularPay().add(calculateOvertimePay()));
+		return (calculateRegularPay().add(calculateOvertimePay()));
 	}
 
-	public BigDecimal calculcateRegularPay() {
+	public BigDecimal calculateRegularPay() {
 		return (regularRate.multiply(new BigDecimal(regularHours)));
 	}
 
@@ -54,7 +54,9 @@ public class Guard{
 	}
 
 	public void setId(String id) {
-		this.id = id;
+		if (id != null && !id.isEmpty()) {
+			this.id = id;
+		}
 	}
 
 	public int getRegularHours() {
