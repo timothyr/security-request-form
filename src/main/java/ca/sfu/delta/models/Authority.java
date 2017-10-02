@@ -3,7 +3,7 @@ package ca.sfu.delta.models;
 public class Authority {
 
     // Not sure if String is appropriate type for AuthId
-    private String AuthId;
+    private String authId;
     private String name;
     private String phone;
     private String sfuId;
@@ -13,7 +13,7 @@ public class Authority {
 
     }
     public Authority(String AuthId, String name, String phone, String sfuId, String signature){
-        this.AuthId = AuthId;
+        this.authId = AuthId;
         this.name = name;
         this.phone = phone;
         this.sfuId = sfuId;
@@ -21,11 +21,11 @@ public class Authority {
     }
 
     // Getters and Setters ------------------------------------------------
-    public String getAuthId(){ return AuthId; }
+    public String getAuthId(){ return authId; }
 
     public void setAuthId(){
-        if(AuthId != null && !AuthId.isEmpty()){
-            this.AuthId = AuthId;
+        if(authId != null && !authId.isEmpty()){
+            this.authId = authId;
         } else {
             throw new IllegalArgumentException("ID cannot be null, or an empty String.");
         }
