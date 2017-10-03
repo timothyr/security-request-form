@@ -15,7 +15,7 @@ public class GuardTest {
 	private double regularRate = 17.5;
 	private double overtimeRate = 22.75;
 
-	private Guard guard = new Guard(name, id, regularHours, regularRate, overtimeHours, overtimeRate);
+	private Guard guard = new Guard(name, regularHours, regularRate, overtimeHours, overtimeRate);
 
 	@Test
 	public void calculateTotalPay() throws Exception {
@@ -60,27 +60,27 @@ public class GuardTest {
 		guard.setName(null);
 	}
 
-	@Test
-	public void getId() throws Exception {
-		assertEquals(id, guard.getId());
-	}
-
-	@Test
-	public void setId() throws Exception {
-		String newId = "789xyz";
-		guard.setId(newId);
-		assertEquals(newId, guard.getId());
-	}
-
-	@Test(expected = IllegalArgumentException.class)
-	public void setIdEmptyException() throws Exception {
-		guard.setId("");
-	}
-
-	@Test(expected = IllegalArgumentException.class)
-	public void setIdNullException() throws Exception {
-		guard.setId(null);
-	}
+//	@Test
+//	public void getId() throws Exception {
+//		assertEquals(id, guard.getId());
+//	}
+//
+//	@Test
+//	public void setId() throws Exception {
+//		String newId = "789xyz";
+//		guard.setId(newId);
+//		assertEquals(newId, guard.getId());
+//	}
+//
+//	@Test(expected = IllegalArgumentException.class)
+//	public void setIdEmptyException() throws Exception {
+//		guard.setId("");
+//	}
+//
+//	@Test(expected = IllegalArgumentException.class)
+//	public void setIdNullException() throws Exception {
+//		guard.setId(null);
+//	}
 
 	@Test
 	public void getRegularHours() throws Exception {

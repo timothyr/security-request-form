@@ -48,12 +48,48 @@ public class ServiceRequestController extends WebMvcConfigurerAdapter {
     public @ResponseBody String addForm(
             @RequestParam String department,
             @RequestParam String requesterName,
-            @RequestParam String phoneNumber
-    ) {
+            @RequestParam String phoneNumber,
+            @RequestParam String requestedOnDate,
+            @RequestParam String requesterID,
+            @RequestParam String authorizationDate,
+            @RequestParam String paymentAccountCode,
+            @RequestParam String emailAddress,
+            @RequestParam String times,
+            @RequestParam String eventName,
+            @RequestParam boolean isLicensed,
+            @RequestParam int numAttendees,
+            @RequestParam String authorizerId,
+            @RequestParam String authorizerPhoneNumber,
+            @RequestParam String serviceRequestNumber,
+            @RequestParam String eventLocation,
+            @RequestParam String authorizerName,
+            @RequestParam String eventDates,
+            @RequestParam String eventDetails,
+            @RequestParam String faxNumber
+
+            ) {
         FormData form = new FormData();
         form.setDepartment(department);
         form.setRequesterName(requesterName);
         form.setPhoneNumber(phoneNumber);
+        form.setRequestedOnDate(requestedOnDate);
+        form.setRequesterID(requesterID);
+        form.setAuthorizationDate(authorizationDate);
+        form.setPaymentAccountCode(paymentAccountCode);
+        form.setEmailAddress(emailAddress);
+        form.setTimes(times);
+        form.setEventName(eventName);
+        form.setIsLicensed(isLicensed);
+        form.setNumAttendees(numAttendees);
+        form.setAuthorizerID(authorizerId);
+        form.setAuthorizerPhoneNumber(authorizerPhoneNumber);
+        form.setServiceRequestNumber(serviceRequestNumber);
+        form.setEventLocation(eventLocation);
+        form.setAuthorizerName(authorizerName);
+        form.setEventDates(eventDates);
+        form.setEventDetails(eventDetails);
+        form.setFaxNumber(faxNumber);
+
 
         form = formRepository.save(form);
 
