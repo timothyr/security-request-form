@@ -1,10 +1,18 @@
 package ca.sfu.delta.models;
 
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
 import java.lang.String;
-import java.util.Optional;
 import java.util.List;
 
+@Entity
 public class FormData {
+    @Id
+    @GeneratedValue(strategy= GenerationType.AUTO)
+    private Integer id;
+
     //Specified by user
     private String department;
     private String requesterName;
@@ -50,8 +58,8 @@ public class FormData {
             String dates,
             String requestorName,
             String requesterID,
-            Optional<String> phoneNumber,
-            Optional<String> faxNumber,
+            String phoneNumber,
+            String faxNumber,
             String emailAddress,
             String requestedOnDate,
             String eventName,
@@ -65,8 +73,8 @@ public class FormData {
         this.department = department;
     	this.eventDates = dates;
         this.requesterName = requestorName;
-        this.phoneNumber = phoneNumber.orElse("Unspecified");
-        this.faxNumber = faxNumber.orElse("Unspecified");
+        this.phoneNumber = phoneNumber;
+        this.faxNumber = faxNumber;
         this.emailAddress = emailAddress;
         this.requestedOnDate = requestedOnDate;
         this.eventName = eventName;
