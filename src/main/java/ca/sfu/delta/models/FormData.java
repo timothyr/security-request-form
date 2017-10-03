@@ -241,7 +241,12 @@ public class FormData {
     	authorizationDate = newAuthorizationDate;
 	}
 
-    public void setAuthorizationFields(String authorizerName, String authorizerID, String authorizationDate, String authorizerPhoneNumber){
+    public void setAuthorizationFields(
+            String authorizerName,
+            String authorizerID,
+            String authorizationDate,
+            String authorizerPhoneNumber
+    ){
         this.authorizerName = authorizerName;
         this.authorizerID = authorizerID;
         this.authorizationDate = authorizationDate;
@@ -281,8 +286,13 @@ public class FormData {
     	return securityRemarks;
     }
 
-    public void setSecurityFields(String recievingSecuritySupervisor, List<Guard> guards, List<String> distributionList,
-    							  String preparedBy, String securityRemarks){
+    public void setSecurityFields(
+            String recievingSecuritySupervisor,
+            List<Guard> guards,
+            List<String> distributionList,
+            String preparedBy,
+            String securityRemarks
+    ){
     	this.recievingSecuritySupervisor = recievingSecuritySupervisor;
     	this.guards = guards;
     	this.distributionList = distributionList;
