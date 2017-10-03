@@ -46,26 +46,26 @@ public class ServiceRequestController extends WebMvcConfigurerAdapter {
 
     @RequestMapping(value = "/api/form/save", method = RequestMethod.GET, produces = "application/json")
     public @ResponseBody String addForm(
-            @RequestParam String department,
-            @RequestParam String requesterName,
-            @RequestParam String phoneNumber,
-            @RequestParam String requestedOnDate,
-            @RequestParam String requesterID,
-            @RequestParam String authorizationDate,
-            @RequestParam String paymentAccountCode,
-            @RequestParam String emailAddress,
-            @RequestParam String times,
-            @RequestParam String eventName,
-            @RequestParam boolean isLicensed,
-            @RequestParam int numAttendees,
-            @RequestParam String authorizerId,
-            @RequestParam String authorizerPhoneNumber,
-            @RequestParam String serviceRequestNumber,
-            @RequestParam String eventLocation,
-            @RequestParam String authorizerName,
-            @RequestParam String eventDates,
-            @RequestParam String eventDetails,
-            @RequestParam String faxNumber
+            @RequestParam(required=false) String department,
+            @RequestParam(required=false) String requesterName,
+            @RequestParam(required=false) String phoneNumber,
+            @RequestParam(required=false) String requestedOnDate,
+            @RequestParam(required=false) String requesterID,
+            @RequestParam(required=false) String authorizationDate,
+            @RequestParam(required=false) String paymentAccountCode,
+            @RequestParam(required=false) String emailAddress,
+            @RequestParam(required=false) String times,
+            @RequestParam(required=false) String eventName,
+            @RequestParam(required=false) Boolean isLicensed,
+            @RequestParam(required=false) Integer numAttendees,
+            @RequestParam(required=false) String authorizerId,
+            @RequestParam(required=false) String authorizerPhoneNumber,
+            @RequestParam(required=false) String serviceRequestNumber,
+            @RequestParam(required=false) String eventLocation,
+            @RequestParam(required=false) String authorizerName,
+            @RequestParam(required=false) String eventDates,
+            @RequestParam(required=false) String eventDetails,
+            @RequestParam(required=false) String faxNumber
 
             ) {
         FormData form = new FormData();
