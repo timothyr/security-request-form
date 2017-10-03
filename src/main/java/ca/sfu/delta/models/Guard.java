@@ -11,7 +11,7 @@ public class Guard{
 
 	@Id
 	@GeneratedValue(strategy= GenerationType.AUTO)
-	private Integer id;
+	private Long id;
 
 	private String name;
 	private int regularHours;
@@ -64,11 +64,11 @@ public class Guard{
 		}
 	}
 
-	public Integer getId() {
+	public Long getId() {
 		return id;
 	}
 
-	public void setId(Integer id) throws IllegalArgumentException {
+	public void setId(Long id) throws IllegalArgumentException {
 		if (id != null) {
 			this.id = id;
 		} else {
