@@ -2,7 +2,7 @@ package ca.sfu.delta.models;
 
 import java.lang.String;
 import java.util.Optional;
-import java.util.ArrayList;
+import java.util.List;
 
 public class FormData {
     //Specified by user
@@ -26,8 +26,8 @@ public class FormData {
     private String eventDetails;
     private String serviceRequestNumber; //Generated automatically, pre-populate.
     private String recievingSecuritySupervisor;
-    private ArrayList<Guard> guards; //Things like total billable and grand total can be calculated from these
-    private ArrayList<String> distributionList;
+    private List<Guard> guards; //Things like total billable and grand total can be calculated from these
+    private List<String> distributionList;
     private String preparedBy;
     private String securityRemarks;
 
@@ -251,11 +251,11 @@ public class FormData {
     	return recievingSecuritySupervisor;
     }
 
-    public ArrayList<Guard> getGuards(){
+    public List<Guard> getGuards(){
     	return guards;
     }
 
-    public ArrayList<String> getDistributionList(){
+    public List<String> getDistributionList(){
     	return distributionList;
     }
 
@@ -267,7 +267,7 @@ public class FormData {
     	return securityRemarks;
     }
 
-    public void setSecurityFields(String recievingSecuritySupervisor, ArrayList<Guard> guards, ArrayList<String> distributionList,
+    public void setSecurityFields(String recievingSecuritySupervisor, List<Guard> guards, List<String> distributionList,
     							  String preparedBy, String securityRemarks){
     	this.recievingSecuritySupervisor = recievingSecuritySupervisor;
     	this.guards = guards;
