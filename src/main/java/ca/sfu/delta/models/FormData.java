@@ -45,9 +45,23 @@ public class FormData {
 
 
     //Constructor takes all info that a requester can provide (optional or no)
-    public FormData(String department, String dates, String requestorName, String requesterID, Optional<String> phoneNumber,
-                    Optional<String> faxNumber, String emailAddress, String requestedOnDate, String eventName, Boolean isLicensed,
-                    int numAttendees, String times, String paymentAccountCode, Boolean invoiceRequested, String eventDetails){
+    public FormData(
+            String department,
+            String dates,
+            String requestorName,
+            String requesterID,
+            Optional<String> phoneNumber,
+            Optional<String> faxNumber,
+            String emailAddress,
+            String requestedOnDate,
+            String eventName,
+            Boolean isLicensed,
+            int numAttendees,
+            String times,
+            String paymentAccountCode,
+            Boolean invoiceRequested,
+            String eventDetails
+    ){
         this.department = department;
     	this.eventDates = dates;
         this.requesterName = requestorName;
