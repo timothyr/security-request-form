@@ -7,7 +7,11 @@ body {
 	background-color: #A8162B;
 }
 
-nav {
+.grey-background {
+	background-color: #ededed;
+}
+
+header {
 	background-color: white;
 }
 
@@ -21,9 +25,19 @@ button {
 }
 
 @media (min-width: 1400px) {
-    .container{
-        max-width: 1200px;
-    }
+	.container{
+		max-width: 1200px;
+	}
+}
+
+h1 {
+	font-weight: 300;
+	font-size: 2em;
+}
+
+h3 {
+	font-weight: 300;
+	color: #686868;
 }
 
 /* WRAPPER */
@@ -43,7 +57,7 @@ button {
 }
 
 .auth-heading {
-	font-weight: 300;	
+	font-weight: 300;
 }
 
 .calendar-icon {
@@ -54,3 +68,59 @@ button {
 .bottom-space {
 	height: 100px;
 }
+
+
+/* TABLE */
+
+th {
+	font-family: "HelveticaNeue-Light", "Helvetica Neue Light", "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif;
+	text-transform: uppercase;
+	font-weight: 300;
+}
+
+.search-group {
+	position: relative;
+}
+
+.search-group .fa-search {
+	position: absolute;
+	top: 10px;
+	right: 15px;
+	z-index: 5;
+}
+
+.nav-pills .nav-link.active, .show>.nav-pills .nav-link {
+	background-color: transparent;
+	border-bottom: 3px solid #007bff;
+	color: #007bff;
+}
+
+.nav-pills .nav-link {
+	border-radius: 0;
+}
+
+.white-text {
+	color: white;
+}
+
+/* BACK ARROW */
+.back-arrow {
+	width:36px;
+	height:36px;
+	position: absolute;
+	left: -50px;
+}
+
+@media (max-width: 1000px) {
+	.back-arrow {
+		position: static;
+	}
+}
+
+/* TABLE */
+.table-striped tbody tr:nth-of-type(odd) {
+	background-color: #F4F8FB;
+}
+
+/* REQUEST */
+
