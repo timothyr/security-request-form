@@ -118,7 +118,7 @@ public class ServiceRequestController extends WebMvcConfigurerAdapter {
     }
 
     private void saveFormToDatabase(FormData formData) {
-        System.out.printf("Form submitted: " + String.valueOf(formData));
+        formRepository.save(formData);
     }
 
     @ModelAttribute("FormData")
