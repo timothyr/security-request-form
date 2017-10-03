@@ -121,7 +121,11 @@ public class FormData {
     }
 
     public String getPhoneNumber() {
-        return phoneNumber;
+		if (phoneNumber == null) {
+			return "Unspecified";
+		} else {
+        	return phoneNumber;
+		}
     }
 
     public void setPhoneNumber(String newNumber) {
@@ -129,7 +133,11 @@ public class FormData {
     }
 
     public String getFaxNumber() {
-        return faxNumber;
+		if (faxNumber == null) {
+			return "Unspecified";
+		} else {
+			return faxNumber;
+		}
     }
 
     public void setFaxNumber(String newNumber) {
