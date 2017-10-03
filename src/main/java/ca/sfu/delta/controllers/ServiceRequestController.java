@@ -33,7 +33,7 @@ public class ServiceRequestController extends WebMvcConfigurerAdapter {
         return form.jsonify();
     }
 
-    @RequestMapping(value = "/api/form/search/", method = RequestMethod.GET, produces = "application/json")
+    @RequestMapping(value = "/api/form/search", method = RequestMethod.GET, produces = "application/json")
     public @ResponseBody List<Map<String, Object>> search() {
         List<Map<String, Object>> forms = new ArrayList<Map<String, Object>>();
 
@@ -44,7 +44,7 @@ public class ServiceRequestController extends WebMvcConfigurerAdapter {
         return forms;
     }
 
-    @RequestMapping(value = "/api/form/save/", method = RequestMethod.GET, produces = "application/json")
+    @RequestMapping(value = "/api/form/save", method = RequestMethod.GET, produces = "application/json")
     public @ResponseBody String addForm(
             @RequestParam String department,
             @RequestParam String requesterName,
