@@ -67,7 +67,7 @@ public class FormData {
             String requestedOnDate,
             String eventName,
             Boolean isLicensed,
-            int numAttendees,
+            Integer numAttendees,
             String times,
             String paymentAccountCode,
             Boolean invoiceRequested,
@@ -192,7 +192,7 @@ public class FormData {
         isLicensed = licensed;
     }
 
-    public int getNumAttendees() {
+    public Integer getNumAttendees() {
         return numAttendees;
     }
 
