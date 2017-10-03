@@ -1,4 +1,4 @@
-package ca.sfu.delta;
+package ca.sfu.delta.controllers;
 
 import javax.validation.Valid;
 
