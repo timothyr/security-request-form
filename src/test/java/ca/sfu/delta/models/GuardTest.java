@@ -29,6 +29,8 @@ public class GuardTest {
 
 		System.out.println(guard.calculateRegularPay() + "+" +
 				guard.calculateOvertimePay() + "=" + guard.calculateTotalPay());
+
+		System.out.println(guard.toString());
 	}
 
 	@Test

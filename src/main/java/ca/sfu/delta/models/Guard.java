@@ -113,4 +113,15 @@ public class Guard{
 			throw new IllegalArgumentException("Only non-negative values are permitted");
 		}
 	}
+
+	@Override
+	public String toString() {
+		return "Guard{" +
+				"name='" + name + "\'" +
+				", id='" + id + "\'" +
+				", regularHours=" + regularHours +
+				", overtimeHours=" + overtimeHours +
+				", regularRate=" + regularRate +
+				", overtimeRate=" + overtimeRate + "}";
+	}
 }
