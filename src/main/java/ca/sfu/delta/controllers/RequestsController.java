@@ -18,13 +18,7 @@ public class RequestsController {
 
     @RequestMapping("/requests")
     public String requests(Model model) {
-        List<FormData> forms = new ArrayList<FormData>();
-        for (FormData form : formRepository.findAll()) {
-            forms.add(form);
-        }
-
-        model.addAllAttributes(forms);
-
+        model.addAttribute("requests", formRepository.findAll());
         return "requests";
     }
 
