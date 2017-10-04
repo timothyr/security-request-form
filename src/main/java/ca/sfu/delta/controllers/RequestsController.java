@@ -10,7 +10,7 @@ public class RequestsController {
 
     @RequestMapping("/requests")
     public String requests(Model model) {
-        model.addAttribute("requests", FormRepository.listAllRequests());
+        model.addAttribute("requests", FormRepository.findAll());
         return "requests";
     }
 
