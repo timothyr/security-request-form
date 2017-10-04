@@ -7,7 +7,7 @@ variables:
   MYSQL_ROOT_PASSWORD: test_password
 
 before_script:
-  - apt-get update -y && apt-get install -y gradle openjdk-8-jdk
+  - apt-get update -y && apt-get install -y gradle openjdk-8-jdk mysql-server libmysql-java
 
 build:
   script:
