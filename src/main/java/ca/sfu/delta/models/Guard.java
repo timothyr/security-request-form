@@ -31,12 +31,12 @@ public class Guard{
 			double regularRate,
 			int overtimeHours,
 			double overtimeRate
-	) {
-		this.name = name;
-		this.regularHours = regularHours;
-		this.regularRate = BigDecimal.valueOf(regularRate);
-		this.overtimeHours = overtimeHours;
-		this.overtimeRate = BigDecimal.valueOf(overtimeRate);
+	) throws IllegalArgumentException {
+		setName(name);
+		setRegularHours(regularHours);
+		setRegularRate(regularRate);
+		setOvertimeHours(overtimeHours);
+		setOvertimeRate(overtimeRate);
 	}
 
 	public BigDecimal calculateTotalPay() {
