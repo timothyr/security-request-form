@@ -23,7 +23,7 @@ public class FormData {
     private String requesterID; //SFU ID or BCDL
     private String eventLocation; //String for now, until we have full list of possible locations.
     private Boolean isLicensed;
-    private Integer numAttendees;
+    private int numAttendees;
     private String times; //Unsure of how we want to store times, String for now.
 	//Todo: these will need to be changed back to arrays of dates once the front end supports dates
     private String eventDates;
@@ -192,7 +192,7 @@ public class FormData {
         isLicensed = licensed;
     }
 
-    public Integer getNumAttendees() {
+    public int getNumAttendees() {
         return numAttendees;
     }
 
