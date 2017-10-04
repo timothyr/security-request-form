@@ -1,6 +1,6 @@
 # Team Delta Project
 
-This is the project for team Delta of CMPT 373's fall 2017 offering.
+This is the project for team Delta of CMPT 373's fall 2017 offering. 
 
 ## Setting up the Database
 
@@ -50,3 +50,12 @@ To see the database demo navigate to:
 
 Then navigate to:
 http://localhost:8080/demo/all
+
+## Directory Structure
+Our directory structure is as follows:
+`Documentation/` has the outline of our database inside.
+`src/` follows the industry standard for our java code
+Everything else is build related (.gradle and node_modules)
+
+## Dependencies
+Gradle, Java 8, mysql
