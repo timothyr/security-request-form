@@ -1,6 +1,6 @@
 # Team Delta Project
 
-This is the project for team Delta of CMPT 373's fall 2017 offering. 
+This is the project for team Delta of CMPT 373's fall 2017 offering, and the latest version is hosted at http://cmpt373-1177d.cmpt.sfu.ca:8080.
 
 ## Setting up the Database
 
@@ -43,13 +43,7 @@ $ gradle build
 $ java -jar build/libs/*.jar
 ```
 
-With the application running, open your browser to http://localhost:8080 to see it.
-
-To see the database demo navigate to:
-[http://localhost:8080/demo/add?name=Fin the Human&email=fin@domain.ooo](http://localhost:8080/demo/add?name=Fin the Human&email=fin@domain.ooo)
-
-Then navigate to:
-http://localhost:8080/demo/all
+With the application running, open your browser to http://localhost:8080 to see the main page. From here you can create a form, and submit it to save it to your local database. To see all forms that have been saved to your local database, navigate to http://localhost:8080/requests.
 
 ## Directory Structure
 Our directory structure is as follows:
