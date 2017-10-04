@@ -31,12 +31,12 @@ public class Guard{
 			double regularRate,
 			int overtimeHours,
 			double overtimeRate
-	) {
-		this.name = name;
-		this.regularHours = regularHours;
-		this.regularRate = BigDecimal.valueOf(regularRate);
-		this.overtimeHours = overtimeHours;
-		this.overtimeRate = BigDecimal.valueOf(overtimeRate);
+	) throws IllegalArgumentException {
+		setName(name);
+		setRegularHours(regularHours);
+		setRegularRate(regularRate);
+		setOvertimeHours(overtimeHours);
+		setOvertimeRate(overtimeRate);
 	}
 
 	public BigDecimal calculateTotalPay() {
@@ -124,5 +124,16 @@ public class Guard{
 		} else {
 			throw new IllegalArgumentException("Only non-negative values are permitted");
 		}
+	}
+
+	@Override
+	public String toString() {
+		return "Guard{" +
+				"name='" + name + "\'" +
+				", id='" + id + "\'" +
+				", regularHours=" + regularHours +
+				", overtimeHours=" + overtimeHours +
+				", regularRate=" + regularRate +
+				", overtimeRate=" + overtimeRate + "}";
 	}
 }

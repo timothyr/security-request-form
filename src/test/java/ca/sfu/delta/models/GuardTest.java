@@ -9,13 +9,17 @@ import static org.junit.Assert.*;
 public class GuardTest {
 
 	private String name = "Bob";
-	private String id = "abc123";
 	private int regularHours = 6;
 	private int overtimeHours = 3;
 	private double regularRate = 17.5;
 	private double overtimeRate = 22.75;
 
 	private Guard guard = new Guard(name, regularHours, regularRate, overtimeHours, overtimeRate);
+
+	@Test(expected = IllegalArgumentException.class)
+	public void constructorException() throws Exception {
+		Guard newGuard = new Guard(null, 0, 0.0, 0, 0.0);
+	}
 
 	@Test
 	public void calculateTotalPay() throws Exception {
@@ -24,6 +28,8 @@ public class GuardTest {
 
 		System.out.println(guard.calculateRegularPay() + "+" +
 				guard.calculateOvertimePay() + "=" + guard.calculateTotalPay());
+
+		System.out.println(guard.toString());
 	}
 
 	@Test
