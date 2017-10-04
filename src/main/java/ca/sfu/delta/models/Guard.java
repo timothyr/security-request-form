@@ -1,11 +1,19 @@
 package ca.sfu.delta.models;
 
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
 import java.math.BigDecimal;
 
+@Entity
 public class Guard{
 
+	@Id
+	@GeneratedValue(strategy= GenerationType.AUTO)
+	private Long id;
+
 	private String name;
-	private String id;	// placeholder, don't know what this would look like yet
 	private int regularHours;
 	private int overtimeHours;
 	private BigDecimal regularRate;
@@ -17,9 +25,14 @@ public class Guard{
 
 	// Constructor and setters accept doubles instead of BigDecimals for ease of use
 	// doubles shouldn't be used for currency due to inaccuracy
-	public Guard(String name, String id, int regularHours, double regularRate, int overtimeHours, double overtimeRate) {
+	public Guard(
+			String name,
+			int regularHours,
+			double regularRate,
+			int overtimeHours,
+			double overtimeRate
+	) {
 		this.name = name;
-		this.id = id;
 		this.regularHours = regularHours;
 		this.regularRate = BigDecimal.valueOf(regularRate);
 		this.overtimeHours = overtimeHours;
@@ -51,15 +64,15 @@ public class Guard{
 		}
 	}
 
-	public String getId() {
+	public Long getId() {
 		return id;
 	}
 
-	public void setId(String id) throws IllegalArgumentException {
-		if (id != null && !id.isEmpty()) {
+	public void setId(Long id) throws IllegalArgumentException {
+		if (id != null) {
 			this.id = id;
 		} else {
-			throw new IllegalArgumentException("String must be non-null & non-empty");
+			throw new IllegalArgumentException("ID must be non-null");
 		}
 	}
 

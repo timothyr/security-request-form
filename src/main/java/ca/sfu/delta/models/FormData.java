@@ -1,10 +1,18 @@
 package ca.sfu.delta.models;
 
+import javax.persistence.*;
 import java.lang.String;
-import java.util.Optional;
-import java.util.ArrayList;
+import java.lang.reflect.Field;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
+@Entity
 public class FormData {
+    @Id
+    @GeneratedValue(strategy= GenerationType.AUTO)
+    private Long id;
+
     //Specified by user
     private String department;
     private String requesterName;
@@ -26,8 +34,11 @@ public class FormData {
     private String eventDetails;
     private String serviceRequestNumber; //Generated automatically, pre-populate.
     private String recievingSecuritySupervisor;
-    private ArrayList<Guard> guards; //Things like total billable and grand total can be calculated from these
-    private ArrayList<String> distributionList;
+
+    @ElementCollection
+    private List<Guard> guards; //Things like total billable and grand total can be calculated from these
+    @ElementCollection
+    private List<String> distributionList;
     private String preparedBy;
     private String securityRemarks;
 
@@ -45,14 +56,28 @@ public class FormData {
 
 
     //Constructor takes all info that a requester can provide (optional or no)
-    public FormData(String department, String dates, String requestorName, String requesterID, Optional<String> phoneNumber,
-                    Optional<String> faxNumber, String emailAddress, String requestedOnDate, String eventName, Boolean isLicensed,
-                    int numAttendees, String times, String paymentAccountCode, Boolean invoiceRequested, String eventDetails){
+    public FormData(
+            String department,
+            String dates,
+            String requestorName,
+            String requesterID,
+            String phoneNumber,
+            String faxNumber,
+            String emailAddress,
+            String requestedOnDate,
+            String eventName,
+            Boolean isLicensed,
+            Integer numAttendees,
+            String times,
+            String paymentAccountCode,
+            Boolean invoiceRequested,
+            String eventDetails
+    ){
         this.department = department;
     	this.eventDates = dates;
         this.requesterName = requestorName;
-        this.phoneNumber = phoneNumber.orElse("Unspecified");
-        this.faxNumber = faxNumber.orElse("Unspecified");
+        this.phoneNumber = phoneNumber;
+        this.faxNumber = faxNumber;
         this.emailAddress = emailAddress;
         this.requestedOnDate = requestedOnDate;
         this.eventName = eventName;
@@ -63,6 +88,10 @@ public class FormData {
         this.paymentAccountCode = paymentAccountCode;
         this.invoiceRequested = invoiceRequested;
         this.eventDetails = eventDetails;
+    }
+
+    public Long getId() {
+        return this.id;
     }
 
     //Getter and Setter methods
@@ -92,7 +121,11 @@ public class FormData {
     }
 
     public String getPhoneNumber() {
-        return phoneNumber;
+		if (phoneNumber == null) {
+			return "Unspecified";
+		} else {
+        	return phoneNumber;
+		}
     }
 
     public void setPhoneNumber(String newNumber) {
@@ -100,7 +133,11 @@ public class FormData {
     }
 
     public String getFaxNumber() {
-        return faxNumber;
+		if (faxNumber == null) {
+			return "Unspecified";
+		} else {
+			return faxNumber;
+		}
     }
 
     public void setFaxNumber(String newNumber) {
@@ -159,7 +196,7 @@ public class FormData {
         return numAttendees;
     }
 
-    public void setNumAttendees(int newNumAttendees) {
+    public void setNumAttendees(Integer newNumAttendees) {
         numAttendees = newNumAttendees;
     }
 
@@ -227,7 +264,12 @@ public class FormData {
     	authorizationDate = newAuthorizationDate;
 	}
 
-    public void setAuthorizationFields(String authorizerName, String authorizerID, String authorizationDate, String authorizerPhoneNumber){
+    public void setAuthorizationFields(
+            String authorizerName,
+            String authorizerID,
+            String authorizationDate,
+            String authorizerPhoneNumber
+    ){
         this.authorizerName = authorizerName;
         this.authorizerID = authorizerID;
         this.authorizationDate = authorizationDate;
@@ -251,11 +293,11 @@ public class FormData {
     	return recievingSecuritySupervisor;
     }
 
-    public ArrayList<Guard> getGuards(){
+    public List<Guard> getGuards(){
     	return guards;
     }
 
-    public ArrayList<String> getDistributionList(){
+    public List<String> getDistributionList(){
     	return distributionList;
     }
 
@@ -267,13 +309,30 @@ public class FormData {
     	return securityRemarks;
     }
 
-    public void setSecurityFields(String recievingSecuritySupervisor, ArrayList<Guard> guards, ArrayList<String> distributionList,
-    							  String preparedBy, String securityRemarks){
+    public void setSecurityFields(
+            String recievingSecuritySupervisor,
+            List<Guard> guards,
+            List<String> distributionList,
+            String preparedBy,
+            String securityRemarks
+    ){
     	this.recievingSecuritySupervisor = recievingSecuritySupervisor;
     	this.guards = guards;
     	this.distributionList = distributionList;
     	this.preparedBy = preparedBy;
     	this.securityRemarks = securityRemarks;
+    }
+
+    public Map<String, Object> jsonify() {
+        Map<String, Object> map = new HashMap<String, Object>();
+        for (Field f : getClass().getDeclaredFields()) {
+            try {
+                map.put(f.getName(), f.get(this));
+            } catch (IllegalAccessException e) {
+                e.printStackTrace();
+            }
+        }
+        return map;
     }
 
     @Override

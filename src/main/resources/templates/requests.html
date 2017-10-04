@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8"/>
+	<title>Security Service Request</title>
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/css/bootstrap.min.css"/>
+	<link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet"/>
+	<link href="https://fonts.googleapis.com/css?family=Open+Sans" rel="stylesheet"/>
+	<link rel="stylesheet" href="css/style.css"/>
+</head>
+<body class="grey-background">
+
+<header>
+	<img class="logo" src="/img/sfu-logo@2x.png" alt="sfu-logo"/>
+</header>
+
+<div class="container col-md-10 offset-md-1 wrapper mb-5 col-lg-10">
+	<div class="container col-md-10">
+		<div class="row mt-5">
+			<h1 class="mt-5">Requests</h1>
+		</div>
+		<div class="row mt-5">
+			<div class="input-group search-group">
+				<span class="fa fa-search"></span>
+				<input type="text" class="form-control" id="search-bar" placeholder="search"/>
+				<div class="error"></div>
+			</div>
+		</div>
+		<div class="row mt-3">
+			<div class="col-md-8 mx-auto">
+				<ul class="nav nav-pills nav-fill">
+					<li class="nav-item"><a href="#" class="nav-link active">All</a></li>
+					<li class="nav-item"><a href="#" class="nav-link">Waiting</a></li>
+					<li class="nav-item"><a href="#" class="nav-link">Approved</a></li>
+					<li class="nav-item"><a href="#" class="nav-link">Rejected</a></li>
+				</ul>
+			</div>
+		</div>
+		<div class="row mt-4">
+			<table class="table">
+				<thead>
+					<tr>
+						<th>Name</th>
+						<th>Phone</th>
+						<th>ID</th>
+						<th>Location</th>
+						<th># Attendees</th>
+					</tr>
+				</thead>
+				<tbody>
+				<tr th:each="request : ${requests}">
+					<td th:text="${request.requesterName}"></td>
+					<td th:text="${request.phoneNumber}"></td>
+					<td th:text="${request.requesterID}"></td>
+					<td th:text="${request.eventLocation}"></td>
+					<td th:text="${request.numAttendees}"></td>
+				</tr>
+				</tbody>
+			</table>
+		</div>
+	</div>
+	<div class="bottom-space"></div>
+</div>
+</body>
+</html>

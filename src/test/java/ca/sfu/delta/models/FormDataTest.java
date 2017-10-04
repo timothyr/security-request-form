@@ -43,14 +43,14 @@ public class FormDataTest {
     @Before
     public void setUp() throws Exception {
 //        dates.add(date);
-        data = new FormData(department, eventDate, name, requesterID, Optional.of(phoneNum), Optional.of(faxNum), email, requestedOnDate,
+        data = new FormData(department, eventDate, name, requesterID, phoneNum, faxNum, email, requestedOnDate,
                 eventName, licensed, numAttendees, times, paymentAccountCode,
                 invoiceRequested, eventDetails);
         data.setEventLocation(eventLocation);
         data.setServiceRequestNumber(serviceRequestNumber);
         data.setSecurityFields(recievingSecuritySupervisor,guards,distributionList,preparedBy,securityRemarks);
 
-        dataNoNumbers = new FormData(department, eventDate, name, requesterID, Optional.empty(), Optional.empty(), email, requestedOnDate,
+        dataNoNumbers = new FormData(department, eventDate, name, requesterID, null, null, email, requestedOnDate,
                 eventName, licensed, numAttendees, times, paymentAccountCode,
                 invoiceRequested, eventDetails);
         dataNoNumbers.setEventLocation(eventLocation);
