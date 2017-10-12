@@ -31,11 +31,11 @@
 				<table class="table">
 					<thead>
 						<tr>
-							<th>Name<i class="fa fa-sort fa-fw"></i></th>
-							<th>Phone<i class="fa fa-sort fa-fw"></i></th>
-							<th>ID<i class="fa fa-sort fa-fw"></i></th>
-							<th>Location<i class="fa fa-sort fa-fw"></i></th>
-							<th># Attendees<i class="fa fa-sort fa-fw"></i></th>
+							<th>Name<i class="fa fa-sort fa-fw pull-right"></i></th>
+							<th>Phone<i class="fa fa-sort fa-fw pull-right"></i></th>
+							<th>ID<i class="fa fa-sort fa-fw pull-right"></i></th>
+							<th>Location<i class="fa fa-sort fa-fw pull-right"></i></th>
+							<th># Attendees<i class="fa fa-sort fa-fw pull-right"></i></th>
 						</tr>
 					</thead>
 					<tbody>
