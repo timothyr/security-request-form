@@ -68,7 +68,8 @@ export default {
 			numAttendees: 5
 		}
 		],
-		searchTerm: ""
+		searchTerm: "",
+		currentSelection: "All"
   	}
   },
   methods: {
