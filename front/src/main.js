@@ -7,6 +7,7 @@ import RequestForm from './components/RequestForm.vue'
 import Requests from './components/Requests.vue'
 
 require('bootstrap/dist/css/bootstrap.min.css');
+require('font-awesome/css/font-awesome.css');
 require('./assets/css/style.css');
 
 Vue.config.productionTip = false
