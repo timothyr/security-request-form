@@ -40,8 +40,16 @@
 				</div>
 				<div class="form-group col-md-4">
 					<label for="location-input">Location</label>
-					<input type="text" th:field="*{eventLocation}" id="location-input" class="form-control"/>
-				</div>
+					<!--<input type="text" th:field="*{eventLocation}" id="location-input" class="form-control"/>-->
+          <select class="form-control" th:field="*{eventLocation}" id="location-input">
+            <option value="">Choose...</option>
+            <option value="bur">Burnaby</option>
+            <option value="sur">Surrey</option>
+            <option value="van">Vancouver</option>
+            <option value="oth">Other</option>
+          </select>
+          <td th:if="${#fields.hasErrors('eventLocation')}" th:errors="*{eventLocation}"></td>
+        </div>
 				<div class="form-group col-md-4">
 					<label for="number-of-attendees-input"># of Attendees</label>
 					<input type="number" min="1" value="1" th:field="*{numAttendees}" id="number-of-attendees-input" class="form-control"/>
