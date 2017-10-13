@@ -122,7 +122,7 @@ public class FormData {
 
     public String getPhoneNumber() {
 		if (phoneNumber == null) {
-			return "Unspecified";
+			return "";
 		} else {
         	return phoneNumber;
 		}
@@ -134,7 +134,7 @@ public class FormData {
 
     public String getFaxNumber() {
 		if (faxNumber == null) {
-			return "Unspecified";
+			return "";
 		} else {
 			return faxNumber;
 		}

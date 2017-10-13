@@ -16,7 +16,7 @@ public class FormDataTest {
     private String name = "Billy";
     private String phoneNum = "778-555-5555";
     private String faxNum = "604-555-5555";
-    private String unspecifiedNum = "Unspecified";
+    private String unspecifiedNum = "";
     private String email = "Billy@sfu.ca";
 //    private Date requestedOnDate = new Date(2017,9,30);
 	private String requestedOnDate = "September 30, 2017";

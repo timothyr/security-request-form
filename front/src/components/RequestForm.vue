@@ -15,14 +15,14 @@
 					<input type="text" th:field="*{department}" id="department-input" class="form-control"/>
 				</div>
 				<div class="form-group col-md-4">
-					<label for="sfu-id-or-bcdl-input">SFU ID or BCDL</label>
-					<input type="text" th:field="*{requesterID}" id="sfu-id-or-bcdl-input" class="form-control"/>
+					<label for="sfu-id-input">SFU ID</label>
+					<input type="text" th:field="*{requesterID}" id="sfu-id-input" class="form-control"/>
 				</div>
 			</div>
 			<div class="row">
 				<div class="form-group col-md-4">
 					<label for="phone-input">Phone</label>
-					<input type="text" th:field="*{phoneNumber}" id="phone-input" class="form-control"/>
+          <input type="text" placeholder="xxx-xxx-xxxx" th:field="*{phoneNumber}" id="phone-input" class="form-control masked" pattern="[0-9]{3}[ |-][0-9]{3}[ |-][0-9]{4}" data-valid-example="000-000-0000"/>
 				</div>
 				<div class="form-group col-md-4">
 					<label for="email-input">Email</label>
@@ -44,13 +44,13 @@
 				</div>
 				<div class="form-group col-md-4">
 					<label for="number-of-attendees-input"># of Attendees</label>
-					<input type="text" th:field="*{numAttendees}" id="number-of-attendees-input" class="form-control"/>
+					<input type="number" min="1" value="1" th:field="*{numAttendees}" id="number-of-attendees-input" class="form-control"/>
 				</div>
 			</div>
 			<div class="row">
 				<div class="form-group col-md-12">
 					<label for="details-input" placeholder="">Details</label>
-					<input type="textbox" th:field="*{eventDetails}" id="details-input" class="form-control"/>
+          <textarea rows="5" th:field="*{eventDetails}" id="details-input" class="form-control"></textarea>
 				</div>
 			</div>
 			<div class="row">
@@ -128,6 +128,6 @@
 <script>
 export default {
   name: 'RequestForm',
-  
+
 }
 </script>
