@@ -6,6 +6,7 @@ import VueRouter from 'vue-router'
 import RequestForm from './components/RequestForm.vue'
 import Requests from './components/Requests.vue'
 import PageNotFound from './components/PageNotFound.vue'
+import SecurityLogin from './components/SecurityLogin.vue'
 
 require('bootstrap/dist/css/bootstrap.min.css');
 require('font-awesome/css/font-awesome.css');
@@ -18,6 +19,7 @@ Vue.use(VueRouter);
 const routes = [
 	{ path:'/', component: RequestForm },
 	{ path:'/security', component: Requests },
+	{ path:'/security/login', component: SecurityLogin },
 	{ path:'*', component: PageNotFound }
 ];
 const router = new VueRouter({
