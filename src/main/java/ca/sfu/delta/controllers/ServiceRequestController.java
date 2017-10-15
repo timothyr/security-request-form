@@ -33,6 +33,7 @@ public class ServiceRequestController extends WebMvcConfigurerAdapter {
         return form.jsonify();
     }
 
+    @CrossOrigin(origins = "http://localhost:8081")
     @RequestMapping(value = "/api/form/search", method = RequestMethod.GET, produces = "application/json")
     public @ResponseBody List<Map<String, Object>> search() {
         List<Map<String, Object>> forms = new ArrayList<Map<String, Object>>();
