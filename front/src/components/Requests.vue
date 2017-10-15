@@ -68,6 +68,9 @@
 </template>
 
 <script>
+$(document).ready(function() {
+	console.log('hisdf');
+});
 export default {
   name: 'Requests',
   data() {
