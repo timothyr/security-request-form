@@ -11,8 +11,8 @@ before_script:
 
 build:
   script:
-    - gradle build -x test
+    - gradle build -x test --info
 
 test:
   script:
-    - gradle test
+    - gradle test --info
