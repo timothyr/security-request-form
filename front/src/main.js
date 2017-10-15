@@ -19,7 +19,7 @@ Vue.use(VueRouter);
 const routes = [
   { path:'/', component: RequestForm },
   { path:'/security', component: Requests },
-  { path:'/security/request', component: SecurityView},
+  { path:'/security/request/:id', component: SecurityView},
   { path:'*', component: PageNotFound }
 ];
 const router = new VueRouter({
