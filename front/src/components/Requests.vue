@@ -8,6 +8,7 @@
 	<div class="container col-md-10 offset-md-1 wrapper mb-5 col-lg-10">
 		<div class="container col-md-10">
 			<div class="row mt-5">
+				<div class="container mt-4"></div>
 				<h1 class="mt-5">Requests</h1>
 			</div>
 			<div class="row mt-5">
@@ -48,6 +49,18 @@
 					</tr>
 					</tbody>
 				</table>
+			</div>
+		</div>
+		<div class="row">
+			<div class="col-md-8 mx-auto">
+				<nav aria-label="Page navagation">
+					<ul class="pagination mt-5 justify-content-center">
+						<li class="page-item disabled"><a class="page-link" href="#">Previous</a></li>
+						<li class="page-item"><a class="page-link" href="#">1</a></li>
+						<li class="page-item"><a class="page-link" href="#">2</a></li>
+						<li class="page-item"><a class="page-link" href="#">Next</a></li>
+					</ul>
+				</nav>
 			</div>
 		</div>
 		<div class="bottom-space"></div>
