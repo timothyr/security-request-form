@@ -69,7 +69,10 @@
 
 <script>
 $(document).ready(function() {
-	console.log('hisdf');
+	$.get("http://localhost:8080/api/form/search", {pageSize: 10, pageNumber: 1}, function(data) {
+		console.log(data);
+	});
+	console.log("fin");
 });
 export default {
   name: 'Requests',
