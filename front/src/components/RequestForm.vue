@@ -8,25 +8,25 @@
 			<div class="row">
 				<div class="form-group col-md-4">
 					<label for="requested-by-input">Requested By</label>
-					<input type="text" id="requested-by-input" class="form-control"/>
+					<input type="text" id="requested-by-input" class="form-control" required />
 				</div>
 				<div class="form-group col-md-4">
 					<label for="department-input">Department</label>
-					<input type="text" th:field="*{department}" id="department-input" class="form-control"/>
+					<input type="text" th:field="*{department}" id="department-input" class="form-control" required/>
 				</div>
 				<div class="form-group col-md-4">
 					<label for="sfu-id-input">SFU ID</label>
-					<input type="text" th:field="*{requesterID}" id="sfu-id-input" class="form-control"/>
+					<input type="text" th:field="*{requesterID}" id="sfu-id-input" class="form-control" required/>
 				</div>
 			</div>
 			<div class="row">
 				<div class="form-group col-md-4">
 					<label for="phone-input">Phone</label>
-          <input type="text" placeholder="xxx-xxx-xxxx" th:field="*{phoneNumber}" id="phone-input" class="form-control masked" pattern="[0-9]{3}[ |-][0-9]{3}[ |-][0-9]{4}" data-valid-example="000-000-0000"/>
+          <input type="text" placeholder="xxx-xxx-xxxx" th:field="*{phoneNumber}" id="phone-input" class="form-control masked" pattern="[0-9]{3}[ |-][0-9]{3}[ |-][0-9]{4}" data-valid-example="000-000-0000" required/>
 				</div>
 				<div class="form-group col-md-4">
 					<label for="email-input">Email</label>
-					<input type="email" th:field="*{emailAddress}" id="email-input" class="form-control"/>
+					<input type="email" th:field="*{emailAddress}" id="email-input" class="form-control" required/>
 				</div>
 				<div class="form-group col-md-4">
 					<label for="fax-input">Fax (optional)</label>
@@ -41,7 +41,7 @@
 				<div class="form-group col-md-4">
 					<label for="location-input">Location</label>
 					<!--<input type="text" th:field="*{eventLocation}" id="location-input" class="form-control"/>-->
-          <select class="form-control" th:field="*{eventLocation}" id="location-input">
+          <select class="form-control" th:field="*{eventLocation}" id="location-input" required>
             <option value="">Choose...</option>
             <option value="bur">Burnaby</option>
             <option value="sur">Surrey</option>
@@ -67,6 +67,13 @@
 					<label for="licensed-input">Licensed</label>
 				</div>
 			</div>
+      <div>
+        <div class="row">
+          <div class="form-group col-md-12">
+
+          </div>
+        </div>
+      </div>
 			<div class="row mt-4">
 				<table class="table table-striped">
 					<thead>
@@ -104,16 +111,17 @@
 					<input type="text" th:field="*{authorizerName}" id="name-of-authorizee-input" class="form-control"/>
 				</div>
 				<div class="form-group col-md-4">
-					<label for="sfu-id-or-bcdl-of-authorizee-input">SFU ID or BCDL of Authorizee</label>
+					<label for="sfu-id-or-bcdl-of-authorizee-input">Authorizee SFU ID </label>
 					<input type="text" th:field="*{authorizerID}" id="sfu-id-or-bcdl-of-authorizee-input" class="form-control"/>
 				</div>
 				<div class="form-group col-md-4">
 					<label for="date-of-authorization-input">Date</label>
 					<input type="text" th:field="*{authorizationDate}" id="date-of-authorization-input" class="form-control"/>
+
 				</div>
 				<div class="form-group col-md-4">
 					<label for="phone-of-authorizee-input">Phone</label>
-					<input type="text" th:field="*{authorizerPhoneNumber}" id="phone-of-authorizee-input" class="form-control"/>
+          <input type="text" placeholder="xxx-xxx-xxxx" th:field="*{authorizerPhoneNumber}" id="phone-of-authorizee-input" class="form-control masked" pattern="[0-9]{3}[ |-][0-9]{3}[ |-][0-9]{4}" data-valid-example="000-000-0000"/>
 				</div>
 			</div>
 			<div class="row">
@@ -134,8 +142,13 @@
 </template>
 
 <script>
-export default {
-  name: 'RequestForm',
 
-}
+  export default {
+    name: 'RequestForm',
+    components: {
+
+    }
+  }
+
+
 </script>
