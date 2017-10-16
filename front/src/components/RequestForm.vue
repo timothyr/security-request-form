@@ -1,3 +1,4 @@
+
 <template>
 	<form method="post">
 	<div class="container col-md-10 offset-md-1 wrapper mb-5 col-lg-10">
@@ -30,13 +31,13 @@
 				</div>
 				<div class="form-group col-md-4">
 					<label for="fax-input">Fax (optional)</label>
-					<input type="text" th:field="*{faxNumber}" id="fax-input" class="form-control"/>
+					<input type="text" id="fax-input" class="form-control"/>
 				</div>
 			</div>
 			<div class="row">
 				<div class="form-group col-md-4">
 					<label for="type-name-of-event-input">Type/Name of Event</label>
-					<input type="text" th:field="*{eventName}" id="type-name-of-event-input" class="form-control"/>
+					<input type="text" id="type-name-of-event-input" class="form-control"/>
 				</div>
 				<div class="form-group col-md-4">
 					<label for="location-input">Location</label>
@@ -63,7 +64,7 @@
 			</div>
 			<div class="row">
 				<div class="form-group col-md-12">
-					<input type="checkbox" th:field="*{isLicensed}" id="licensed-input" class="mr-1 mt-4"/>
+					<input type="checkbox" id="licensed-input" class="mr-1 mt-4"/>
 					<label for="licensed-input">Licensed</label>
 				</div>
 			</div>
@@ -85,10 +86,10 @@
 					<tbody>
 					<tr>
 						<td>
-							<input type="text" th:field="*{eventDates}" id="date" class="form-control"/>
+							<input type="text" id="date" class="form-control"/>
 						</td>
 						<td>
-							<input type="text" th:field="*{times}" id="time" class="form-control"/>
+							<input type="text" id="time" class="form-control"/>
 						</td>
 					</tr>
 					</tbody>
@@ -104,11 +105,11 @@
 			<div class="row mt-5">
 				<div class="form-group col-md-4">
 					<label for="account-code-input">Account code</label>
-					<input type="text" th:field="*{paymentAccountCode}" id="account-code-input" class="form-control"/>
+					<input type="text" id="account-code-input" class="form-control"/>
 				</div>
 				<div class="form-group col-md-4">
 					<label for="name-of-authorizee-input">Authorized by</label>
-					<input type="text" th:field="*{authorizerName}" id="name-of-authorizee-input" class="form-control"/>
+					<input type="text" id="name-of-authorizee-input" class="form-control"/>
 				</div>
 				<div class="form-group col-md-4">
 					<label for="sfu-id-or-bcdl-of-authorizee-input">Authorizee SFU ID </label>
@@ -126,7 +127,7 @@
 			</div>
 			<div class="row">
 				<div class="form-group col-md-12">
-					<input type="checkbox" th:field="*{invoiceRequested}" id="invoice-input" class="mr-1"/>
+					<input type="checkbox" id="invoice-input" class="mr-1"/>
 					<label for="invoice-input">Please Invoice</label>
 				</div>
 			</div>
