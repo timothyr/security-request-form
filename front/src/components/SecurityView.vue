@@ -11,48 +11,48 @@
     <div class="container col-md-10">
       <div class="row mt-5">
         <div class="container mt-4"></div>
-        <h3 class="mt-5">Service #{{requestID}}</h3>
+        <h3 class="mt-5 mx-5">Service #{{requestID}}</h3>
       </div>
       <div class="row mt-3">
         <div class="col">
-          <p class="mt-0">Status: {{status}}</p>
+          <p class="mx-5">Status: {{status}}</p>
         </div>
       </div>
       <div class="row">
         <div class="col">
-          <p class="mt-0">Requested By: {{requestedBy}}</p>
+          <p class="mx-5">Requested By: {{requestedBy}}</p>
         </div>
         <div class="col">
-          <p class="mt-0">SFU ID: {{SFUID}}</p>
-        </div>
-      </div>
-      <div class="row">
-        <div class="col">
-          <p class="mt-0">Phone: {{phone}}</p>
-        </div>
-        <div class="col">
-          <p class="mt-0">Fax: {{fax}}</p>
+          <p class="mx-5">SFU ID: {{SFUID}}</p>
         </div>
       </div>
       <div class="row">
         <div class="col">
-          <p class="mt-0">Email: {{email}}</p>
+          <p class="mx-5">Phone: {{phone}}</p>
         </div>
         <div class="col">
-          <p class="mt-0">Location: {{location}}</p>
-        </div>
-      </div>
-      <div class="row">
-        <div class="col">
-          <p class="mt-0">Type/Name of Event: {{eventName}}</p>
-        </div>
-        <div class="col">
-          <p class="mt-0"># Attendees: {{numAttendees}}</p>
+          <p class="mx-5">Fax: {{fax}}</p>
         </div>
       </div>
       <div class="row">
         <div class="col">
-          <p class="mt-0">Details: {{details}}</p>
+          <p class="mx-5">Email: {{email}}</p>
+        </div>
+        <div class="col">
+          <p class="mx-5">Location: {{location}}</p>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col">
+          <p class="mx-5">Type/Name of Event: {{eventName}}</p>
+        </div>
+        <div class="col">
+          <p class="mx-5"># Attendees: {{numAttendees}}</p>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col">
+          <p class="mx-5">Details: {{details}}</p>
         </div>
       </div>
       <div class="row">
@@ -61,20 +61,20 @@
         </div>
       </div>
 
-      <div class="row m-3">
+      <div class="row my-4">
         <table class="table">
           <thead>
             <tr>
-              <th>Date<i class="fa fa-sort fa-fw pull-right"></i></th>
-              <th>Time<i class="fa fa-sort fa-fw pull-right"></i></th>
-              <th>Hours<i class="fa fa-sort fa-fw pull-right"></i></th>
+              <th class="text-center">Date</th>
+              <th class="text-center">Time</th>
+              <th class="text-center">Hours</th>
             </tr>
           </thead>
           <tbody>
             <tr v-for="d in dates">
-              <td>{{d.date}}</td>
-              <td>{{d.time}}</td>
-              <td>{{d.hours}}</td>
+              <td class="text-center">{{d.date}}</td>
+              <td class="text-center">{{d.time}}</td>
+              <td class="text-center">{{d.hours}}</td>
             </tr>
           </tbody>
         </table>
@@ -82,29 +82,38 @@
 
       <div class="row">
         <div class="col">
-          <p class="mt-0">Authorized by: {{author}}</p>
+          <p class="mx-5">Authorized by: {{author}}</p>
         </div>
       </div>
       <div class="row">
         <div class="col">
-          <p class="mt-0">Account Code: {{accountCode}}</p>
+          <p class="mx-5">Account Code: {{accountCode}}</p>
         </div>
       </div>
       <div class="row">
         <div class="col">
-          <p class="mt-0">SFU ID of Authorizee: {{authorID}}</p>
+          <p class="mx-5">SFU ID of Authorizee: {{authorID}}</p>
         </div>
       </div>
       <div class="row">
         <div class="col">
-          <p class="mt-0">Phone: {{authorPhone}}</p>
+          <p class="mx-5">Phone: {{authorPhone}}</p>
         </div>
         <div class="col">
-          <p class="mt-0">Invoice: {{authorInvoice}}</p>
+          <p class="mx-5">Invoice: {{authorInvoice}}</p>
         </div>
       </div>
 
       <!-- TODO: Security inputs -->
+      <div class="row mb-3">
+        <div class="col col-md-3"></div>
+        <div class="col col-md-6 align-content-center">
+          <button class="btn">Reject</button>
+          <button class="btn">Accept</button>
+          <button class="btn">Update</button>
+        </div>
+        <div class="col col-md-3"></div>
+      </div>
 
     </div>
   </div>
@@ -181,8 +190,11 @@
       console.log(this.$route.params.id);
       this.loadDummyData();
 
-      // TODO: load real data
-      //$.get("http://localhost:8080/api/form/get/"+(this.$route.params.id));
+      // TODO: load real data, 404 if form does not exist
+      /*$.get("http://localhost:8090/api/form/get/"+(this.$route.params.id), function(data) {
+
+        });
+      */
     },
 
   }
