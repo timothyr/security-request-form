@@ -79,8 +79,7 @@
 				<table class="table table-striped">
 					<thead>
 					<tr>
-						<th>Date</th>
-						<th>Time</th>
+						<th>Date and Time</th>
 					</tr>
 					</thead>
 					<tbody>
@@ -88,15 +87,12 @@
 						<td>
 							<input type="text" id="date" class="form-control"/>
 						</td>
-						<td>
-							<input type="text" id="time" class="form-control"/>
-						</td>
 					</tr>
 					</tbody>
 				</table>
-				<div class="row mt-4">
+				<div class="row mt-4 ml-2">
 					<i class="fa fa-calendar calendar-icon mr-3"></i>
-					<button class="btn btn-danger">Add Date</button>
+					<button id="addDateTime" type="button" class="btn btn-danger">Add Date</button>
 				</div>
 			</div>
 			<div>
@@ -146,6 +142,9 @@
 
   export default {
     name: 'RequestForm',
+    data() {
+      return {
+    }
     components: {
 
     }

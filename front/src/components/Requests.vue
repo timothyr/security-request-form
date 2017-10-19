@@ -45,6 +45,7 @@
 						<td>{{request.id}}</td>
 						<td>{{request.location}}</td>
 						<td>{{request.numAttendees}}</td>
+						<td>{{request.eventDates}}</td>
 					</tr>
 					</tbody>
 				</table>
@@ -76,7 +77,7 @@ export default {
 	greet: function(e){ console.log(e); console.log("hello");}
   },
   computed: {
-	
+
   }
 }
 </script>

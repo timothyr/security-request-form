@@ -45,6 +45,7 @@
 						<th>ID</th>
 						<th>Location</th>
 						<th># Attendees</th>
+						<th>Event Date and Time</th>
 					</tr>
 				</thead>
 				<tbody>
@@ -54,6 +55,7 @@
 					<td th:text="${request.requesterID}"></td>
 					<td th:text="${request.eventLocation}"></td>
 					<td th:text="${request.numAttendees}"></td>
+					<td th:text="${request.eventDates}"></td>
 				</tr>
 				</tbody>
 			</table>
