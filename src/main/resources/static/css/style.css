@@ -4,11 +4,11 @@ html {
 }
 
 body {
-	background-color: #A8162B;
+	background-color: #ededed;
 }
 
-.grey-background {
-	background-color: #ededed;
+.red-background {
+	background-color: #A8162B;
 }
 
 header {
