@@ -14,15 +14,28 @@
 	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-datetimepicker/2.5.4/build/jquery.datetimepicker.full.js"></script>
 
-	
+
 	<script>
 		$(document).ready(function(){
-			$("#addDateTime").datetimepicker();
+			$("#chooseDateTime").datetimepicker();
+			$("#addDateTime").click(function(){
+				var datetime = document.getElementById("datetime").value;
+				if(datetime!=""){
+					document.getElementById("date").value = datetime;
+					document.getElementById("datetime").value = "";
+				}
+			});
+
 		});
-		function setDateTime(){
-			var x = document.getElementById("addDateTime").value;
-			document.getElementById("date").value = x;
+		function setDateTime(e){
+			document.getElementById("datetime").value = e.value;
 		}
+
+		function deleteDateTime(e){
+			e.parentNode.parentNode.parentNode.removeChild(e.parentNode.parentNode);
+		}
+
+
 	</script>
 
 
@@ -117,20 +130,28 @@
 					<tr>
 						<th>Date and Time</th>
 					</tr>
-					</thead>
-					<tbody>
 					<tr>
-						<td>
+						<th class="input-group">
+							<i id="chooseDateTime" class="fa fa-calendar calendar-icon mr-3 " onChange="setDateTime(this)"></i>
+							<input type="text" id="datetime" class="form-control"/>
+							<button id="addDateTime" type="button" class="btn btn-danger ml-1">Add Date</button>
+						</th>
+					</tr>
+					</thead>
+					<tbody id="dateTimeList">
+					<tr>
+						<td class="input-group">
 							<input type="text" th:field="*{eventDates}" id="date" class="form-control" disabled="disabled"/>
+							<button type="button" class="btn ml-1 " onclick="deleteDateTime(this)">Delete</button>
 							<td th:if="${#fields.hasErrors('eventDates')}" th:errors="*{eventDates}">Date and Time</td>
 						</td>
 					</tr>
+
+
+
+
 					</tbody>
 				</table>
-				<div class="row mt-4 ml-2">
-					<i class="fa fa-calendar calendar-icon mr-3"></i>
-					<button id="addDateTime" type="button" class="btn btn-danger" onChange="setDateTime()">Add Date</button>
-				</div>
 			</div>
 			<div>
 				<h3 class="auth-heading mt-4">Authorization</h3>
