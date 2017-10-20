@@ -68,6 +68,8 @@
         data: {
             activeStatus: "WAITING",
             searchTerm: "",
+            sortKey: "",
+            reversed: false,
             requests: [
                 {
                     name: "Ray",
@@ -89,7 +91,7 @@
         methods: {
             isActive: function(status) {
                 return this.activeStatus == status;
-            }
+            },
         },
         computed: {
             filteredRequests: {
@@ -98,6 +100,7 @@
                     return this.requests.filter(request => {
                         return request.name.toLowerCase().includes(this.searchTerm.toLowerCase());
                     })
+
                 }
             }
         }
