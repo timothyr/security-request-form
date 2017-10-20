@@ -18,17 +18,17 @@
             <div class="row mt-5">
                 <div class="input-group search-group">
                     <span class="fa fa-search"></span>
-                    <input type="text" class="form-control" id="search-bar" placeholder="search"/>
+                    <input type="text" class="form-control" id="search-bar" v-model="searchTerm" placeholder="search"/>
                     <div class="error"></div>
                 </div>
             </div>
             <div class="row mt-3">
                 <div class="col-md-8 mx-auto">
                     <ul class="nav nav-pills nav-fill">
-                        <li class="nav-item"><a href="" v-on:click.prevent="greet" class="nav-link active">All</a></li>
-                        <li class="nav-item"><a href="" class="nav-link">Waiting</a></li>
-                        <li class="nav-item"><a href="" class="nav-link">Approved</a></li>
-                        <li class="nav-item"><a href="" class="nav-link">Rejected</a></li>
+                        <li class="nav-item"><a href="" v-bind:class="{'active': isActive('ALL')}" class="nav-link">All</a></li>
+                        <li class="nav-item"><a href="" v-bind:class="{'active': isActive('WAITING')}"class="nav-link">Waiting</a></li>
+                        <li class="nav-item"><a href="" v-bind:class="{'active': isActive('APPROVED')}"class="nav-link">Approved</a></li>
+                        <li class="nav-item"><a href="" v-bind:class="{'active': isActive('REJECTED')}"class="nav-link">Rejected</a></li>
                     </ul>
                 </div>
             </div>
@@ -44,7 +44,7 @@
                     </tr>
                     </thead>
                     <tbody>
-                    <tr v-for="request in requests">
+                    <tr v-for="request in filteredRequests">
                         <td>{{request.name}}</td>
                         <td>{{request.phone}}</td>
                         <td>{{request.id}}</td>
@@ -53,27 +53,54 @@
                     </tr>
                     </tbody>
                 </table>
+                    <span class="text-muted" v-if="!filteredRequests.length">No results.</span>
             </div>
         </div>
         <div class="bottom-space"></div>
-        <script src="/js/jquery.min.js"></script>
-        <script src="/js/vue.js"></script>
-        <script>
-            var app = new Vue({
-                el: '#app',
-                data: {
-                    requests: [
-                        {
-                            name: "Ray",
-                            phone: "911",
-                            id: "301235622",
-                            location: "Surrey",
-                            numAttendees: 5
-                        }
-                    ],
-                }
-            });
-        </script>
     </div>
 </body>
+<script src="/js/jquery-3.2.1.min.js"></script>
+<script src="/js/vue.js"></script>
+<script>
+    var app = new Vue({
+        el: '#app',
+        data: {
+            activeStatus: "WAITING",
+            searchTerm: "",
+            requests: [
+                {
+                    name: "Ray",
+                    phone: "911",
+                    id: "301235622",
+                    location: "Surrey",
+                    numAttendees: 5
+                },
+                {
+                    name: "Brian",
+                    phone: "6044305123",
+                    id: "301235624",
+                    location: "Surrey",
+                    numAttendees: 48
+                }
+
+            ]
+        },
+        methods: {
+            isActive: function(status) {
+                return this.activeStatus == status;
+            }
+        },
+        computed: {
+            filteredRequests: {
+                cache: false,
+                get: function() {
+                    return this.requests.filter(request => {
+                        return request.name.toLowerCase().includes(this.searchTerm.toLowerCase());
+                    })
+                }
+            }
+        }
+
+    });
+</script>
 </html>
