@@ -1,5 +1,6 @@
 <!DOCTYPE html>
-<html lang="en">
+
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
 <head>
 	<meta charset="UTF-8">
 	<title>Request Details</title>
@@ -11,56 +12,60 @@
 		<img class="logo" src="/img/sfu-logo@2x.png" alt="sfu-logo"/>
 	</header>
 	<div class="container col-md-10 offset-md-1 wrapper mb-5 col-lg-10" id="app">
-		<div class="container col-md-10">
+		<div class="container">
 			<div class="row mt-5">
-				<div class="container mt-4"></div>
-				<h3 class="mt-5 mx-5">Service #{{requestID}}</h3>
+				<h3 class="mt-5 mx-5" id="title" th:text="'Service #' + ${reqID}"></h3>
 			</div>
 			<div class="row mt-3">
 				<div class="col">
-					<p class="mx-5">Status: {{status}}</p>
+					<!-- <p class="mx-5" th:text="'Status: ' + ${form.status}"></p> -->
+					<p class="mx-5">Status: *not implemented*</p>
 				</div>
 			</div>
 			<div class="row">
 				<div class="col">
-					<p class="mx-5">Requested By: {{requestedBy}}</p>
+					<p class="mx-5" id="requestedBy" th:text="'Requested By: ' + ${form.requesterName}"></p>
 				</div>
 				<div class="col">
-					<p class="mx-5">SFU ID: {{SFUID}}</p>
-				</div>
-			</div>
-			<div class="row">
-				<div class="col">
-					<p class="mx-5">Phone: {{phone}}</p>
-				</div>
-				<div class="col">
-					<p class="mx-5">Fax: {{fax}}</p>
+					<p class="mx-5" id="SFUID" th:text="'SFU ID: ' + ${form.requesterID}"></p>
 				</div>
 			</div>
 			<div class="row">
 				<div class="col">
-					<p class="mx-5">Email: {{email}}</p>
+					<p class="mx-5" id="phone" th:text="'Phone: ' + ${form.phoneNumber}"></p>
 				</div>
 				<div class="col">
-					<p class="mx-5">Location: {{location}}</p>
-				</div>
-			</div>
-			<div class="row">
-				<div class="col">
-					<p class="mx-5">Type/Name of Event: {{eventName}}</p>
-				</div>
-				<div class="col">
-					<p class="mx-5"># Attendees: {{numAttendees}}</p>
+					<p class="mx-5" id="fax" th:text="'Fax: ' + ${form.faxNumber}"></p>
 				</div>
 			</div>
 			<div class="row">
 				<div class="col">
-					<p class="mx-5">Details: {{details}}</p>
+					<p class="mx-5" id="email" th:text="'Email: ' + ${form.emailAddress}"></p>
+				</div>
+				<div class="col">
+					<p class="mx-5" id="location"
+					   th:text="${form.eventLocation} ? 'Location: ' + ${form.eventLocation} : 'Location: not set!'"></p>
 				</div>
 			</div>
 			<div class="row">
 				<div class="col">
-					<h5 class="mt-2 text-center">Licensed: {{licensed}}</h5>
+					<p class="mx-5" id="eventName" th:text="'Type/Name of Event: ' + ${form.eventName}"></p>
+				</div>
+				<div class="col">
+					<p class="mx-5" id="attendees" th:text="'# of Attendees: ' + ${form.numAttendees}"></p>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col">
+					<p class="mx-5" id="details" th:text="'Details: ' + ${form.eventDetails}"></p>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col">
+					<h5 class="mt-2 text-center" id="licensed">Licensed: *not implemented*</h5>
+						<!-- th:text="${form.isAuthorized} ? 'Licensed: ' + ${form.isAuthorized} :
+						 'Licensed: Not set!'"></h5> -->
+
 				</div>
 			</div>
 
@@ -85,25 +90,28 @@
 
 			<div class="row">
 				<div class="col">
-					<p class="mx-5">Authorized by: {{author}}</p>
+					<p class="mx-5"
+					   th:text="${form.authorizerName} ? 'Authorized by: ' + ${form.authorizerName} : 'Authorized by: not set!'"></p>
 				</div>
 			</div>
 			<div class="row">
 				<div class="col">
-					<p class="mx-5">Account Code: {{accountCode}}</p>
+					<p class="mx-5" th:text="'Account Code: ' + ${form.paymentAccountCode}"></p>
 				</div>
 			</div>
 			<div class="row">
 				<div class="col">
-					<p class="mx-5">SFU ID of Authorizee: {{authorID}}</p>
+					<p class="mx-5">Authorizer ID: *not implemented*</p>
+					<!-- <p class="mx-5" th:text="'Authorizer ID: ' + ${form.authorizerID}"></p> -->
 				</div>
 			</div>
 			<div class="row">
 				<div class="col">
-					<p class="mx-5">Phone: {{authorPhone}}</p>
+					<p class="mx-5"
+					   th:text="${form.authorizerPhoneNumber} ? 'Phone: ' + ${form.authorizerPhoneNumber} : 'Phone: not set!'"></p>
 				</div>
 				<div class="col">
-					<p class="mx-5">Invoice: {{authorInvoice}}</p>
+					<p class="mx-5" th:text="'Invoice: ' + ${form.invoiceRequested}"></p>
 				</div>
 			</div>
 
@@ -120,17 +128,18 @@
 
 		</div>
 
-		<script src="/js/jquery.min.js"></script>
+		<script src="/js/jquery-3.2.1.min.js"></script>
 		<script src="/js/vue.js"></script>
 		<script>
 			var app = new Vue({
 				el: '#app',
 
 				data: {
-					requestID: 123,
-					status: "Steve Smith",
-					requestedBy: "123456789",
-					SFUID: "Waiting",
+					/*
+					requestID: 111,
+					requestedBy: "Steve Smith",
+					SFUID: "123456789",
+					status: "Waiting",
 					phone: "604-430-4444",
 					fax: "(04) 3056 6523",
 					email: "smithysmithers@sfu.ca",
@@ -156,6 +165,7 @@
 					authorID: 1234567,
 					authorPhone: "911",
 					authorInvoice: "yes"
+					*/
 				},
 
 				methods: {
@@ -164,7 +174,7 @@
 
 				created() {
 					// TODO: load real data
-					// $.get("http://localhost:8080/api/form/get/"+${id}, function(data){});
+					// $.get("http://localhost:8080/api/form/get/"+this.$data.requestID, function(data){});
 				}
 			});
 		</script>
