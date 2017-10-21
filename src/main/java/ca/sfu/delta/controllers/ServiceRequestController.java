@@ -3,6 +3,7 @@ package ca.sfu.delta.controllers;
 import javax.validation.Valid;
 
 import ca.sfu.delta.models.FormData;
+import ca.sfu.delta.models.SendEmail;
 import ca.sfu.delta.repository.FormRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -28,13 +29,16 @@ public class ServiceRequestController extends WebMvcConfigurerAdapter {
     }
 
     @RequestMapping(value = "/api/form/get/{id}", method = RequestMethod.GET, produces = "application/json")
-    public @ResponseBody Map<String, Object> getForm(@PathVariable("id") Long id) {
+    public @ResponseBody
+    Map<String, Object> getForm(@PathVariable("id") Long id) {
         FormData form = formRepository.findOne(id);
+
         return form.jsonify();
     }
 
     @RequestMapping(value = "/api/form/search", method = RequestMethod.GET, produces = "application/json")
-    public @ResponseBody List<Map<String, Object>> search() {
+    public @ResponseBody
+    List<Map<String, Object>> search() {
         List<Map<String, Object>> forms = new ArrayList<Map<String, Object>>();
 
         for (FormData form : formRepository.findAll()) {
@@ -45,29 +49,30 @@ public class ServiceRequestController extends WebMvcConfigurerAdapter {
     }
 
     @RequestMapping(value = "/api/form/save", method = RequestMethod.GET, produces = "application/json")
-    public @ResponseBody String addForm(
-            @RequestParam(required=false) String department,
-            @RequestParam(required=false) String requesterName,
-            @RequestParam(required=false) String phoneNumber,
-            @RequestParam(required=false) String requestedOnDate,
-            @RequestParam(required=false) String requesterID,
-            @RequestParam(required=false) String authorizationDate,
-            @RequestParam(required=false) String paymentAccountCode,
-            @RequestParam(required=false) String emailAddress,
-            @RequestParam(required=false) String times,
-            @RequestParam(required=false) String eventName,
-            @RequestParam(required=false) Boolean isLicensed,
-            @RequestParam(required=false) Integer numAttendees,
-            @RequestParam(required=false) String authorizerId,
-            @RequestParam(required=false) String authorizerPhoneNumber,
-            @RequestParam(required=false) String serviceRequestNumber,
-            @RequestParam(required=false) String eventLocation,
-            @RequestParam(required=false) String authorizerName,
-            @RequestParam(required=false) String eventDates,
-            @RequestParam(required=false) String eventDetails,
-            @RequestParam(required=false) String faxNumber
+    public @ResponseBody
+    String addForm(
+            @RequestParam(required = false) String department,
+            @RequestParam(required = false) String requesterName,
+            @RequestParam(required = false) String phoneNumber,
+            @RequestParam(required = false) String requestedOnDate,
+            @RequestParam(required = false) String requesterID,
+            @RequestParam(required = false) String authorizationDate,
+            @RequestParam(required = false) String paymentAccountCode,
+            @RequestParam(required = false) String emailAddress,
+            @RequestParam(required = false) String times,
+            @RequestParam(required = false) String eventName,
+            @RequestParam(required = false) Boolean isLicensed,
+            @RequestParam(required = false) Integer numAttendees,
+            @RequestParam(required = false) String authorizerId,
+            @RequestParam(required = false) String authorizerPhoneNumber,
+            @RequestParam(required = false) String serviceRequestNumber,
+            @RequestParam(required = false) String eventLocation,
+            @RequestParam(required = false) String authorizerName,
+            @RequestParam(required = false) String eventDates,
+            @RequestParam(required = false) String eventDetails,
+            @RequestParam(required = false) String faxNumber
 
-            ) {
+    ) {
         FormData form = new FormData();
         form.setDepartment(department);
         form.setRequesterName(requesterName);
@@ -114,7 +119,8 @@ public class ServiceRequestController extends WebMvcConfigurerAdapter {
 
         saveFormToDatabase(serviceRequestForm);
 
-        return "redirect:/results";
+        return "redirect:/requests";
+        //return "redirect:/results";
     }
 
     private void saveFormToDatabase(FormData formData) {
@@ -122,7 +128,7 @@ public class ServiceRequestController extends WebMvcConfigurerAdapter {
     }
 
     @ModelAttribute("FormData")
-	public FormData createModel() {
-		return new FormData();
-	}
+    public FormData createModel() {
+        return new FormData();
+    }
 }
