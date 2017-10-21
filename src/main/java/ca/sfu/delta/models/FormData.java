@@ -42,6 +42,8 @@ public class FormData {
     private String preparedBy;
     private String securityRemarks;
 
+	private String requestID;
+
     public FormData() {
 
     }
@@ -309,7 +311,16 @@ public class FormData {
     	return securityRemarks;
     }
 
-    public void setSecurityFields(
+	public String getRequestID() {
+		return requestID;
+	}
+
+	public void setRequestID(String requestID) {
+		this.requestID = requestID;
+	}
+
+
+	public void setSecurityFields(
             String recievingSecuritySupervisor,
             List<Guard> guards,
             List<String> distributionList,
@@ -365,6 +376,7 @@ public class FormData {
                 ", authorizationDate='" + authorizationDate + '\'' +
                 ", authorizerPhoneNumber='" + authorizerPhoneNumber + '\'' +
                 ", isAuthorized=" + isAuthorized +
+		        ", requestID=" + requestID + '\'' +
                 '}';
     }
 }

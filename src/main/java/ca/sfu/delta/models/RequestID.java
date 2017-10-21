@@ -19,6 +19,10 @@ public class RequestID {
 	@Column(nullable = false)
 	private Integer digits;
 
+	public RequestID() {
+
+	}
+
 	public Long getEntityIndex() {
 		return entityIndex;
 	}
