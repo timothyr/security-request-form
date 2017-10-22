@@ -7,7 +7,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @Controller
 public class SecurityController {
     @RequestMapping("/security")
-    public String requests(Model model) {;
+    public String securityLogin(Model model) {;
         return "securitylogin";
+    }
+    @RequestMapping("/authlogin")
+    public String authLogin(Model model) {;
+        return "authlogin";
     }
 }
