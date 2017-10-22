@@ -34,26 +34,20 @@
                 </div>
             </div>
             <div class="row mt-4">
-                <table class="table">
-                    <thead>
-                    <tr>
-                        <th>Name<i class="fa fa-sort fa-fw pull-right"></i></th>
-                        <th>Phone<i class="fa fa-sort fa-fw pull-right"></i></th>
-                        <th>ID<i class="fa fa-sort fa-fw pull-right"></i></th>
-                        <th>Location<i class="fa fa-sort fa-fw pull-right"></i></th>
-                        <th># Attendees<i class="fa fa-sort fa-fw pull-right"></i></th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    <tr v-for="request in filteredRequests">
-                        <td>{{request.name}}</td>
-                        <td>{{request.phone}}</td>
-                        <td>{{request.id}}</td>
-                        <td>{{request.location}}</td>
-                        <td>{{request.numAttendees}}</td>
-                    </tr>
-                    </tbody>
-                </table>
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th v-for="column in columns" v-on:click="sortBy(column)">{{column}}</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr v-for="request in filteredRequests">
+                                <td v-for="value in request">{{value}}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
                     <span class="text-muted" v-if="!filteredRequests.length">No results.</span>
             </div>
         </div>
@@ -63,27 +57,42 @@
 <script src="/js/jquery-3.2.1.min.js"></script>
 <script src="/js/vue.js"></script>
 <script>
+    function getKeyByValue(object, value) {
+        return Object.keys(object).find(key => object[key] === value);
+    }
     var app = new Vue({
         el: '#app',
         data: {
+            columns: ["Request ID", "Name", "ID", "Request Date", "Email",
+                        "Phone", "Event Name", "Location", "Date", "Status"],
             activeStatus: "WAITING",
             searchTerm: "",
             sortKey: "",
             reversed: false,
             requests: [
                 {
-                    name: "Ray",
-                    phone: "911",
-                    id: "301235622",
-                    location: "Surrey",
-                    numAttendees: 5
+                    requestID: "170001",
+                    requesterName: "Ray Eng",
+                    requesterID: "301235622",
+                    requestedOnDate: "10/20/17",
+                    emailAddress: "raymonde@sfu.ca",
+                    phoneNumber: "604-430-1234",
+                    eventName: "SSSS Party",
+                    Location: "Surrey",
+                    eventDates: "12/24/17",
+                    status: "Waiting"
                 },
                 {
-                    name: "Brian",
-                    phone: "6044305123",
-                    id: "301235624",
-                    location: "Surrey",
-                    numAttendees: 48
+                    requestID: "170002",
+                    requesterName: "Brian Fraser",
+                    requesterID: "301235623",
+                    requestedOnDate: "10/20/17",
+                    emailAddress: "brian@sfu.ca",
+                    phoneNumber: "604-430-1235",
+                    eventName: "SSSS Party",
+                    Location: "Surrey",
+                    eventDates: "12/24/17",
+                    status: "Waiting"
                 }
 
             ]
@@ -92,14 +101,38 @@
             isActive: function(status) {
                 return this.activeStatus == status;
             },
+            sortBy: function(sortKey) {
+                this.reversed = !this.reversed;
+                this.sortKey = sortKey;
+            },
+            getColumnValue(columnName) {
+                let mappings = {
+                    // value: columnName
+                    requestID: "Request ID",
+                    requesterName: "Name",
+                    requesterID: "ID",
+                    requestedOnDate: "Request Date",
+                    emailAddress: "Email",
+                    phoneNumber: "Phone",
+                    eventName: "Event Name",
+                    Location: "Location",
+                    eventDates: "Date",
+                    status: "Status"
+                }
+                return getKeyByValue(mappings, columnName);
+            }
         },
         computed: {
             filteredRequests: {
                 cache: false,
                 get: function() {
+                    console.log("sorting..");
                     return this.requests.filter(request => {
-                        return request.name.toLowerCase().includes(this.searchTerm.toLowerCase());
-                    })
+                        return request.requesterName.toLowerCase().includes(this.searchTerm.toLowerCase());
+                    }).sort((requestA, requestB) => {
+                        return this.reversed ? requestA[this.getColumnValue(this.sortKey)] > requestB[this.getColumnValue(this.sortKey)] :
+                            requestA[this.getColumnValue(this.sortKey)] < requestB[this.getColumnValue(this.sortKey)];
+                    });
 
                 }
             }
