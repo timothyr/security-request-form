@@ -26,10 +26,10 @@
             <div class="row mt-3">
                 <div class="col-md-8 mx-auto">
                     <ul class="nav nav-pills nav-fill">
-                        <li class="nav-item"><a href="" v-bind:class="{'active': isActive('ALL')}" class="nav-link">All</a></li>
-                        <li class="nav-item"><a href="" v-bind:class="{'active': isActive('WAITING')}"class="nav-link">Waiting</a></li>
-                        <li class="nav-item"><a href="" v-bind:class="{'active': isActive('APPROVED')}"class="nav-link">Approved</a></li>
-                        <li class="nav-item"><a href="" v-bind:class="{'active': isActive('REJECTED')}"class="nav-link">Rejected</a></li>
+                        <li class="nav-item"><a href="" v-on:click.stop.prevent="activeStatus='ALL'" v-bind:class="{'active': isActive('ALL')}" class="nav-link">All</a></li>
+                        <li class="nav-item"><a href="" v-on:click.stop.prevent="activeStatus='WAITING'" v-bind:class="{'active': isActive('WAITING')}"class="nav-link">Waiting</a></li>
+                        <li class="nav-item"><a href="" v-on:click.stop.prevent="activeStatus='APPROVED'" v-bind:class="{'active': isActive('APPROVED')}"class="nav-link">Approved</a></li>
+                        <li class="nav-item"><a href="" v-on:click.stop.prevent="activeStatus='REJECTED'" v-bind:class="{'active': isActive('REJECTED')}"class="nav-link">Rejected</a></li>
                     </ul>
                 </div>
             </div>
@@ -38,7 +38,7 @@
                     <table class="table table-hover">
                         <thead>
                             <tr>
-                                <th v-for="column in columns" v-on:click="sortBy(column)">{{column}}</th>
+                                <th v-for="column in columns" v-on:click="sortBy(column)" class="clickable">{{column}}</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -77,7 +77,7 @@
         data: {
             columns: ["Request ID", "Name", "ID", "Request Date", "Email",
                         "Phone", "Event Name", "Location", "Date", "Status"],
-            activeStatus: "WAITING",
+            activeStatus: "ALL",
             searchTerm: "",
             sortKey: "",
             reversed: true,
@@ -92,7 +92,7 @@
                     eventName: "SSSS Party",
                     Location: "Surrey",
                     eventDates: "12/24/17",
-                    status: "Waiting"
+                    status: "WAITING"
                 },
                 {
                     requestID: "170002",
@@ -104,7 +104,19 @@
                     eventName: "SSSS Party",
                     Location: "Surrey",
                     eventDates: "12/24/17",
-                    status: "Waiting"
+                    status: "WAITING"
+                },
+                {
+                    requestID: "170003",
+                    requesterName: "Bill Gates",
+                    requesterID: "301235624",
+                    requestedOnDate: "10/20/17",
+                    emailAddress: "bill@sfu.ca",
+                    phoneNumber: "604-430-1235",
+                    eventName: "MS Event",
+                    Location: "Surrey",
+                    eventDates: "12/24/17",
+                    status: "APPROVED"
                 }
 
             ]
@@ -146,6 +158,12 @@
                     }).sort((requestA, requestB) => {
                         return this.reversed ? requestA[this.getColumnValue(this.sortKey)] > requestB[this.getColumnValue(this.sortKey)] :
                             requestA[this.getColumnValue(this.sortKey)] < requestB[this.getColumnValue(this.sortKey)];
+                    }).filter(request => {
+                        if(this.activeStatus == "ALL") {
+                            return true;
+                        } else {
+                            return request.status.toLowerCase() == this.activeStatus.toLowerCase();
+                        }
                     });
 
                 }
