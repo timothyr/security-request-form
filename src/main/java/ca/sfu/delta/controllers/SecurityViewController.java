@@ -16,12 +16,20 @@ public class SecurityViewController {
 	@Autowired
 	FormRepository formRepository;
 
+	// redirects to /requests if bad reqID
 	@RequestMapping("/security/request/{reqID}")
-	public String securityview(@PathVariable long reqID, Model model) {
+	public String securityview(@PathVariable String reqID, Model model) {
 
 		FormData form;
+		long id;
 
-		if (reqID == 1234) {
+		try {
+			id = Long.parseLong(reqID);
+		} catch (NumberFormatException e) {
+			return "redirect:/requests";
+		}
+
+		if (id == 1234) {
 			// dummy data for debugging
 			// TODO: remove for production
 
@@ -31,10 +39,14 @@ public class SecurityViewController {
 					false, 400, "7:00pm - 2:00am", "546-546546-5453131",
 					true, "Biggest thing ever");
 		} else {
-			form = formRepository.findOne(reqID);
+			form = formRepository.findOne(id);
+
+			if (form == null) {
+				return "redirect:/requests";
+			}
 		}
 
-		model.addAttribute("reqID", reqID);
+		model.addAttribute("reqID", id);
 		model.addAttribute("form", form);
 
 		Map modelMap = model.asMap();

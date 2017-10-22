@@ -18,8 +18,8 @@
 			</div>
 			<div class="row mt-3">
 				<div class="col">
-					<!-- <p class="mx-5" th:text="'Status: ' + ${form.status}"></p> -->
-					<p class="mx-5">Status: *not implemented*</p>
+					<p class="mx-5"
+					   th:text="${form.requestStatus} ? 'Status: ' + ${form.requestStatus} : 'Status: not set!'"></p>
 				</div>
 			</div>
 			<div class="row">
@@ -62,9 +62,8 @@
 			</div>
 			<div class="row">
 				<div class="col">
-					<h5 class="mt-2 text-center" id="licensed">Licensed: *not implemented*</h5>
-						<!-- th:text="${form.isAuthorized} ? 'Licensed: ' + ${form.isAuthorized} :
-						 'Licensed: Not set!'"></h5> -->
+					<h5 class="mt-2 text-center" id="licensed"
+						th:text="${form.isLicensed} ? 'Licensed: ' + ${form.isLicensed} : 'Licensed: Not set!'"></h5>
 
 				</div>
 			</div>
@@ -102,8 +101,8 @@
 			</div>
 			<div class="row">
 				<div class="col">
-					<p class="mx-5">Authorizer ID: *not implemented*</p>
-					<!-- <p class="mx-5" th:text="'Authorizer ID: ' + ${form.authorizerID}"></p> -->
+					<p class="mx-5"
+					   th:text="${form.authorizerID} ? 'Authorizer ID: ' + ${form.authorizerID} : 'Authorizer ID: not set!'"></p>
 				</div>
 			</div>
 			<div class="row">
