@@ -10,8 +10,4 @@ public class SecurityController {
     public String securityLogin(Model model) {;
         return "securitylogin";
     }
-    @RequestMapping("/authlogin")
-    public String authLogin(Model model) {;
-        return "authlogin";
-    }
 }
