@@ -43,7 +43,7 @@
                         </thead>
                         <tbody>
                             <tr v-for="request in filteredRequests">
-                                <td v-for="value in request">{{value}}</td>
+                                <td v-for="value in request" class="clickable" v-on:click="goToRequest(request.requestID)">{{value}}</td>
                             </tr>
                         </tbody>
                     </table>
@@ -60,6 +60,18 @@
     function getKeyByValue(object, value) {
         return Object.keys(object).find(key => object[key] === value);
     }
+    function isTermInObject(object, term) {
+        //debugger;
+        for (var prop in object) {
+            if (object.hasOwnProperty(prop)) {
+                if (object[prop].toLowerCase().includes(term.toLowerCase())) {
+                    return true;
+                }
+            }
+
+        }
+        return false;
+    }
     var app = new Vue({
         el: '#app',
         data: {
@@ -68,7 +80,7 @@
             activeStatus: "WAITING",
             searchTerm: "",
             sortKey: "",
-            reversed: false,
+            reversed: true,
             requests: [
                 {
                     requestID: "170001",
@@ -120,15 +132,17 @@
                     status: "Status"
                 }
                 return getKeyByValue(mappings, columnName);
+            },
+            goToRequest(requestID) {
+                window.location.assign("/request/" + requestID);
             }
         },
         computed: {
             filteredRequests: {
                 cache: false,
                 get: function() {
-                    console.log("sorting..");
                     return this.requests.filter(request => {
-                        return request.requesterName.toLowerCase().includes(this.searchTerm.toLowerCase());
+                        return isTermInObject(request, this.searchTerm);
                     }).sort((requestA, requestB) => {
                         return this.reversed ? requestA[this.getColumnValue(this.sortKey)] > requestB[this.getColumnValue(this.sortKey)] :
                             requestA[this.getColumnValue(this.sortKey)] < requestB[this.getColumnValue(this.sortKey)];
