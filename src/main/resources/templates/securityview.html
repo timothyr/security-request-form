@@ -69,6 +69,7 @@
 				</div>
 			</div>
 
+			<!-- TODO: fix date table -->
 			<div class="row my-4">
 				<table class="table">
 					<thead>
@@ -116,19 +117,50 @@
 			</div>
 
 			<!-- TODO: Security inputs -->
-			<div class="row mb-3">
+			<div class="row my-5">
 				<div class="col col-md-3"></div>
-				<div class="col col-md-6 align-content-center">
-					<button class="btn">Reject</button>
-					<button class="btn">Accept</button>
-					<button class="btn">Update</button>
+				<div class="col text-center">
+						<button class="btn btn-danger">Reject</button>
+
+						<button type="button" class="btn btn-success" data-toggle="modal" data-target="#myModal">Accept</button>
+						<div id="myModal" class="modal fade" role="dialog">
+							<div class="modal-dialog">
+								<div class="modal-content">
+									<div class="modal-header">
+										<p class="modal-title">Select who should be notified of this accepted service request</p>
+									</div>
+									<div class="modal-body" id="emailList">
+										<!-- TODO: get more emails from server -->
+										<div class="checkbox">
+											<label><input type="checkbox" value="" th:text="${form.emailAddress}"></label>
+										</div>
+										<div class="checkbox">
+											<label><input type="checkbox" value="">asdf@sads.com</label>
+										</div>
+										<div class="checkbox">
+											<label><input type="checkbox" value="">qweerty342@fef.com</label>
+										</div>
+									</div>
+									<div class="modal-footer">
+										<button type="button" class="btn" data-dismiss="modal">Cancel</button>
+										<button type="button" class="btn" data-dismiss="model">Accept</button>
+									</div>
+								</div>
+
+							</div>
+						</div>
+
+						<button class="btn">Update</button>
+
 				</div>
 				<div class="col col-md-3"></div>
+				<div class="bottom-space"></div>
 			</div>
 
 		</div>
 
 		<script src="/js/jquery-3.2.1.min.js"></script>
+		<script src="/js/bootstrap.min.js"></script>
 		<script src="/js/vue.js"></script>
 		<script>
 			var app = new Vue({
