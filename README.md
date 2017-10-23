@@ -51,5 +51,16 @@ Our directory structure is as follows:
 `src/` follows the industry standard for our java code
 Everything else is build related (.gradle and node_modules)
 
+## Intergration
+The parameter `spring.jpa.hibernate.ddl-auto` should only be set to `create` for the first time the server is run.
+After that it should be set to `none`. According to spring.io guides, the following are the possible values for the parameter.
+```
+none:           This is the default for MySQL, no change to the database structure.
+update:         Hibernate changes the database according to the given Entity structures.
+create:         Creates the database every time, but don’t drop it when close.
+create-drop:    Creates the database then drops it when the SessionFactory closes.
+```
+If the server is restarted with the parameter set to `create`, all data in the database tables will be erased.
+
 ## Dependencies
 Gradle, Java 8, mysql

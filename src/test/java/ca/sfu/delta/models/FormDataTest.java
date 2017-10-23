@@ -5,8 +5,6 @@ import org.junit.Test;
 import java.util.ArrayList;
 import static org.junit.Assert.*;
 
-import java.util.Optional;
-
 public class FormDataTest {
 	//Todo: re-enable once dates are implemented in the front and back end
 //    private Date date = new Date(2017,9,19);
@@ -315,4 +313,16 @@ public class FormDataTest {
         assertEquals("security remark",data.getSecurityRemarks());
     }
 
+    @Test
+    public void getRequestId() throws Exception {
+        // The requestID should be null before one is requested
+        assertEquals(null, data.getRequestID());
+    }
+
+    @Test
+    public void setRequestID() throws Exception {
+        String newRequestID = "17-0001";
+        data.setRequestID(newRequestID);
+        assertEquals(newRequestID, data.getRequestID());
+    }
 }
