@@ -1,10 +1,11 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-	<meta charset="UTF-8"/>
+	<meta charset="UTF-8">
 	<title>Security Service Request</title>
 
 	<link rel="stylesheet" href="/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/css/font-awesome.min.css">
 	<link rel="stylesheet" href="/css/style.css">
 </head>
 <body class="red-background">
@@ -109,50 +110,62 @@
 						<button class="btn btn-danger">Add Date</button>
 					</div>
 				</div>
-                <div>
-                    <h3 class="auth-heading mt-4">Authorization</h3>
-                </div>
-                <div class="row mt-5">
-                    <div class="form-group col-md-4">
-                        <label for="account-code-input">Account code</label>
-                        <input type="text" id="account-code-input" class="form-control"/>
-                    </div>
-                    <div class="form-group col-md-4">
-                        <label for="name-of-authorizee-input">Authorized by</label>
-                        <input type="text" id="name-of-authorizee-input" class="form-control"/>
-                    </div>
-                    <div class="form-group col-md-4">
-                        <label for="sfu-id-or-bcdl-of-authorizee-input">Authorizee SFU ID </label>
-                        <input type="text" id="sfu-id-or-bcdl-of-authorizee-input" class="form-control"/>
-                    </div>
-                    <div class="form-group col-md-4">
-                        <label for="date-of-authorization-input">Date</label>
-                        <input type="text" id="date-of-authorization-input" class="form-control"/>
+				<div>
+					<h3 class="auth-heading mt-4">Authorization</h3>
+				</div>
+				<div class="row mt-5">
+					<div class="form-group col-md-4">
+						<label for="account-code-input">Account code</label>
+						<input type="text" id="account-code-input" class="form-control"/>
+					</div>
+					<div class="form-group col-md-4">
+						<label for="name-of-authorizee-input">Authorized by</label>
+						<input type="text" id="name-of-authorizee-input" class="form-control"/>
+					</div>
+					<div class="form-group col-md-4">
+						<label for="sfu-id-or-bcdl-of-authorizee-input">Authorizee SFU ID </label>
+						<input type="text" id="sfu-id-or-bcdl-of-authorizee-input" class="form-control"/>
+					</div>
+					<div class="form-group col-md-4">
+						<label for="date-of-authorization-input">Date</label>
+						<input type="text" id="date-of-authorization-input" class="form-control"/>
 
-                    </div>
-                    <div class="form-group col-md-4">
-                        <label for="phone-of-authorizee-input">Phone</label>
-                        <input type="text" placeholder="xxx-xxx-xxxx" id="phone-of-authorizee-input" class="form-control masked" pattern="[0-9]{3}[ |-][0-9]{3}[ |-][0-9]{4}" data-valid-example="000-000-0000"/>
-                    </div>
-                </div>
+					</div>
+					<div class="form-group col-md-4">
+						<label for="phone-of-authorizee-input">Phone</label>
+						<input type="text" placeholder="xxx-xxx-xxxx" id="phone-of-authorizee-input" class="form-control masked" pattern="[0-9]{3}[ |-][0-9]{3}[ |-][0-9]{4}" data-valid-example="000-000-0000"/>
+					</div>
+				</div>
+				<div class="row">
+					<div class="form-group col-md-12">
+						<input type="checkbox" id="invoice-input" class="mr-1"/>
+						<label for="invoice-input">Please Invoice</label>
+					</div>
+				</div>
+				<div class="row mt-5">
+					<div class="col-md-12 text-center">
+						<button class="btn btn-danger btn-lg col-md-8">Submit</button>
+					</div>
+				</div>
                 <div class="row">
-                    <div class="form-group col-md-12">
-                        <input type="checkbox" id="invoice-input" class="mr-1"/>
-                        <label for="invoice-input">Please Invoice</label>
+                    <div class="col-md-8 mx-auto">
+                        <nav aria-label="Page navagation">
+                            <ul class="pagination mt-5 justify-content-center">
+                                <li class="page-item disabled"><a class="page-link" href="#">Previous</a></li>
+                                <li class="page-item"><a class="page-link" href="#">1</a></li>
+                                <li class="page-item"><a class="page-link" href="#">2</a></li>
+                                <li class="page-item"><a class="page-link" href="#">Next</a></li>
+                            </ul>
+                        </nav>
                     </div>
                 </div>
-                <div class="row mt-5">
-                    <div class="col-md-12 text-center">
-                        <button class="btn btn-danger btn-lg col-md-8">Submit</button>
-                    </div>
-                </div>
-                <div class="bottom-space"></div>
-            </div>
-        </div>
-    </form>
-    <script src="/js/jquery.min.js"></script>
-    <script src="/js/vue.js"></script>
-    <script>
+				<div class="bottom-space"></div>
+			</div>
+		</div>
+	</form>
+	<script src="/js/jquery-3.2.1.min.js"></script>
+	<script src="/js/vue.js"></script>
+	<script>
 		var app = new Vue({
  			el: '#app',
  			data: {
