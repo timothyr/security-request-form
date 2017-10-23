@@ -101,8 +101,8 @@
 							</th>
 						</tr>
 						</thead>
-						<tbody>
-						<tr>
+						<tbody id="datetimelist">
+						<tr hidden>
 							<td class="input-group">
 								<input type="text" id="date" class="form-control" disabled="disabled"/>
 								<button type="button" class="btn ml-1 " onclick="deleteDateTime(this)">Delete</button>
@@ -178,11 +178,28 @@
 	</script>
 	<script>
 		$(document).ready(function(){
-			$("#chooseDateTime").datetimepicker();
+			$("#chooseDateTime").datetimepicker({
+				dayOfWeekStart:1,
+				lang: 'en',
+				formatTime: 'g:i a',
+			});
 			$("#addDateTime").click(function(){
 				var datetime = document.getElementById("datetime").value;
 				if(datetime!=""){
-					document.getElementById("date").value = datetime;
+					$("#datetimelist").append(
+						"<tr>"+
+							"<td class='input-group'>"+
+								"<input type='text' id='date' class='form-control' disabled='disabled' value='"+
+								datetime+
+								"'/>"+
+								"<button type='button' class='btn ml-1' onclick='deleteDateTime(this)'>"+
+									"Delete"+
+								"</button>"+
+							"</td>"+
+						"</tr>"
+
+					);
+					<!--document.getElementById("date").value = datetime;-->
 					document.getElementById("datetime").value = "";
 				}
 			});
