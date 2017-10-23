@@ -6,6 +6,7 @@
 
 	<link rel="stylesheet" href="/css/bootstrap.min.css">
     <link rel="stylesheet" href="/css/font-awesome.min.css">
+	<link rel="stylesheet" href="/css/jquery.datetimepicker.min.css">
 	<link rel="stylesheet" href="/css/style.css">
 </head>
 <body class="red-background">
@@ -90,25 +91,25 @@
 					<table class="table table-striped">
 						<thead>
 						<tr>
-							<th>Date</th>
-							<th>Time</th>
+							<th>Date and Time</th>
+						</tr>
+						<tr>
+							<th class="input-group">
+								<i id="chooseDateTime" class="fa fa-calendar calendar-icon mr-3 " onChange="setDateTime(this)"></i>
+								<input type="text" id="datetime" class="form-control"/>
+								<button id="addDateTime" type="button" class="btn btn-danger ml-1">Add Date</button>
+							</th>
 						</tr>
 						</thead>
 						<tbody>
 						<tr>
-							<td>
-								<input type="text" id="date" class="form-control"/>
-							</td>
-							<td>
-								<input type="text" id="time" class="form-control"/>
+							<td class="input-group">
+								<input type="text" id="date" class="form-control" disabled="disabled"/>
+								<button type="button" class="btn ml-1 " onclick="deleteDateTime(this)">Delete</button>
 							</td>
 						</tr>
 						</tbody>
 					</table>
-					<div class="row mt-4">
-						<i class="fa fa-calendar calendar-icon mr-3"></i>
-						<button class="btn btn-danger">Add Date</button>
-					</div>
 				</div>
 				<div>
 					<h3 class="auth-heading mt-4">Authorization</h3>
@@ -165,6 +166,8 @@
 	</form>
 	<script src="/js/jquery-3.2.1.min.js"></script>
 	<script src="/js/vue.js"></script>
+	<script src="/js/jquery.datetimepicker.full.js"></script>
+	<script src="/js/jquery.datetimepicker.js"></script>
 	<script>
 		var app = new Vue({
  			el: '#app',
@@ -172,6 +175,24 @@
   				message: 'Hello Vue hxsixs useless data!'
 		  	}
 		});
+	</script>
+	<script>
+		$(document).ready(function(){
+			$("#chooseDateTime").datetimepicker();
+			$("#addDateTime").click(function(){
+				var datetime = document.getElementById("datetime").value;
+				if(datetime!=""){
+					document.getElementById("date").value = datetime;
+					document.getElementById("datetime").value = "";
+				}
+			});
+		});
+		function setDateTime(e){
+			document.getElementById("datetime").value = e.value;
+		}
+		function deleteDateTime(e){
+			e.parentNode.parentNode.parentNode.removeChild(e.parentNode.parentNode);
+		}
 	</script>
 </body>
 </html>
