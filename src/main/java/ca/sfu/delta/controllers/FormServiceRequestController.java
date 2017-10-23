@@ -3,7 +3,9 @@ package ca.sfu.delta.controllers;
 import javax.validation.Valid;
 
 import ca.sfu.delta.models.FormData;
+import ca.sfu.delta.models.RequestID;
 import ca.sfu.delta.repository.FormRepository;
+import ca.sfu.delta.repository.RequestIDRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
@@ -12,15 +14,17 @@ import org.springframework.web.servlet.config.annotation.ViewControllerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
 
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.Calendar;
 import java.util.List;
 import java.util.Map;
 
 
 @Controller
-public class ServiceRequestController extends WebMvcConfigurerAdapter {
+public class FormServiceRequestController extends WebMvcConfigurerAdapter {
     @Autowired
     FormRepository formRepository;
+    @Autowired
+    RequestIDRepository requestIDRepository;
 
     @Override
     public void addViewControllers(ViewControllerRegistry registry) {
@@ -44,6 +48,19 @@ public class ServiceRequestController extends WebMvcConfigurerAdapter {
         return forms;
     }
 
+    // Reserve the next request ID in the sequence to ensure each form has a unique request ID
+	private String reserveNextRequestID() {
+		int year = Calendar.getInstance().get(Calendar.YEAR) % 100;
+		Integer formDigit = requestIDRepository.getNextID(year);
+		//ToDo: ensure nextDigit is only four digits (i.e. less than 10,000)
+		RequestID requestID = new RequestID();
+		requestID.setYear(year);
+		requestID.setDigits(formDigit);
+		requestIDRepository.save(requestID);
+
+		return String.format("%02d", year) + "-" + String.format("%04d", formDigit);
+	}
+
     @RequestMapping(value = "/api/form/save", method = RequestMethod.GET, produces = "application/json")
     public @ResponseBody String addForm(
             @RequestParam(required=false) String department,
@@ -65,8 +82,8 @@ public class ServiceRequestController extends WebMvcConfigurerAdapter {
             @RequestParam(required=false) String authorizerName,
             @RequestParam(required=false) String eventDates,
             @RequestParam(required=false) String eventDetails,
-            @RequestParam(required=false) String faxNumber
-
+            @RequestParam(required=false) String faxNumber,
+			@RequestParam(required=false) String requestID
             ) {
         FormData form = new FormData();
         form.setDepartment(department);
@@ -89,7 +106,12 @@ public class ServiceRequestController extends WebMvcConfigurerAdapter {
         form.setEventDates(eventDates);
         form.setEventDetails(eventDetails);
         form.setFaxNumber(faxNumber);
-
+        if (requestID != null && !requestID.isEmpty()) {
+	        form.setRequestID(requestID);
+        } else {
+        	// Need to reserve a request id for this form
+	        form.setRequestID(reserveNextRequestID());
+        }
 
         form = formRepository.save(form);
 
@@ -118,6 +140,10 @@ public class ServiceRequestController extends WebMvcConfigurerAdapter {
     }
 
     private void saveFormToDatabase(FormData formData) {
+    	if (formData.getRequestID() == null || formData.getRequestID().isEmpty()) {
+    		// Need to reserve a request id
+		    formData.setRequestID(reserveNextRequestID());
+	    }
         formRepository.save(formData);
     }
 
