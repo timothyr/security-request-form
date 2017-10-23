@@ -4,6 +4,11 @@ import org.junit.Before;
 import org.junit.Test;
 import java.util.ArrayList;
 import static org.junit.Assert.*;
+import java.io.File;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.Arrays;
 
 import java.util.Optional;
 
@@ -11,7 +16,7 @@ public class FormDataTest {
 	//Todo: re-enable once dates are implemented in the front and back end
 //    private Date date = new Date(2017,9,19);
 //    private ArrayList<Date> dates = new ArrayList<Date>();
-    private String eventDate = "August 19, 2017";
+    private String eventDate = "August 19 2017";
     private String department = "Computer Science";
     private String name = "Billy";
     private String phoneNum = "778-555-5555";
@@ -19,7 +24,7 @@ public class FormDataTest {
     private String unspecifiedNum = "";
     private String email = "Billy@sfu.ca";
 //    private Date requestedOnDate = new Date(2017,9,30);
-	private String requestedOnDate = "September 30, 2017";
+	private String requestedOnDate = "September 30 2017";
     private String eventLocation = "BBY AQ3019";
     private String eventName = "Networking Night";
     private String requesterID = "301248474";
@@ -36,6 +41,9 @@ public class FormDataTest {
     private ArrayList<String> distributionList = new ArrayList<String>();
     private String preparedBy = "SFU Security";
     private String securityRemarks = "Security remarks";
+
+    private String csvFilePath = "test.csv";
+    private String correctFile = "src/test/verification/verify.csv";
 
     private FormData data;
     private FormData dataNoNumbers;
@@ -315,4 +323,19 @@ public class FormDataTest {
         assertEquals("security remark",data.getSecurityRemarks());
     }
 
+    @Test
+    public void saveAsCSV() throws Exception {
+        data.saveAsCSV(csvFilePath);
+        //Rather than read back the file and compare values individually, just compare to checked in (good) file
+        Path testeePath = Paths.get(csvFilePath);
+        Path testerPath = Paths.get(correctFile);
+
+        byte[] testee = Files.readAllBytes(testeePath);
+        byte[] tester = Files.readAllBytes(testerPath);
+
+        assertEquals(true, Arrays.equals(testee, tester));
+
+        //Clean up
+        Files.delete(testeePath);
+    }
 }
