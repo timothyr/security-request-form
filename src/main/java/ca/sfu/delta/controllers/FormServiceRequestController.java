@@ -1,13 +1,7 @@
 package ca.sfu.delta.controllers;
-
 import javax.validation.Valid;
-
 import ca.sfu.delta.models.FormData;
-<<<<<<< HEAD:src/main/java/ca/sfu/delta/controllers/ServiceRequestController.java
-import ca.sfu.delta.models.SendEmail;
-=======
 import ca.sfu.delta.models.RequestID;
->>>>>>> 5fa05387937960ac079ba5a00b80319b24c88b78:src/main/java/ca/sfu/delta/controllers/FormServiceRequestController.java
 import ca.sfu.delta.repository.FormRepository;
 import ca.sfu.delta.repository.RequestIDRepository;
 import org.springframework.beans.factory.annotation.Autowired;
