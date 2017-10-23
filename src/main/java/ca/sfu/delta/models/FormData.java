@@ -405,7 +405,8 @@ public class FormData {
             BufferedWriter csvWriter = new BufferedWriter(new FileWriter(fileName, true));
             //Only add first row with field names if file doesn't exist yet
             if (newFile) {
-                String firstRow = "Department" + ", " +
+                String firstRow = "Request ID" + ", " +
+                                  "Department" + ", " +
                                   "Requester Name" + ", " +
                                   "Phone Number" + ", " +
                                   "Fax Number" + ", " +
@@ -433,7 +434,8 @@ public class FormData {
                 csvWriter.append(firstRow);
             }
             //Append fields to csv, strip out commas from places they could be present
-            String nextRow = department + ", " +
+            String nextRow = requestID + ", " +
+                             department + ", " +
                              requesterName + ", " +
                              phoneNumber + ", " +
                              faxNumber + ", " +
