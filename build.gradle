@@ -44,3 +44,5 @@ dependencies {
 test {
 	exclude 'ca/sfu/delta/TeamDeltaProjectApplicationTests*'
 }
+
+test.outputs.upToDateWhen {false}
