@@ -2,6 +2,7 @@ package ca.sfu.delta.controllers;
 import javax.validation.Valid;
 import ca.sfu.delta.models.FormData;
 import ca.sfu.delta.models.RequestID;
+import ca.sfu.delta.models.SendEmail;
 import ca.sfu.delta.repository.FormRepository;
 import ca.sfu.delta.repository.RequestIDRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -137,8 +138,7 @@ public class FormServiceRequestController extends WebMvcConfigurerAdapter {
 
         saveFormToDatabase(serviceRequestForm);
 
-        return "redirect:/requests";
-        //return "redirect:/results";
+        return "redirect:/results";
     }
 
     private void saveFormToDatabase(FormData formData) {
@@ -146,7 +146,19 @@ public class FormServiceRequestController extends WebMvcConfigurerAdapter {
     		// Need to reserve a request id
 		    formData.setRequestID(reserveNextRequestID());
 	    }
+
+        // todo: refactoring
+        SendEmail SE = new SendEmail();
+        try{
+            SE.sendEmail(formData.getEmailAddress());
+        }
+        catch (Exception ex){
+
+        }
+        // ////////////////////////
+
         formRepository.save(formData);
+
     }
 
     @ModelAttribute("FormData")
