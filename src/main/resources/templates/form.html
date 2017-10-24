@@ -96,15 +96,19 @@
 							<th class="input-group">
 								<i id="chooseDateTime" class="fa fa-calendar calendar-icon mr-3 " onChange="setDateTime(this)"></i>
 								<input type="text" id="datetime" class="form-control"/>
-								<button id="addDateTime" type="button" class="btn btn-danger ml-1">Add Date</button>
+								<button v-on="click:addDatetime" id="addDateTime" type="button" class="btn btn-danger ml-1">Add Date</button>
 							</th>
 						</tr>
+
+
 						</thead>
-						<tbody id="datetimelist">
-						<tr hidden>
+						<tbody v-repeat="datetimelist">
+						<tr>
 							<td class="input-group">
-								<input type="text" id="date" class="form-control" disabled="disabled"/>
-								<button type="button" class="btn ml-1 " onclick="deleteDateTime(this)">Delete</button>
+								<input type="text" class="form-control" disabled="disabled" value="{{item}}"/>
+								<button type="button" class="btn ml-1">
+									Delete
+								</button>
 							</td>
 						</tr>
 						</tbody>
@@ -167,13 +171,31 @@
 	<script src="/js/vue.js"></script>
 	<script src="/js/jquery.datetimepicker.full.js"></script>
 	<script src="/js/jquery.datetimepicker.js"></script>
+	<script src="/js/vue.min.js"></script>
+
 	<script>
-		var app = new Vue({
- 			el: '#app',
- 			data: {
-  				message: 'Hello Vue hxsixs useless data!'
-		  	}
-		});
+		new Vue ({
+            el: '#app',
+            data: {
+               datetime: '',
+               datetimelist: [],
+               num: 0,
+
+            },
+            methods: {
+            	addDatetime: function(){
+            		this.datetime = getDateTime();
+            		if(this.datetime!=''){
+						this.datetimelist.push( {item: this.datetime, index: this.num} );
+						this.num++;
+						this.datetime = '';
+            		}
+            	},
+            },
+        });
+
+
+
 	</script>
 	<script>
 		$(document).ready(function(){
@@ -182,33 +204,19 @@
 				lang: 'en',
 				formatTime: 'g:i a',
 			});
-			$("#addDateTime").click(function(){
-				var datetime = document.getElementById("datetime").value;
-				if(datetime!=""){
-					$("#datetimelist").append(
-						"<tr>"+
-							"<td class='input-group'>"+
-								"<input type='text' id='date' class='form-control' disabled='disabled' value='"+
-								datetime+
-								"'/>"+
-								"<button type='button' class='btn ml-1' onclick='deleteDateTime(this)'>"+
-									"Delete"+
-								"</button>"+
-							"</td>"+
-						"</tr>"
-
-					);
-					<!--document.getElementById("date").value = datetime;-->
-					document.getElementById("datetime").value = "";
-				}
-			});
 		});
+
 		function setDateTime(e){
-			document.getElementById("datetime").value = e.value;
+			document.getElementById("datetime").value = chooseDateTime.value;
 		}
-		function deleteDateTime(e){
-			e.parentNode.parentNode.parentNode.removeChild(e.parentNode.parentNode);
+
+		function getDateTime(){
+			var x = document.getElementById("chooseDateTime").value;
+			document.getElementById("chooseDateTime").value = '';
+			document.getElementById("datetime").value = '';
+			return x;
 		}
+
 	</script>
 </body>
 </html>
