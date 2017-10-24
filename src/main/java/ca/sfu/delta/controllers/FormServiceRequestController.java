@@ -17,6 +17,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.ConsoleHandler;
 
 
 @Controller
@@ -86,6 +87,7 @@ public class FormServiceRequestController extends WebMvcConfigurerAdapter {
             @RequestParam(required=false) String faxNumber,
 			@RequestParam(required=false) String requestID
             ) {
+
         FormData form = new FormData();
         form.setDepartment(department);
         form.setRequesterName(requesterName);
@@ -107,6 +109,7 @@ public class FormServiceRequestController extends WebMvcConfigurerAdapter {
         form.setEventDates(eventDates);
         form.setEventDetails(eventDetails);
         form.setFaxNumber(faxNumber);
+
         if (requestID != null && !requestID.isEmpty()) {
 	        form.setRequestID(requestID);
         } else {
@@ -117,8 +120,10 @@ public class FormServiceRequestController extends WebMvcConfigurerAdapter {
         form = formRepository.save(form);
 
         if (form != null) {
+            System.out.println("saved");
             return String.valueOf(form.getId());
         } else {
+            System.out.println("failed");
             return "ERROR: form didn't save";
         }
     }
