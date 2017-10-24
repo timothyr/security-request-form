@@ -29,6 +29,7 @@ public class FormServiceRequestController extends WebMvcConfigurerAdapter {
     @Override
     public void addViewControllers(ViewControllerRegistry registry) {
         registry.addViewController("/results").setViewName("results");
+        registry.addViewController("/requests").setViewName("requests");
     }
 
     @RequestMapping(value = "/api/form/get/{id}", method = RequestMethod.GET, produces = "application/json")
@@ -136,7 +137,7 @@ public class FormServiceRequestController extends WebMvcConfigurerAdapter {
 
         saveFormToDatabase(serviceRequestForm);
 
-        return "redirect:/";
+        return "redirect:/requests";
     }
 
     private void saveFormToDatabase(FormData formData) {
