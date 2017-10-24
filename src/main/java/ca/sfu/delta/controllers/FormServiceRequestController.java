@@ -136,11 +136,12 @@ public class FormServiceRequestController extends WebMvcConfigurerAdapter {
 
         saveFormToDatabase(serviceRequestForm);
 
-        return "redirect:/results";
+        return "redirect:/";
     }
 
     private void saveFormToDatabase(FormData formData) {
-    	if (formData.getRequestID() == null || formData.getRequestID().isEmpty()) {
+    	System.out.println("Saving");
+        if (formData.getRequestID() == null || formData.getRequestID().isEmpty()) {
     		// Need to reserve a request id
 		    formData.setRequestID(reserveNextRequestID());
 	    }
