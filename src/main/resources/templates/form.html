@@ -23,40 +23,40 @@
 					<div class="row">
 						<div class="form-group col-md-4">
 							<label for="requested-by-input">Requested By</label>
-							<input type="text" id="requested-by-input" class="form-control" required="required"/>
+							<input type="text" id="requested-by-input" v-model="formData.requesterName" class="form-control" required="required"/>
 						</div>
 						<div class="form-group col-md-4">
 							<label for="department-input">Department</label>
-							<input type="text" id="department-input" class="form-control" required="required"/>
+							<input type="text" id="department-input" v-model="formData.department" class="form-control" required="required"/>
 						</div>
 						<div class="form-group col-md-4">
 							<label for="sfu-id-input">SFU ID</label>
-							<input type="text" id="sfu-id-input" class="form-control" required="required"/>
+							<input type="text" id="sfu-id-input" v-model="formData.requesterID" class="form-control" required="required"/>
 						</div>
 					</div>
 					<div class="row">
 						<div class="form-group col-md-4">
 							<label for="phone-input">Phone</label>
-							<input type="text" placeholder="xxx-xxx-xxxx" id="phone-input" class="form-control masked" pattern="[0-9]{3}[ |-][0-9]{3}[ |-][0-9]{4}" data-valid-example="000-000-0000" required="required"/>
+							<input type="text" placeholder="xxx-xxx-xxxx" id="phone-input" v-model="formData.phoneNumber" class="form-control masked" pattern="[0-9]{3}[ |-][0-9]{3}[ |-][0-9]{4}" data-valid-example="000-000-0000" required="required"/>
 						</div>
 						<div class="form-group col-md-4">
 							<label for="email-input">Email</label>
-							<input type="email" id="email-input" class="form-control" v-model="formData.email" placeholder="example@sfu.ca" required="required"/>
+							<input type="email" id="email-input" class="form-control" v-model="formData.emailAddress" placeholder="example@sfu.ca" required="required"/>
 						</div>
 						<div class="form-group col-md-4">
 							<label for="fax-input">Fax (optional)</label>
-							<input type="text" id="fax-input" class="form-control"/>
+							<input type="text" id="fax-input" v-model="formData.faxNumber" class="form-control"/>
 						</div>
 					</div>
 					<div class="row">
 						<div class="form-group col-md-4">
 							<label for="type-name-of-event-input">Type/Name of Event</label>
-							<input type="text" id="type-name-of-event-input" class="form-control" required="required"/>
+							<input type="text" id="type-name-of-event-input" v-model="formData.eventName" class="form-control" required="required"/>
 						</div>
 						<div class="form-group col-md-4">
 							<label for="location-input">Location</label>
 							<!--<input type="text" th:field="*{eventLocation}" id="location-input" class="form-control"/>-->
-							<select required class="form-control" id="location-input">
+							<select required class="form-control" id="location-input" v-model="formData.eventLocation">
 								<option value="">Choose...</option>
 								<option value="bur">Burnaby</option>
 								<option value="sur">Surrey</option>
@@ -66,18 +66,18 @@
 						</div>
 						<div class="form-group col-md-4">
 							<label for="number-of-attendees-input"># of Attendees</label>
-							<input type="number" min="1" value="1" id="number-of-attendees-input" class="form-control" required="required"/>
+							<input type="number" min="1" value="1" id="number-of-attendees-input" v-model="formData.numAttendees" class="form-control" required="required"/>
 						</div>
 					</div>
 					<div class="row">
 						<div class="form-group col-md-12">
 							<label for="details-input" placeholder="">Details</label>
-							<textarea rows="5" id="details-input" class="form-control"></textarea>
+							<textarea rows="5" id="details-input" v-model="formData.eventDetails" class="form-control"></textarea>
 						</div>
 					</div>
 					<div class="row">
 						<div class="form-group col-md-12">
-							<input type="checkbox" id="licensed-input" class="mr-1 mt-4"/>
+							<input type="checkbox" id="licensed-input" v-model="formData.isLicensed" class="mr-1 mt-4"/>
 							<label for="licensed-input">Licensed</label>
 						</div>
 					</div>
@@ -99,10 +99,10 @@
 							<tbody>
 							<tr>
 								<td>
-									<input type="text" id="date" class="form-control" required="required"/>
+									<input type="text" id="date" class="form-control" v-model="formData.eventDates" required="required"/>
 								</td>
 								<td>
-									<input type="text" id="time" class="form-control" required="required"/>
+									<input type="text" id="time" class="form-control" v-model="formData.times" required="required"/>
 								</td>
 							</tr>
 							</tbody>
@@ -118,24 +118,25 @@
 					<div class="row mt-5">
 						<div class="form-group col-md-4">
 							<label for="account-code-input">Account code</label>
+							<!-- no corresponding formData variable -->
 							<input type="text" id="account-code-input" class="form-control"/>
 						</div>
 						<div class="form-group col-md-4">
 							<label for="name-of-authorizee-input">Authorized by</label>
-							<input type="text" id="name-of-authorizee-input" class="form-control"/>
+							<input type="text" id="name-of-authorizee-input" v-model="formData.authorizerName" class="form-control"/>
 						</div>
 						<div class="form-group col-md-4">
 							<label for="sfu-id-or-bcdl-of-authorizee-input">Authorizee SFU ID </label>
-							<input type="text" id="sfu-id-or-bcdl-of-authorizee-input" class="form-control"/>
+							<input type="text" id="sfu-id-or-bcdl-of-authorizee-input" v-model="formData.authorizerId" class="form-control"/>
 						</div>
 						<div class="form-group col-md-4">
 							<label for="date-of-authorization-input">Date</label>
-							<input type="text" id="date-of-authorization-input" class="form-control"/>
+							<input type="text" id="date-of-authorization-input" v-model="formData.authorizationDate" class="form-control"/>
 
 						</div>
 						<div class="form-group col-md-4">
 							<label for="phone-of-authorizee-input">Phone</label>
-							<input type="text" placeholder="xxx-xxx-xxxx" id="phone-of-authorizee-input" class="form-control masked" pattern="[0-9]{3}[ |-][0-9]{3}[ |-][0-9]{4}" data-valid-example="000-000-0000"/>
+							<input type="text" placeholder="xxx-xxx-xxxx" id="phone-of-authorizee-input" v-model="formData.authorizerPhoneNumber" class="form-control masked" pattern="[0-9]{3}[ |-][0-9]{3}[ |-][0-9]{4}" data-valid-example="000-000-0000"/>
 						</div>
 					</div>
 					<div class="row">
@@ -184,14 +185,34 @@
 
  			data: {
                 formData: {
-                    email: ''
+                    department: '',
+                    requesterName: '',
+                    phoneNumber: '',
+                    requestedOnDate: '',
+                    requesterID: '',
+                    authorizationDate: '',
+                    paymentAccountCode: '',
+                    emailAddress: '',
+                    times: '',
+                    eventName: '',
+                    isLicensed: '',
+                    numAttendees: '0',
+                    authorizerId: '',
+                    authorizerPhoneNumber: '',
+                    serviceRequestNumber: '',
+                    eventLocation: '',
+                    authorizerName: '',
+                    eventDates: '',
+                    eventDetails: '',
+                    faxNumber: '',
+                    requestID: ''
                 }
             },
 
 			computed: {
 				validation: function () {
 					return {
-						email: emailValid.test(this.formData.email)
+                        emailAddress: emailValid.test(this.formData.emailAddress)
 					}
 				},
 				isValid: function () {
@@ -213,34 +234,31 @@
                     }
 
                     if (this.isValid) {
-                        <!-- submit with vue? -->
-                        <!-- this.$http.post('/api/form/save') -->
-                        console.log("submitting");
-                        this.$http.get('api/form/save', {params: {
-                            department: 'Computer Resources',
-                            requesterName: 'Stephen Hawking',
-                            phoneNumber: '604-555-5555',
-                            requestedOnDate: '03/03/03',
-                            requesterID: '301230123',
-                            authorizationDate: '03/03/03',
-                            paymentAccountCode: 'test',
-                            emailAddress: this.formData.email,
-                            times: 'test',
-                            eventName: 'test',
-                            isLicensed: 'true',
-                            numAttendees: '130',
-                            authorizerId: 'test',
-                            authorizerPhoneNumber: '604-555-5555',
-                            serviceRequestNumber: '604-555-5555',
-                            eventLocation: 'test',
-                            authorizerName: 'test',
-                            eventDates: '03/03/03',
-                            eventDetails: 'test',
-                            faxNumber: '604-555-5555',
-                            requestID: 'test'
-
-
-                        }}).then(successCallback, errorCallback);
+                        <!-- submit GET request with vue -->
+                        this.$http.get('api/form/save', {
+                            params: {
+                                department: 			this.formData.department,
+                                requesterName: 			this.formData.requesterName,
+                                phoneNumber: 			this.formData.phoneNumber,
+                                requestedOnDate: 		this.formData.requestedOnDate,
+                                requesterID: 			this.formData.requesterID,
+                                authorizationDate: 		this.formData.authorizationDate,
+                                paymentAccountCode: 	this.formData.paymentAccountCode,
+                                emailAddress: 			this.formData.emailAddress,
+                                times: 					this.formData.times,
+                                eventName: 				this.formData.eventName,
+                                isLicensed: 			this.formData.isLicensed,
+                                numAttendees:			this.formData.numAttendees,
+                                authorizerId: 			this.formData.authorizerId,
+                                authorizerPhoneNumber: 	this.formData.authorizerPhoneNumber,
+                                serviceRequestNumber: 	this.formData.serviceRequestNumber,
+                                eventLocation: 			this.formData.eventLocation,
+                                authorizerName: 		this.formData.authorizerName,
+                                eventDates: 			this.formData.eventDates,
+                                eventDetails: 			this.formData.eventDetails,
+                                faxNumber: 				this.formData.faxNumber
+                            }
+                        }).then(successCallback, errorCallback);
                     }
                 }
             }
