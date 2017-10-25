@@ -7,6 +7,20 @@
 	<link rel="stylesheet" href="/css/bootstrap.min.css">
 	<link rel="stylesheet" href="/css/style.css">
 </head>
+
+<!-- fixes guard table display -->
+<style>
+	@media all and (max-width:768px) {
+		.guardtable tr {
+			display: table;
+			width: 100%;
+		}
+		.guardtable td {
+			display: table-row;
+		}
+	}
+</style>
+
 <body>
 	<header>
 		<img class="logo" src="/img/sfu-logo@2x.png" alt="sfu-logo"/>
@@ -69,7 +83,7 @@
 			</div>
 
 			<div class="row my-4">
-				<table class="table">
+				<table class="table table-striped">
 					<thead>
 						<tr>
 							<th class="text-center">Date</th>
@@ -115,26 +129,78 @@
 			</div>
 
 			<div class="row mt-5">
-				<table class="table">
+				<table class="guardtable table-striped">
 					<thead>
 						<tr>
-							<th class="text-center">Guard ID</th>
-							<th class="text-center">Standard Pay Rate ($)</th>
-							<th class="text-center">Overtime Pay Rate ($)</th>
+							<th class="text-center">Dispatch #</th>
+							<th class="text-center">Location</th>
+							<th class="text-center">Start Date</th>
+							<th class="text-center">End Date</th>
+							<th class="text-center">Start Time</th>
+							<th class="text-center">End Time</th>
+							<th class="text-center">Name</th>
+							<th class="text-center">Telephone</th>
 						</tr>
 					</thead>
 					<tbody id="guards">
-						<tr>
+						<!-- <tr>
 							<td>
-								<input class="form-control text-center" type="text" value="63745">
+								<input class="form-control text-center" type="number" value="4256">
 							</td>
 							<td>
-								<input class="form-control text-center" type="number" step="0.01" min="0" value="22.50">
+								<input class="form-control text-center" type="text" value="Burnaby">
 							</td>
 							<td>
-								<input class="form-control text-center" type="number" step="0.01" max="0" value="28.75">
+								<input class="form-control text-center" type="date">
 							</td>
 							<td>
+								<input class="form-control text-center" type="date">
+							</td>
+							<td>
+								<input class="form-control text-center" type="time">
+							</td>
+							<td>
+								<input class="form-control text-center" type="time">
+							</td>
+							<td>
+								<input class="form-control text-center" type="text" value="Al">
+							</td>
+							<td>
+								<input class="form-control text-center" type="text" value="(604) 123-4567">
+							</td>
+							<td>
+								<button type="button" class="btn btn-danger" onclick="deleteGuard(this)">Remove Guard</button>
+							</td>
+						</tr>
+						-->
+
+						<tr v-for="g in guards">
+							<td>
+								<input class="form-control text-center" type="number" v-model="g.dispatch">
+							</td>
+							<td>
+								<input class="form-control text-center" type="text" v-model="g.location">
+							</td>
+							<td>
+								<input class="form-control text-center" type="date" v-model="g.startDate">
+							</td>
+							<td>
+								<input class="form-control text-center" type="date" v-model="g.endDate">
+							</td>
+							<td>
+								<input class="form-control text-center" type="time" v-model="g.startTime">
+							</td>
+							<td>
+								<input class="form-control text-center" type="time" v-model="g.endTime">
+							</td>
+							<td>
+								<input class="form-control text-center" type="text" v-model="g.name">
+							</td>
+							<td>
+								<input class="form-control text-center" type="text" v-model="g.telephone">
+							</td>
+							<td>
+								<!-- TODO: change guard deletion to use vue instead -->
 								<button type="button" class="btn btn-danger" onclick="deleteGuard(this)">Remove Guard</button>
 							</td>
 						</tr>
@@ -142,12 +208,32 @@
 				</table>
 			</div>
 			<div class="row text-right">
-				<button type="button" class="btn" onclick="addGuard()">Add Guard</button>
+				<!-- <button type="button" class="btn" onclick="addGuard()">Add Guard</button> -->
+				<button type="button" class="btn" v-on:click="addGuard">Add Guard</button>
+			</div>
+
+			<div class="row my-3">
+				<div class="col">
+					<label for="regRate">Regular Rate</label>
+					<input class="form-control text-center" id="regRate" type="number" step="0.01" min="0" v-model="regularRate">
+				</div>
+				<div class="col">
+					<label for="regHours">Regular Hours</label>
+					<input class="form-control text-center" id="regHours" type="number" step="0.01" min="0" v-model="regularHours">
+				</div>
+				<div class="col">
+					<label for="overRate">Overtime Rate</label>
+					<input class="form-control text-center" id="overRate" type="number" step="0.01" min="0" v-model="overtimeRate">
+				</div>
+				<div class="col">
+					<label for="overHours">Overtime Hours</label>
+					<input class="form-control text-center" id="overHours" type="number" step="0.01" min="0" v-model="overtimeHours">
+				</div>
 			</div>
 
 			<div class="form-group my-5">
-				<label for="remarks">Remarks</label>
-				<textarea class="form-control" rows="4" id="remarks"></textarea>
+				<label for="remarksField">Remarks</label>
+				<textarea class="form-control" rows="4" v-bind="remarks" id="remarksField"></textarea>
 			</div>
 
 			<div class="row my-5">
@@ -165,14 +251,17 @@
 									<div class="modal-body mx-5 text-left" id="emailList">
 										<!-- TODO: get more emails from server -->
 										<div class="checkbox">
-											<label><input type="checkbox" value="" th:text="' ' + ${form.emailAddress}"></label>
+											<label><input type="checkbox" v-model="emails" value="debug" th:text="' ' + ${form.emailAddress}"></label>
 										</div>
 										<div class="checkbox">
-											<label><input type="checkbox" value=""> asdf@sads.com</label>
+											<label><input type="checkbox" v-model="emails" value="asdf@sads.com"> asdf@sads.com</label>
 										</div>
 										<div class="checkbox">
-											<label><input type="checkbox" value=""> qweerty342@fef.com</label>
+											<label><input type="checkbox" v-model="emails" value="qweerty342@fef.com"> qweerty342@fef.com</label>
 										</div>
+
+										<span>Checked emails: {{emails}}</span>
+
 									</div>
 									<div class="modal-footer">
 										<button type="button" class="btn" data-dismiss="modal">Cancel</button>
@@ -203,35 +292,68 @@
 				let cell1 = row.insertCell(0);
 				let element1 = document.createElement('input');
 				element1.className = 'form-control text-center';
-				element1.type = 'text';
+				element1.type = 'number';
 				element1.value = '';
 				cell1.appendChild(element1);
 
 				let cell2 = row.insertCell(1);
 				let element2 = document.createElement('input');
 				element2.className = 'form-control text-center';
-				element2.type = 'number';
-				element2.value = 0;
-				element2.step = 0.01;
-				element2.min = 0;
+				element2.type = 'text';
+				element2.value = '';
 				cell2.appendChild(element2);
 
 				let cell3 = row.insertCell(2);
 				let element3 = document.createElement('input');
 				element3.className = 'form-control text-center';
-				element3.type = 'number';
-				element3.value = 0;
-				element3.step = 0.01;
-				element3.min = 0;
+				element3.type = 'date';
+				element3.value = '';
 				cell3.appendChild(element3);
 
 				let cell4 = row.insertCell(3);
-				let element4 = document.createElement('button');
-				element4.className = 'btn btn-danger';
-				element4.type = 'button';
-				element4.onclick = function () { deleteGuard(this); };
-				element4.innerHTML = 'Remove Guard';
+				let element4 = document.createElement('input');
+				element4.className = 'form-control text-center';
+				element4.type = 'date';
+				element4.value = '';
 				cell4.appendChild(element4);
+
+				let cell5 = row.insertCell(4);
+				let element5 = document.createElement('input');
+				element5.className = 'form-control text-center';
+				element5.type = 'time';
+				element5.value = '';
+				cell5.appendChild(element5);
+
+				let cell6 = row.insertCell(5);
+				let element6 = document.createElement('input');
+				element6.className = 'form-control text-center';
+				element6.type = 'time';
+				element6.value = '';
+				cell6.appendChild(element6);
+
+				let cell7 = row.insertCell(6);
+				let element7 = document.createElement('input');
+				element7.className = 'form-control text-center';
+				element7.type = 'text';
+				element7.value = '';
+				cell7.appendChild(element7);
+
+				let cell8 = row.insertCell(7);
+				let element8 = document.createElement('input');
+				element8.className = 'form-control text-center';
+				element8.type = 'text';
+				element8.value = '';
+				cell8.appendChild(element8);
+
+				let cell9 = row.insertCell(8);
+				let element9 = document.createElement('button');
+				element9.className = 'btn btn-danger';
+				element9.type = 'button';
+				element9.onclick = function () { deleteGuard(this); };
+				element9.innerHTML = 'Remove Guard';
+				cell9.appendChild(element9);
+
+
 			}
 
 			function deleteGuard(row) {
@@ -254,11 +376,42 @@
 							time: "9:00pm - 1:30am",
 							hours: 4.5
 						}
-					]
+					],
+
+					regularRate: 22.50,
+					regularHours: 6,
+					overtimeRate: 28.75,
+					overtimeHours: 3.5,
+
+					guards: [
+						{
+							dispatch: 5346,
+							location: 'Burnaby',
+							startDate: 'Aug 22 2017',
+							endDate: 'Aug 23 2017',
+							startTime: '8:00pm',
+							endTime: '2:00am',
+							name: 'Albert',
+							telephone: '(604) 123-1337'
+						}
+					],
+					emails: [],
+					remarks: ""
 				},
 
 				methods: {
-
+					addGuard: function() {
+						this.guards.push({
+							dispatch: '',
+							location: '',
+							startDate: '',
+							endDate: '',
+							startTime: '',
+							endTime: '',
+							name: '',
+							telephone: ''
+						})
+					}
 				},
 
 				created() {
