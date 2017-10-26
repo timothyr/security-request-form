@@ -120,10 +120,10 @@ public class FormServiceRequestController extends WebMvcConfigurerAdapter {
         form = formRepository.save(form);
 
         if (form != null) {
-            System.out.println("saved");
+            System.out.println("Successfully saved Form with requestID=" + form.getId());
             return String.valueOf(form.getId());
         } else {
-            System.out.println("failed");
+            System.out.println("Failed to save Form");
             return "ERROR: form didn't save";
         }
     }
