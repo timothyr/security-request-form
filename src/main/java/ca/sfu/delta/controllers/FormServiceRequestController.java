@@ -17,6 +17,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.ConsoleHandler;
 
 
 @Controller
@@ -29,6 +30,7 @@ public class FormServiceRequestController extends WebMvcConfigurerAdapter {
     @Override
     public void addViewControllers(ViewControllerRegistry registry) {
         registry.addViewController("/results").setViewName("results");
+        registry.addViewController("/requests").setViewName("requests");
     }
 
     @RequestMapping(value = "/api/form/get/{id}", method = RequestMethod.GET, produces = "application/json")
@@ -85,6 +87,7 @@ public class FormServiceRequestController extends WebMvcConfigurerAdapter {
             @RequestParam(required=false) String faxNumber,
 			@RequestParam(required=false) String requestID
             ) {
+
         FormData form = new FormData();
         form.setDepartment(department);
         form.setRequesterName(requesterName);
@@ -106,6 +109,7 @@ public class FormServiceRequestController extends WebMvcConfigurerAdapter {
         form.setEventDates(eventDates);
         form.setEventDetails(eventDetails);
         form.setFaxNumber(faxNumber);
+
         if (requestID != null && !requestID.isEmpty()) {
 	        form.setRequestID(requestID);
         } else {
@@ -116,8 +120,10 @@ public class FormServiceRequestController extends WebMvcConfigurerAdapter {
         form = formRepository.save(form);
 
         if (form != null) {
+            System.out.println("Successfully saved Form with requestID=" + form.getId());
             return String.valueOf(form.getId());
         } else {
+            System.out.println("Failed to save Form");
             return "ERROR: form didn't save";
         }
     }
@@ -136,11 +142,12 @@ public class FormServiceRequestController extends WebMvcConfigurerAdapter {
 
         saveFormToDatabase(serviceRequestForm);
 
-        return "redirect:/results";
+        return "redirect:/requests";
     }
 
     private void saveFormToDatabase(FormData formData) {
-    	if (formData.getRequestID() == null || formData.getRequestID().isEmpty()) {
+    	System.out.println("Saving");
+        if (formData.getRequestID() == null || formData.getRequestID().isEmpty()) {
     		// Need to reserve a request id
 		    formData.setRequestID(reserveNextRequestID());
 	    }
