@@ -18,7 +18,7 @@ public class SecurityViewController {
 
 	// redirects to /requests if bad reqID
 	@RequestMapping("/security/request/{reqID}")
-	public String securityview(@PathVariable String reqID, Model model) {
+	public String securityView(@PathVariable String reqID, Model model) {
 
 		FormData form;
 		long id;
@@ -29,31 +29,24 @@ public class SecurityViewController {
 			return "redirect:/requests";
 		}
 
+		// save a form for debugging
 		if (id == 1234) {
-			// dummy data for debugging
-			// TODO: remove for production
-
 			form = new FormData("Department", "Aug 22, 2017", "Steve Smith",
 					"123456789", "604-430-4444", "(04) 3056 6523",
 					"smithysmithers@sfu.ca", "Aug 10, 2017", "Beer Pong",
 					false, 400, "7:00pm - 2:00am", "546-546546-5453131",
 					true, "Biggest thing ever");
-		} else {
-			form = formRepository.findOne(id);
-
+			form.setId(id);
+			System.out.println(id);
+			form = formRepository.save(form);
 			if (form == null) {
-				return "redirect:/requests";
+				System.out.println("Form didn't save");
+			} else {
+				System.out.println("Form saved with id " + form.getId());
 			}
 		}
 
-		model.addAttribute("reqID", id);
-		model.addAttribute("form", form);
-
-		Map modelMap = model.asMap();
-		for (Object modelKey : modelMap.keySet()) {
-			Object modelValue = modelMap.get(modelKey);
-			System.out.println(modelKey+" -> "+modelValue);
-		}
+		model.addAttribute("reqID, id");
 
 		return "securityview";
 	}

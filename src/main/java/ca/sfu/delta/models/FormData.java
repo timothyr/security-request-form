@@ -10,7 +10,8 @@ import java.util.Map;
 @Entity
 public class FormData {
     @Id
-    @GeneratedValue(strategy= GenerationType.AUTO)
+	// TODO: uncomment this back before merging
+    //@GeneratedValue(strategy= GenerationType.AUTO)
     private Long id;
 
     //Specified by user
@@ -94,6 +95,11 @@ public class FormData {
     public Long getId() {
         return this.id;
     }
+
+    // TODO: remove, debugging
+	public void setId(long id) {
+		this.id = id;
+	}
 
     //Getter and Setter methods
     //Set by requester
