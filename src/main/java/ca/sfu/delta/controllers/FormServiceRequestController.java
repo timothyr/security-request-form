@@ -31,6 +31,9 @@ public class FormServiceRequestController extends WebMvcConfigurerAdapter {
     public void addViewControllers(ViewControllerRegistry registry) {
         registry.addViewController("/results").setViewName("results.html");
         registry.addViewController("/requests").setViewName("requests.html");
+
+        registry.addViewController("/admin").setViewName("admin.html");
+        registry.addViewController("/securitylogin").setViewName("securitylogin.html");
     }
 
     @RequestMapping(value = "/api/form/get/{id}", method = RequestMethod.GET, produces = "application/json")
