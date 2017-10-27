@@ -43,7 +43,17 @@
                         </thead>
                         <tbody>
                             <tr v-for="request in filteredRequests">
-                                <td v-for="value in request" class="clickable" v-on:click="goToRequest(request.requestID)">{{value}}</td>
+                                <!--<td v-for="value in request" class="clickable" v-on:click="goToRequest(request.requestID)">{{value}}</td>-->
+                                <td class="clickable">{{request.requestID}}</td>
+                                <td class="clickable">{{request.requesterName}}</td>
+                                <td class="clickable">{{request.requesterID}}</td>
+                                <td class="clickable">{{request.requestedOnDate}}</td>
+                                <td class="clickable">{{request.emailAddress}}</td>
+                                <td class="clickable">{{request.phoneNumber}}</td>
+                                <td class="clickable">{{request.eventName}}</td>
+                                <td class="clickable">{{request.eventLocation}}</td>
+                                <td class="clickable">{{request.eventDates}}</td>
+                                <td class="clickable">{{request.status}}</td>
                             </tr>
                         </tbody>
                     </table>
@@ -83,42 +93,6 @@
             sortKey: "",
             reversed: true,
             requests: [
-                {
-                    requestID: "170001",
-                    requesterName: "Ray Eng",
-                    requesterID: "301235622",
-                    requestedOnDate: "10/20/17",
-                    emailAddress: "raymonde@sfu.ca",
-                    phoneNumber: "604-430-1234",
-                    eventName: "SSSS Party",
-                    Location: "Surrey",
-                    eventDates: "12/24/17",
-                    status: "WAITING"
-                },
-                {
-                    requestID: "170002",
-                    requesterName: "Brian Fraser",
-                    requesterID: "301235623",
-                    requestedOnDate: "10/20/17",
-                    emailAddress: "brian@sfu.ca",
-                    phoneNumber: "604-430-1235",
-                    eventName: "SSSS Party",
-                    Location: "Surrey",
-                    eventDates: "12/24/17",
-                    status: "WAITING"
-                },
-                {
-                    requestID: "170003",
-                    requesterName: "Bill Gates",
-                    requesterID: "301235624",
-                    requestedOnDate: "10/20/17",
-                    emailAddress: "bill@sfu.ca",
-                    phoneNumber: "604-430-1235",
-                    eventName: "MS Event",
-                    Location: "Surrey",
-                    eventDates: "12/24/17",
-                    status: "APPROVED"
-                }
 
             ]
         },
@@ -171,11 +145,12 @@
             }
         },
         created: function() {
-            this.$http.get('/api/search', {
+            this.$http.get('/api/form/search', {
                 pageSize: 100,
-                pageNumber: 0
-            }).then(function(data) {
-                console.log(data);
+                pageNumber: 1
+            }).then(response  => {
+                console.log(response);
+                this.requests = response.data;
             });
         }
 

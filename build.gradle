@@ -26,7 +26,7 @@ repositories {
 
 dependencies {
 	//TODO: Ensure that we don't need these dependencies, and if so remove them entirely.
-//	compile("org.springframework.boot:spring-boot-devtools")
+	compile("org.springframework.boot:spring-boot-devtools")
 //	compile("org.hibernate:hibernate-validator")
 //	compile("org.apache.tomcat.embed:tomcat-embed-el")
 
