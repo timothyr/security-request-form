@@ -12,9 +12,9 @@ public class User {
 	@GeneratedValue(strategy=GenerationType.AUTO)
 	private Integer id;
 
-	private String name;
+	private Role role;
 
-	private String email;
+	private String username;
 
 	public Integer getId() {
 		return id;
@@ -24,20 +24,24 @@ public class User {
 		this.id = id;
 	}
 
-	public String getName() {
-		return name;
+	public void setRole(Role role) {
+		this.role = role;
 	}
 
-	public void setName(String name) {
-		this.name = name;
+	public Role getRole() {
+		return this.role;
 	}
 
-	public String getEmail() {
-		return email;
+	public String getUsername() {
+		return username;
 	}
 
-	public void setEmail(String email) {
-		this.email = email;
+	public void setUsername(String username) {
+		this.username = username;
 	}
 
+	public enum Role {
+		ADMIN,
+		SECURITY
+	}
 }

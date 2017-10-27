@@ -3,17 +3,20 @@ package ca.sfu.delta.controllers;
 import ca.sfu.delta.models.FormData;
 import ca.sfu.delta.models.Guard;
 import ca.sfu.delta.models.RequestID;
+import ca.sfu.delta.models.User;
 import ca.sfu.delta.repository.FormRepository;
 import ca.sfu.delta.repository.GuardRepository;
 import ca.sfu.delta.repository.RequestIDRepository;
+import ca.sfu.delta.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
 
+import java.beans.PropertyEditorSupport;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Calendar;
 import java.util.List;
 
@@ -22,21 +25,58 @@ public class ApiController {
 	@Autowired FormRepository formRepository;
 	@Autowired RequestIDRepository requestIDRepository;
 	@Autowired GuardRepository guardRepository;
+	@Autowired UserRepository userRepository;
 
-	@RequestMapping(value="/api/test")
-	public @ResponseBody FormData test() {
-		FormData formData = new FormData();
-		Guard a = new Guard("Sam", 0, 0, 0, 0);
-		Guard b = new Guard("Fredrik", 0, 0, 0, 0);
-		formData.setSecurityFields(
-				"Joe",
-				Arrays.asList(new Guard[]{a, b}),
-				Arrays.asList(new String[]{"hello", "goodbye", "Friend."}),
-				null,
-				null
-		);
+	/**
+	 * This method allows us to set up data binders for custom objects, e.g.
+	 * the User.Role enum.
+	 */
+	@InitBinder
+	public void initBinder(WebDataBinder dataBinder) {
+		dataBinder.registerCustomEditor(User.Role.class, new PropertyEditorSupport() {
+			@Override
+			public void setAsText(String text) throws IllegalArgumentException {
+				setValue(User.Role.valueOf(text.toUpperCase()));
+			}
+		});
+	}
 
-		return formData;
+	@RequestMapping(value="/api/user/get/{id}", method = RequestMethod.GET, produces = "application/json")
+	public ResponseEntity<User> getUser(
+			@PathVariable("id") Long id,
+			@RequestParam(required=true) String authtoken
+	) {
+		User user = userRepository.findOne(id);
+		if (user != null) {
+			return ResponseEntity.ok(user);
+		} else {
+			return new ResponseEntity(HttpStatus.NOT_FOUND);
+		}
+	}
+
+	@RequestMapping(value="/api/user/search", method = RequestMethod.GET, produces = "application/json")
+	public ResponseEntity<List<User>> searchUsers(@RequestParam(required=true) String authtoken) {
+		List<User> users = new ArrayList<User>();
+		Iterable<User> itr = userRepository.findAll();
+		itr.forEach(users::add);
+		return ResponseEntity.ok(users);
+	}
+
+	@RequestMapping(value="/api/user/save", method = RequestMethod.GET, produces = "application/json")
+	public ResponseEntity<User> saveUser(
+			@RequestParam(required=true) String username,
+			@RequestParam(required=true) User.Role role,
+			@RequestParam(required=true) String authtoken
+	) {
+		User user = new User();
+		user.setUsername(username);
+		user.setRole(role);
+		user = userRepository.save(user);
+		if (user != null) {
+			return ResponseEntity.ok(user);
+		} else {
+			return new ResponseEntity(HttpStatus.INTERNAL_SERVER_ERROR);
+		}
 	}
 
 	@RequestMapping(value="/api/guard/get/{id}", method = RequestMethod.GET, produces = "application/json")
@@ -45,7 +85,7 @@ public class ApiController {
 		if (guard != null) {
 			return ResponseEntity.ok(guard);
 		} else {
-			return new ResponseEntity<Guard>(HttpStatus.NOT_FOUND);
+			return new ResponseEntity(HttpStatus.NOT_FOUND);
 		}
 	}
 
@@ -70,7 +110,7 @@ public class ApiController {
 		if (guard != null) {
 			return ResponseEntity.ok(guard);
 		} else {
-			return new ResponseEntity<Guard>(HttpStatus.INTERNAL_SERVER_ERROR);
+			return new ResponseEntity(HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
 
@@ -80,7 +120,7 @@ public class ApiController {
 		if (form != null) {
 			return ResponseEntity.ok(form);
 		} else {
-			return new ResponseEntity<FormData>(HttpStatus.NOT_FOUND);
+			return new ResponseEntity(HttpStatus.NOT_FOUND);
 		}
 	}
 
@@ -166,7 +206,7 @@ public class ApiController {
 			return ResponseEntity.ok(form);
 		} else {
 			System.out.println("Failed to save Form");
-			return new ResponseEntity<FormData>(HttpStatus.INTERNAL_SERVER_ERROR);
+			return new ResponseEntity(HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
 
