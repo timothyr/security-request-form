@@ -16,6 +16,15 @@
             <div class="row mt-5">
                 <h1 class="mt-5">Requests</h1>
             </div>
+            <div class="row pull-right">
+                <div class="dropdown">
+                    <div class="dropdown-toggle" id="dropdownMenuButton" data-toggle="dropdown"><i class="fa fa-cog"></i></div>
+                    <ul class="dropdown-menu">
+                        <li class="dropdown-item">Export to CSV</li>
+                    </ul>
+                </div>
+
+            </div>
             <div class="row mt-5">
                 <div class="input-group search-group">
                     <span class="fa fa-search"></span>
@@ -38,11 +47,11 @@
                     <table class="table table-hover">
                         <thead>
                             <tr>
-                                <th v-for="column in columns" v-on:click="sortBy(column)" class="clickable">{{column}}</th>
+                                <th v-for="column in columns" v-on:click="sortBy(column)" class="clickable" v-cloak>{{column}}</th>
                             </tr>
                         </thead>
                         <tbody>
-                            <tr v-for="request in filteredRequests">
+                            <tr v-for="request in filteredRequests" v-cloak>
                                 <!--<td v-for="value in request" class="clickable" v-on:click="goToRequest(request.requestID)">{{value}}</td>-->
                                 <td class="clickable">{{request.requestID}}</td>
                                 <td class="clickable">{{request.requesterName}}</td>
@@ -79,6 +88,7 @@
     </div>
 </body>
 <script src="/js/jquery-3.2.1.min.js"></script>
+<script src="/js/bootstrap.bundle.min.js"></script>
 <script src="/js/vue.js"></script>
 <script src="/js/vue-resource.min.js"></script>
 <script>

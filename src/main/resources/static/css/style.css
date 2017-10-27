@@ -138,3 +138,8 @@ th {
 svg path, svg rect {
     fill: #007bff;
 }
+
+/* V-CLOAK - hides element until vue loads eg. {{hidesThis}} */
+[v-cloak] {
+    display: none;
+}
