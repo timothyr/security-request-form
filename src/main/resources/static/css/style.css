@@ -63,11 +63,13 @@ button {
 	font-weight: 300;
 }
 
+/* ICONS */
 .calendar-icon {
 	font-size: 2em;
 	color: #A8162B;
 }
 
+/* SPACING - add to div*/
 .bottom-space {
 	height: 100px;
 }
@@ -75,11 +77,11 @@ button {
 
 /* TABLE */
 th {
-	font-family: "HelveticaNeue-Light", "Helvetica Neue Light", "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif;
-	text-transform: uppercase;
-	font-weight: 300;
+    font-size: 0.8em;
+    color: #686868;
 }
 
+/* SEARCH BAR */
 .search-group {
 	position: relative;
 }
@@ -91,6 +93,7 @@ th {
 	z-index: 5;
 }
 
+/* TABLE COLOURING */
 .nav-pills .nav-link.active, .show>.nav-pills .nav-link {
 	background-color: transparent;
 	border-bottom: 3px solid #007bff;
@@ -122,6 +125,13 @@ th {
 /* TABLE */
 .table-striped tbody tr:nth-of-type(odd) {
 	background-color: #F4F8FB;
+}
+
+th {
+    white-space: nowrap;
+}
+td {
+    white-space: nowrap;
 }
 
 .clickable {
