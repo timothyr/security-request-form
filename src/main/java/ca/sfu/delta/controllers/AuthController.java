@@ -1,9 +1,7 @@
 package ca.sfu.delta.controllers;
 
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.BufferedReader;
@@ -64,8 +62,13 @@ public class AuthController {
 
             username = getStringBetween(response, "<cas:user>", "</cas:user>");
 
-            return baseUrl;
+            return "loggedin?username=" + username;
         }
+    }
+
+    @RequestMapping(value = "/loggedin", method = RequestMethod.GET)
+    public @ResponseBody String handleAuthenticationSuccess(@RequestParam(value="username") String username) {
+        return username;
     }
 
     /**
