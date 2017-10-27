@@ -88,8 +88,8 @@
     function isTermInObject(object, term) {
         //debugger;
         for (var prop in object) {
-            if (object.hasOwnProperty(prop)) {
-                if (object[prop].toLowerCase().includes(term.toLowerCase())) {
+            if (object.hasOwnProperty(prop) && (object[prop] != null)) {
+                if (object[prop].toString().toLowerCase().includes(term.toLowerCase())) {
                     return true;
                 }
             }
