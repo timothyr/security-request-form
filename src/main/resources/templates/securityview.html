@@ -193,7 +193,7 @@
 
 			<div class="form-group my-5">
 				<label for="remarksField">Remarks</label>
-				<textarea class="form-control" rows="4" v-bind="remarks" id="remarksField"></textarea>
+				<textarea class="form-control" rows="4" v-model="remarks" id="remarksField"></textarea>
 			</div>
 
 			<div class="row my-5">
@@ -225,7 +225,7 @@
 									</div>
 									<div class="modal-footer">
 										<button type="button" class="btn" data-dismiss="modal">Cancel</button>
-										<button type="button" class="btn btn-success mx-2" data-dismiss="model">Accept</button>
+										<button type="button" class="btn btn-success mx-2" data-dismiss="model" v-on:click="submit">Accept</button>
 									</div>
 								</div>
 
@@ -345,10 +345,26 @@
 					},
 					
 					submit: function () {
-						/*let submission = {
-							this.department,
-							requesterName
-						}*/
+						this.form.recievingSecuritySupervisor = 'not set';
+						this.form.securityRemarks = this.remarks;
+						this.form.distributionList = this.emails;
+						this.form.guards = null;	// todo
+						this.form.preparedBy = 'not set';
+
+						console.log("----------");
+						for (let p in this.form) {
+							if (this.form[p] === null) {
+								this.form[p] = 'not set';
+							}
+							console.log("form["+p+"] = "+ this.form[p]);
+						}
+
+						this.$http.post('http://localhost:8080/api/form/saveSecurity', this.form).then(function (response) {
+							console.log('Successfully sent form');
+							window.location.replace('http://localhost:8080/requests')
+						}, function (error) {
+							console.log('Failed to send form');
+						});
 					}
 				},
 

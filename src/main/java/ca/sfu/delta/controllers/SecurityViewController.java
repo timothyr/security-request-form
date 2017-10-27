@@ -5,10 +5,7 @@ import ca.sfu.delta.repository.FormRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-
-import java.util.Map;
+import org.springframework.web.bind.annotation.*;
 
 @Controller
 public class SecurityViewController {
@@ -49,6 +46,14 @@ public class SecurityViewController {
 		model.addAttribute("reqID, id");
 
 		return "securityview";
+	}
+
+	// TODO: change RequestBody back to FormData, process form properly as this only prints the json
+	@RequestMapping(value = "/api/form/saveSecurity", method = RequestMethod.POST)
+	public @ResponseBody String saveSecurity(@RequestBody String form) {
+		// debugging
+		System.out.println(form);
+		return null;
 	}
 
 }
