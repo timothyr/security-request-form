@@ -55,7 +55,7 @@
 				<div class="col" v-if="form.emailAddress !== null">
 					<p class="mx-5">Email: {{form.emailAddress}}</p>
 				</div>
-				<div class="col" v-if="form.eventLocation !== null">
+				<div class="col">
 					<p class="mx-5">Location: {{form.eventLocation}}</p>
 				</div>
 			</div>
@@ -327,8 +327,8 @@
 					removeNull: function () {
 						for (let p in this.form) {
 							console.log("form["+p+"] = "+ this.form[p]);
-							if (p === null) {
-								p = 'not set';
+							if (this.form[p] === null) {
+								this.form[p] = 'not set';
 							}
 						}
 					},
@@ -342,6 +342,13 @@
 						}, function (error) {
 							console.log(error.statusText);
 						});
+					},
+					
+					submit: function () {
+						/*let submission = {
+							this.department,
+							requesterName
+						}*/
 					}
 				},
 
