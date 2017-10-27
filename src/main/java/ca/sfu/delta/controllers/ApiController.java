@@ -48,7 +48,7 @@ public class ApiController {
 		return String.format("%02d", year) + "-" + String.format("%04d", formDigit);
 	}
 
-	@RequestMapping(value = "/api/form/save", method = RequestMethod.GET, produces = "application/json")
+	@RequestMapping(value = "/api/form/save", method = RequestMethod.PUT, produces = "application/json")
 	public @ResponseBody String addForm(
 			@RequestParam(required=false) String department,
 			@RequestParam(required=false) String requesterName,
