@@ -44,16 +44,16 @@
             </div>
             <div class="row mt-4">
                 <div class="table-responsive">
-                    <table class="table table-hover">
+                    <table class="table table-striped">
                         <thead>
                             <tr>
                                 <th v-for="column in columns" v-on:click="sortBy(column)" class="clickable" v-cloak>{{column}}</th>
                             </tr>
                         </thead>
                         <tbody>
-                            <tr v-for="request in filteredRequests" v-cloak>
+                            <tr v-for="request in filteredRequests" v-on:click="goToRequest(request.requestID)"v-cloak>
                                 <!--<td v-for="value in request" class="clickable" v-on:click="goToRequest(request.requestID)">{{value}}</td>-->
-                                <td class="clickable">{{request.requestID}}</td>
+                                <td class="clickable text-primary">{{request.requestID}}</td>
                                 <td class="clickable">{{request.requesterName}}</td>
                                 <td class="clickable">{{request.requesterID}}</td>
                                 <td class="clickable">{{request.requestedOnDate}}</td>
@@ -67,7 +67,7 @@
                         </tbody>
                     </table>
                 </div>
-                <span class="text-muted" v-if="showNoResults()">No results.</span>
+                <span class="text-muted mx-auto" v-if="showNoResults()">No results.</span>
                 <div class="loader loader--style3 mx-auto" title="2" v-if="loading">
                     <svg version="1.1" id="loader-1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
                      width="40px" height="40px" viewBox="0 0 50 50" style="enable-background:new 0 0 50 50;" xml:space="preserve">
