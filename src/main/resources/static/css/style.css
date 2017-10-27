@@ -132,3 +132,9 @@ th {
 .fa-sort {
 	color: #c6c6c6;
 }
+
+
+/* LOADING ICON - edit if interferes with other svg */
+svg path, svg rect {
+    fill: #007bff;
+}
