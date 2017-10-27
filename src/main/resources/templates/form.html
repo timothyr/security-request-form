@@ -87,28 +87,49 @@
 					</div>
 				</div>
 				<div class="row mt-4">
-					<table class="table table-striped">
+					<table class="table table-hover text-centered">
 						<thead>
 						<tr>
-							<th>Date and Time</th>
+							<th>Start Time</th>
+							<th>End Time</th>
+							<th></th>
 						</tr>
 						<tr>
-							<th class="input-group">
-								<i id="chooseDateTime" class="fa fa-calendar calendar-icon mr-3 " onChange="setDateTime(this)"></i>
-								<input type="text" id="datetime" class="form-control"/>
-								<button v-on="click:addDatetime" id="addDateTime" type="button" class="btn btn-danger ml-1">Add Date</button>
+
+							<th class="col-xs-3">
+								<div class ="input-group">
+									<span class="input-group-addon">
+										<i id="chooseStartDateTime" class="fa fa-calendar calendar-icon " onChange="setStartDateTime(this)"></i>
+									</span>
+									<input type="text" class="form-control" id="startdatetime" />
+								</div>
+							</th>
+
+							<th class="col-xs-3">
+								<div class ="input-group">
+									<span class="input-group-addon">
+										<i id="chooseEndDateTime" class="fa fa-calendar calendar-icon " onChange="setEndDateTime(this)"></i>
+									</span>
+									<input type="text" class="form-control" id="enddatetime" />
+								</div>
+							</th>
+
+							<th class="col-xs-1">
+								<button v-on="click:addDatetime" id="addDateTime" type="button" class="btn btn-danger ml-1">add</button>
 							</th>
 						</tr>
-
-
 						</thead>
+
 						<tbody v-repeat="datetimelist">
 						<tr>
-							<td class="input-group">
-								<input type="text" class="form-control" disabled="disabled" value="{{item}}"/>
-								<button type="button" class="btn ml-1">
-									Delete
-								</button>
+							<td>
+								<span class="ml-2">{{start}}</span>
+							</td>
+							<td>
+								<span class="ml-2">{{end}}</span>
+							</td>
+							<td>
+								<i v-on="click:deleteDatetime($index)" class="fa fa-trash-o trash-icon ml-1"></i>
 							</td>
 						</tr>
 						</tbody>
@@ -177,19 +198,24 @@
 		new Vue ({
             el: '#app',
             data: {
-               datetime: '',
+               startdatetime: '',
+               enddatetime: '',
                datetimelist: [],
-               num: 0,
 
             },
             methods: {
             	addDatetime: function(){
-            		this.datetime = getDateTime();
-            		if(this.datetime!=''){
-						this.datetimelist.push( {item: this.datetime, index: this.num} );
+            		this.startdatetime = getStartDateTime();
+            		this.enddatetime = getEndDateTime();
+            		if(this.startdatetime!='' && this.enddatetime!=''){
+						this.datetimelist.push( {start: this.startdatetime, end: this.enddatetime} );
 						this.num++;
-						this.datetime = '';
+						this.startdatetime = '';
+						this.enddatetime = '';
             		}
+            	},
+            	deleteDatetime: function(index){
+            		this.datetimelist.splice(index,1);
             	},
             },
         });
@@ -199,21 +225,39 @@
 	</script>
 	<script>
 		$(document).ready(function(){
-			$("#chooseDateTime").datetimepicker({
+			$("#chooseStartDateTime").datetimepicker({
 				dayOfWeekStart:1,
 				lang: 'en',
 				formatTime: 'g:i a',
 			});
+			$("#chooseEndDateTime").datetimepicker({
+				dayOfWeekStart:1,
+				lang: 'en',
+				formatTime: 'g:i a',
+			});
+			document.getElementById("chooseStartDateTime").value = '';
+			document.getElementById("startdatetime").value = '';
+			document.getElementById("chooseEndDateTime").value = '';
+			document.getElementById("enddatetime").value = '';
+
 		});
 
-		function setDateTime(e){
-			document.getElementById("datetime").value = chooseDateTime.value;
+		function setStartDateTime(e){
+			document.getElementById("startdatetime").value = chooseStartDateTime.value;
 		}
-
-		function getDateTime(){
-			var x = document.getElementById("chooseDateTime").value;
-			document.getElementById("chooseDateTime").value = '';
-			document.getElementById("datetime").value = '';
+		function setEndDateTime(e){
+			document.getElementById("enddatetime").value = chooseEndDateTime.value;
+		}
+		function getStartDateTime(){
+			var x = document.getElementById("chooseStartDateTime").value;
+			document.getElementById("chooseStartDateTime").value = '';
+			document.getElementById("startdatetime").value = '';
+			return x;
+		}
+		function getEndDateTime(){
+			var x = document.getElementById("chooseEndDateTime").value;
+			document.getElementById("chooseEndDateTime").value = '';
+			document.getElementById("enddatetime").value = '';
 			return x;
 		}
 

@@ -62,8 +62,17 @@ h3 {
 }
 
 .calendar-icon {
-	font-size: 2em;
+	font-size: 1.5em;
 	color: #A8162B;
+}
+
+.trash-icon {
+    font-size: 1.5em;
+    color: #A8162B;
+}
+
+input.form-control {
+  width: auto;
 }
 
 .bottom-space {
