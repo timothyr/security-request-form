@@ -7,7 +7,7 @@ import javax.persistence.Id;
 import java.math.BigDecimal;
 
 @Entity
-public class Guard{
+public class Guard {
 
 	@Id
 	@GeneratedValue(strategy= GenerationType.AUTO)

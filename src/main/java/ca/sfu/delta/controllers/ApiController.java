@@ -1,38 +1,95 @@
 package ca.sfu.delta.controllers;
 
 import ca.sfu.delta.models.FormData;
+import ca.sfu.delta.models.Guard;
 import ca.sfu.delta.models.RequestID;
 import ca.sfu.delta.repository.FormRepository;
+import ca.sfu.delta.repository.GuardRepository;
 import ca.sfu.delta.repository.RequestIDRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.List;
-import java.util.Map;
 
 @Controller
 public class ApiController {
 	@Autowired FormRepository formRepository;
 	@Autowired RequestIDRepository requestIDRepository;
+	@Autowired GuardRepository guardRepository;
+
+	@RequestMapping(value="/api/test")
+	public @ResponseBody FormData test() {
+		FormData formData = new FormData();
+		Guard a = new Guard("Sam", 0, 0, 0, 0);
+		Guard b = new Guard("Fredrik", 0, 0, 0, 0);
+		formData.setSecurityFields(
+				"Joe",
+				Arrays.asList(new Guard[]{a, b}),
+				Arrays.asList(new String[]{"hello", "goodbye", "Friend."}),
+				null,
+				null
+		);
+
+		return formData;
+	}
+
+	@RequestMapping(value="/api/guard/get/{id}", method = RequestMethod.GET, produces = "application/json")
+	public ResponseEntity<Guard> getGuard(@PathVariable("id") Long id) {
+		Guard guard = guardRepository.findOne(id);
+		if (guard != null) {
+			return ResponseEntity.ok(guard);
+		} else {
+			return new ResponseEntity<Guard>(HttpStatus.NOT_FOUND);
+		}
+	}
+
+	@RequestMapping(value="/api/guard/search", method = RequestMethod.GET, produces = "application/json")
+	public ResponseEntity<List<Guard>> searchGuard() {
+		List<Guard> guards = new ArrayList<Guard>();
+		Iterable<Guard> itr = guardRepository.findAll();
+		itr.forEach(guards::add);
+		return ResponseEntity.ok(guards);
+	}
+
+	@RequestMapping(value="/api/guard/save", method = RequestMethod.GET, produces = "application/json")
+	public ResponseEntity<Guard> saveGuard(
+			@RequestParam(required=true) String name,
+			@RequestParam(required=true) Integer regularHours,
+			@RequestParam(required=true) Integer overtimeHours,
+			@RequestParam(required=true) Double regularRate,
+			@RequestParam(required=true) Double overtimeRate
+	) {
+		Guard guard = new Guard(name, regularHours, regularRate, overtimeHours, overtimeRate);
+		guard = guardRepository.save(guard);
+		if (guard != null) {
+			return ResponseEntity.ok(guard);
+		} else {
+			return new ResponseEntity<Guard>(HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
 
 	@RequestMapping(value = "/api/form/get/{id}", method = RequestMethod.GET, produces = "application/json")
-	public @ResponseBody Map<String, Object> getForm(@PathVariable("id") Long id) {
+	public ResponseEntity<FormData> getForm(@PathVariable("id") Long id) {
 		FormData form = formRepository.findOne(id);
-		return form.jsonify();
+		if (form != null) {
+			return ResponseEntity.ok(form);
+		} else {
+			return new ResponseEntity<FormData>(HttpStatus.NOT_FOUND);
+		}
 	}
 
 	@RequestMapping(value = "/api/form/search", method = RequestMethod.GET, produces = "application/json")
-	public @ResponseBody List<Map<String, Object>> search() {
-		List<Map<String, Object>> forms = new ArrayList<Map<String, Object>>();
-
-		for (FormData form : formRepository.findAll()) {
-			forms.add(form.jsonify());
-		}
-
-		return forms;
+	public ResponseEntity<List<FormData>> search() {
+		List<FormData> forms = new ArrayList<FormData>();
+		Iterable<FormData> itr = formRepository.findAll();
+		itr.forEach(forms::add);
+		return ResponseEntity.ok(forms);
 	}
 
 	// Reserve the next request ID in the sequence to ensure each form has a unique request ID
@@ -48,8 +105,8 @@ public class ApiController {
 		return String.format("%02d", year) + "-" + String.format("%04d", formDigit);
 	}
 
-	@RequestMapping(value = "/api/form/save", method = RequestMethod.PUT, produces = "application/json")
-	public @ResponseBody String addForm(
+	@RequestMapping(value = "/api/form/save", method = RequestMethod.GET, produces = "application/json")
+	public ResponseEntity<FormData> addForm(
 			@RequestParam(required=false) String department,
 			@RequestParam(required=false) String requesterName,
 			@RequestParam(required=false) String phoneNumber,
@@ -106,10 +163,10 @@ public class ApiController {
 
 		if (form != null) {
 			System.out.println("Successfully saved Form with requestID=" + form.getId());
-			return String.valueOf(form.getId());
+			return ResponseEntity.ok(form);
 		} else {
 			System.out.println("Failed to save Form");
-			return "ERROR: form didn't save";
+			return new ResponseEntity<FormData>(HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
 

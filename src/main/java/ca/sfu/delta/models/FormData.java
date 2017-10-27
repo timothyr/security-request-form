@@ -2,10 +2,7 @@ package ca.sfu.delta.models;
 
 import javax.persistence.*;
 import java.lang.String;
-import java.lang.reflect.Field;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.io.File;
 import java.io.BufferedWriter;
 import java.io.FileWriter;
@@ -337,18 +334,6 @@ public class FormData {
     	this.distributionList = distributionList;
     	this.preparedBy = preparedBy;
     	this.securityRemarks = securityRemarks;
-    }
-
-    public Map<String, Object> jsonify() {
-        Map<String, Object> map = new HashMap<String, Object>();
-        for (Field f : getClass().getDeclaredFields()) {
-            try {
-                map.put(f.getName(), f.get(this));
-            } catch (IllegalAccessException e) {
-                e.printStackTrace();
-            }
-        }
-        return map;
     }
 
     @Override
