@@ -7,10 +7,21 @@ body {
 	background-color: #ededed;
 }
 
+h1 {
+    font-weight: 300;
+    font-size: 2em;
+}
+
+h3 {
+    font-weight: 300;
+    color: #686868;
+}
+
 .red-background {
 	background-color: #A8162B;
 }
 
+/* HEADER */
 header {
 	background-color: white;
 }
@@ -20,6 +31,7 @@ header {
 	margin-bottom: 20px;
 }
 
+/* BUTTON */
 button {
 	cursor: pointer;
 }
@@ -30,18 +42,7 @@ button {
 	}
 }
 
-h1 {
-	font-weight: 300;
-	font-size: 2em;
-}
-
-h3 {
-	font-weight: 300;
-	color: #686868;
-}
-
 /* WRAPPER */
-
 .wrapper {
 	/* white background thing */
 	background-color: white;
@@ -50,6 +51,7 @@ h3 {
     min-height: 1000px;
 }
 
+/* TITLE */
 .form-heading {
 	padding-bottom: 20px;
 	border-bottom: 1px solid #EFEFEF;
@@ -72,7 +74,6 @@ h3 {
 
 
 /* TABLE */
-
 th {
 	font-family: "HelveticaNeue-Light", "Helvetica Neue Light", "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif;
 	text-transform: uppercase;
@@ -127,7 +128,7 @@ th {
     cursor: pointer;
 }
 
-/* REQUEST */
+/* REQUESTS */
 /* font awesome */
 .fa-sort {
 	color: #c6c6c6;
