@@ -219,13 +219,10 @@
 										<div class="checkbox">
 											<label><input type="checkbox" v-model="emails" value="qweerty342@fef.com"> qweerty342@fef.com</label>
 										</div>
-
-										<span>Checked emails: {{emails}}</span>
-
 									</div>
 									<div class="modal-footer">
 										<button type="button" class="btn" data-dismiss="modal">Cancel</button>
-										<button type="button" class="btn btn-success mx-2" data-dismiss="model" v-on:click="submit">Accept</button>
+										<button type="button" class="btn btn-success mx-2" data-dismiss="model" v-on:click="submit('accept')">Accept</button>
 									</div>
 								</div>
 
@@ -292,13 +289,17 @@
 					guards: [
 						{
 							guardID: 5346,
-							location: 'Burnaby',
-							startDate: 'Aug 22 2017',
-							endDate: 'Aug 23 2017',
-							startTime: '8:00pm',
-							endTime: '2:00am',
-							name: 'Albert',
-							telephone: '(604) 123-1337'
+							location: "Burnaby",
+							startDate: "Aug 22 2017",
+							endDate: "Aug 23 2017",
+							startTime: "8:00pm",
+							endTime: "2:00am",
+							name: "Albert",
+							telephone: "(604) 123-1337",
+							regularHours: null,
+							overtimeHours: null,
+							regularRate: null,
+							overtimeRate: null
 						}
 					],
 					emails: [],
@@ -315,7 +316,11 @@
 							startTime: '',
 							endTime: '',
 							name: '',
-							telephone: ''
+							telephone: '',
+							regularHours: null,
+							overtimeHours: null,
+							regularRate: null,
+							overtimeRate: null
 						})
 					},
 					
@@ -326,10 +331,18 @@
 
 					removeNull: function () {
 						for (let p in this.form) {
-							console.log("form["+p+"] = "+ this.form[p]);
 							if (this.form[p] === null) {
 								this.form[p] = 'not set';
 							}
+							console.log("form["+p+"] = "+ this.form[p]);
+						}
+
+						if (this.form.guards === 'not set') {
+							this.form.guards = null;
+						}
+
+						if (this.form.isAuthorized === 'not set') {
+							this.form.isAuthorized = false;
 						}
 					},
 
@@ -343,25 +356,40 @@
 							console.log(error.statusText);
 						});
 					},
-					
-					submit: function () {
+
+					setSecFields: function () {
 						this.form.recievingSecuritySupervisor = 'not set';
 						this.form.securityRemarks = this.remarks;
 						this.form.distributionList = this.emails;
-						this.form.guards = null;	// todo
+						this.form.guards = JSON.parse(JSON.stringify(this.guards));
 						this.form.preparedBy = 'not set';
 
-						console.log("----------");
-						for (let p in this.form) {
-							if (this.form[p] === null) {
-								this.form[p] = 'not set';
-							}
-							console.log("form["+p+"] = "+ this.form[p]);
+						let i, len;
+						len = this.form.guards.length;
+						for (i = 0; i < len; ++i) {
+							this.form.guards[i].regularHours = this.regularHours;
+							this.form.guards[i].overtimeHours = this.overtimeHours;
+							this.form.guards[i].regularRate = this.regularRate;
+							this.form.guards[i].overtimeRate = this.overtimeRate;
 						}
+					},
+					
+					submit: function (action) {
+						this.setSecFields();
+
+						if (action === 'accept') {
+							this.form.requestStatus = "APPROVED";
+						} else if (action === 'reject') {
+							this.form.requestStatus = 'REJECTED';
+						}
+
+
+						console.log("---------- Submitting:");
+						this.removeNull();
 
 						this.$http.post('http://localhost:8080/api/form/saveSecurity', this.form).then(function (response) {
 							console.log('Successfully sent form');
-							window.location.replace('http://localhost:8080/requests')
+							//window.location.replace('http://localhost:8080/requests')
 						}, function (error) {
 							console.log('Failed to send form');
 						});

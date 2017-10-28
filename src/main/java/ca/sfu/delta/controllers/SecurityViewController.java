@@ -50,9 +50,12 @@ public class SecurityViewController {
 
 	// TODO: change RequestBody back to FormData, process form properly as this only prints the json
 	@RequestMapping(value = "/api/form/saveSecurity", method = RequestMethod.POST)
-	public @ResponseBody String saveSecurity(@RequestBody String form) {
-		// debugging
-		System.out.println(form);
+	public @ResponseBody String saveSecurity(@RequestBody FormData form) {
+		formRepository.save(form);
+		for (FormData f : formRepository.findAll()) {
+			System.out.println(f.toString());
+		}
+
 		return null;
 	}
 
