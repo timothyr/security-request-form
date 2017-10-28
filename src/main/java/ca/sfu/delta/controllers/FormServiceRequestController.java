@@ -1,4 +1,5 @@
 package ca.sfu.delta.controllers;
+import javax.mail.MessagingException;
 import javax.validation.Valid;
 import ca.sfu.delta.models.FormData;
 import ca.sfu.delta.models.RequestID;
@@ -16,6 +17,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.ConsoleHandler;
 
 
 @Controller
@@ -24,10 +26,13 @@ public class FormServiceRequestController extends WebMvcConfigurerAdapter {
     FormRepository formRepository;
     @Autowired
     RequestIDRepository requestIDRepository;
+    @Autowired
+    SendEmail sendEmail;
 
     @Override
     public void addViewControllers(ViewControllerRegistry registry) {
         registry.addViewController("/results").setViewName("results");
+        registry.addViewController("/requests").setViewName("requests");
     }
 
     @RequestMapping(value = "/api/form/get/{id}", method = RequestMethod.GET, produces = "application/json")
@@ -87,6 +92,7 @@ public class FormServiceRequestController extends WebMvcConfigurerAdapter {
             @RequestParam(required=false) String faxNumber,
 			@RequestParam(required=false) String requestID
             ) {
+
         FormData form = new FormData();
         form.setDepartment(department);
         form.setRequesterName(requesterName);
@@ -108,6 +114,7 @@ public class FormServiceRequestController extends WebMvcConfigurerAdapter {
         form.setEventDates(eventDates);
         form.setEventDetails(eventDetails);
         form.setFaxNumber(faxNumber);
+
         if (requestID != null && !requestID.isEmpty()) {
 	        form.setRequestID(requestID);
         } else {
@@ -118,9 +125,36 @@ public class FormServiceRequestController extends WebMvcConfigurerAdapter {
         form = formRepository.save(form);
 
         if (form != null) {
+            System.out.println("saved");
+
+
+            // Send Email to the User to confirm the request has been sent
+            String userEmailAddress = form.getEmailAddress();
+            String userName = form.getRequesterName();
+            String trackingID = form.getRequestID();
+            //Probably don't need to check here if email Address is null
+            if(userEmailAddress != null && userName != null && trackingID != null) {
+                try {
+                    sendEmail.sendTo(userEmailAddress, userName, trackingID);
+                } catch (MessagingException ex) {
+                    System.out.println("Could not send the email. Error message: "+ ex.getMessage());
+                    //e.printStackTrace();
+                }
+            } else if (userName == null){
+                try {
+                    sendEmail.sendTo(userEmailAddress, trackingID);
+                } catch (MessagingException ex) {
+                    System.out.println("Could not send the email. Error message: "+ ex.getMessage());
+                    //e.printStackTrace();
+                }
+            } else {
+                System.out.println("Could not send Email. Please ensure all the parameters are valid.");
+            }
+
             return String.valueOf(form.getId());
         } else {
-            return "ERROR: form didn't save";
+            System.out.println("Failed");
+            return "ERROR: Form didn't save";
         }
     }
 
@@ -138,24 +172,16 @@ public class FormServiceRequestController extends WebMvcConfigurerAdapter {
 
         saveFormToDatabase(serviceRequestForm);
 
-        return "redirect:/results";
+        return "redirect:/requests";
     }
 
     private void saveFormToDatabase(FormData formData) {
-    	if (formData.getRequestID() == null || formData.getRequestID().isEmpty()) {
+    	System.out.println("Saving");
+        if (formData.getRequestID() == null || formData.getRequestID().isEmpty()) {
     		// Need to reserve a request id
 		    formData.setRequestID(reserveNextRequestID());
 	    }
 
-        // todo: refactoring
-        SendEmail SE = new SendEmail();
-        try{
-            SE.sendEmail(formData.getEmailAddress());
-        }
-        catch (Exception ex){
-
-        }
-        // ////////////////////////
 
         formRepository.save(formData);
 
