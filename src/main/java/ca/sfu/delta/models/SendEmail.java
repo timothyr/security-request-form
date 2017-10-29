@@ -20,32 +20,24 @@ public class SendEmail {
         this.javaMailSender = javaMailSender;
     }
 
-    public void sendTo(String sendToEmailAddress, String personName, String trackingID) throws MessagingException {
+    public void sendTo(String sendToEmailAddress, String personName, String trackingID, String requestURL) throws MessagingException {
 
         MimeMessage message = javaMailSender.createMimeMessage();
         MimeMessageHelper helper = new MimeMessageHelper(message);
 
-        helper.setTo(sendToEmailAddress);
-        helper.setSubject("SFU: Your Request Confirmation");
-        helper.setText("Hello, " + personName + "!" + "Your request has been sent to the authority. " +
-                "You will be contacted shortly by the security. Your request ID is: " + trackingID);
-
-        try{
-            javaMailSender.send(message);
+        String greeting;
+        if (personName == null || personName.isEmpty()) {
+        	greeting = "Hello!";
         }
-        catch (MailException ex){
-            System.err.println(ex.getMessage());
+        else {
+        	greeting = "Hello, " + personName + "!";
         }
-    }
-    public void sendTo(String sendToEmailAddress, String trackingID) throws MessagingException {
-
-        MimeMessage message = javaMailSender.createMimeMessage();
-        MimeMessageHelper helper = new MimeMessageHelper(message);
 
         helper.setTo(sendToEmailAddress);
         helper.setSubject("SFU: Your Request Confirmation");
-        helper.setText("Hello!" + "Your request has been sent to the authority. " +
-                "You will be contacted shortly by the security. Your request ID is: " + trackingID);
+        helper.setText(greeting + " Your request has been sent to the authorities." +
+                " You will be contacted shortly by security. Your request ID is: " + trackingID + "." +
+                " You may view your request at " + requestURL);
 
         try{
             javaMailSender.send(message);

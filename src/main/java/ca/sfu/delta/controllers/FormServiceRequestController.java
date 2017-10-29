@@ -36,6 +36,8 @@ public class FormServiceRequestController extends WebMvcConfigurerAdapter {
     @Autowired
     SendEmail sendEmail;
 
+    private static final String formFromTokenURL = "/api/form/get/user/";
+
     @Override
     public void addViewControllers(ViewControllerRegistry registry) {
         registry.addViewController("/results").setViewName("results.html");
@@ -50,7 +52,7 @@ public class FormServiceRequestController extends WebMvcConfigurerAdapter {
         return form.jsonify();
     }
 
-    @RequestMapping(value = "/api/form/get/user/{token}", method = RequestMethod.GET, produces = "application/json")
+    @RequestMapping(value = formFromTokenURL + "{token}", method = RequestMethod.GET, produces = "application/json")
 	public @ResponseBody ResponseEntity getFormFromToken(@PathVariable("token") String token) {
     	if (urlTokenRepository.existsByToken(token)) {
 		    URLToken urlToken = urlTokenRepository.getByToken(token);
@@ -172,17 +174,11 @@ public class FormServiceRequestController extends WebMvcConfigurerAdapter {
             String userEmailAddress = form.getEmailAddress();
             String userName = form.getRequesterName();
             String trackingID = form.getRequestID();
+            String requestURL = GlobalConstants.SERVER_HOST_ADDRESS + formFromTokenURL + token;
             //Probably don't need to check here if email Address is null
-            if(userEmailAddress != null && userName != null && trackingID != null) {
+            if(userEmailAddress != null && trackingID != null) {
                 try {
-                    sendEmail.sendTo(userEmailAddress, userName, trackingID);
-                } catch (MessagingException ex) {
-                    System.out.println("Could not send the email. Error message: "+ ex.getMessage());
-                    //e.printStackTrace();
-                }
-            } else if (userName == null){
-                try {
-                    sendEmail.sendTo(userEmailAddress, trackingID);
+                    sendEmail.sendTo(userEmailAddress, userName, trackingID, requestURL);
                 } catch (MessagingException ex) {
                     System.out.println("Could not send the email. Error message: "+ ex.getMessage());
                     //e.printStackTrace();
