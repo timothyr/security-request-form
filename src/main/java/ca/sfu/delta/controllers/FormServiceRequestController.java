@@ -1,9 +1,9 @@
 package ca.sfu.delta.controllers;
-
+import javax.mail.MessagingException;
 import javax.validation.Valid;
-
 import ca.sfu.delta.models.FormData;
 import ca.sfu.delta.models.RequestID;
+import ca.sfu.delta.models.SendEmail;
 import ca.sfu.delta.repository.FormRepository;
 import ca.sfu.delta.repository.RequestIDRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,6 +26,8 @@ public class FormServiceRequestController extends WebMvcConfigurerAdapter {
     FormRepository formRepository;
     @Autowired
     RequestIDRepository requestIDRepository;
+    @Autowired
+    SendEmail sendEmail;
 
     @Override
     public void addViewControllers(ViewControllerRegistry registry) {
@@ -34,13 +36,16 @@ public class FormServiceRequestController extends WebMvcConfigurerAdapter {
     }
 
     @RequestMapping(value = "/api/form/get/{id}", method = RequestMethod.GET, produces = "application/json")
-    public @ResponseBody Map<String, Object> getForm(@PathVariable("id") Long id) {
+    public @ResponseBody
+    Map<String, Object> getForm(@PathVariable("id") Long id) {
         FormData form = formRepository.findOne(id);
+
         return form.jsonify();
     }
 
     @RequestMapping(value = "/api/form/search", method = RequestMethod.GET, produces = "application/json")
-    public @ResponseBody List<Map<String, Object>> search() {
+    public @ResponseBody
+    List<Map<String, Object>> search() {
         List<Map<String, Object>> forms = new ArrayList<Map<String, Object>>();
 
         for (FormData form : formRepository.findAll()) {
@@ -120,6 +125,32 @@ public class FormServiceRequestController extends WebMvcConfigurerAdapter {
         form = formRepository.save(form);
 
         if (form != null) {
+
+            System.out.println("saved");
+
+
+            // Send Email to the User to confirm the request has been sent
+            String userEmailAddress = form.getEmailAddress();
+            String userName = form.getRequesterName();
+            String trackingID = form.getRequestID();
+            //Probably don't need to check here if email Address is null
+            if(userEmailAddress != null && userName != null && trackingID != null) {
+                try {
+                    sendEmail.sendTo(userEmailAddress, userName, trackingID);
+                } catch (MessagingException ex) {
+                    System.out.println("Could not send the email. Error message: "+ ex.getMessage());
+                    //e.printStackTrace();
+                }
+            } else if (userName == null){
+                try {
+                    sendEmail.sendTo(userEmailAddress, trackingID);
+                } catch (MessagingException ex) {
+                    System.out.println("Could not send the email. Error message: "+ ex.getMessage());
+                    //e.printStackTrace();
+                }
+            } else {
+                System.out.println("Could not send Email. Please ensure all the parameters are valid.");
+            }
             System.out.println("Successfully saved Form with requestID=" + form.getId());
             return String.valueOf(form.getId());
         } else {
@@ -151,11 +182,14 @@ public class FormServiceRequestController extends WebMvcConfigurerAdapter {
     		// Need to reserve a request id
 		    formData.setRequestID(reserveNextRequestID());
 	    }
+
+
         formRepository.save(formData);
+
     }
 
     @ModelAttribute("FormData")
-	public FormData createModel() {
-		return new FormData();
-	}
+    public FormData createModel() {
+        return new FormData();
+    }
 }
