@@ -418,7 +418,7 @@
 
 						this.$http.post('http://localhost:8080/api/form/saveSecurity', this.form).then(function (response) {
 							console.log('Successfully sent form');
-							window.location.replace('http://localhost:8080/requests')
+							window.location.replace('/requests.html')
 						}, function (error) {
 							console.log('Failed to send form');
 						});
