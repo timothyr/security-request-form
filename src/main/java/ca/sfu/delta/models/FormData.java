@@ -6,13 +6,19 @@ import java.lang.reflect.Field;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.io.File;
+import java.io.BufferedWriter;
+import java.io.FileWriter;
+import java.io.IOException;
+
 
 @Entity
 public class FormData {
     @Id
-	// TODO: uncomment this back before merging
-    //@GeneratedValue(strategy= GenerationType.AUTO)
+    @GeneratedValue(strategy= GenerationType.AUTO)
     private Long id;
+
+    // TODO: ensure all fields are saved in csv
 
     //Specified by user
     private String department;
@@ -21,7 +27,7 @@ public class FormData {
     private String faxNumber;
     private String emailAddress;
     private String eventName;
-    private String requesterID; //SFU ID or BCDL
+    private String requesterID; //SFU ID
     private String eventLocation; //String for now, until we have full list of possible locations.
     private Boolean isLicensed;
     private int numAttendees;
@@ -43,6 +49,8 @@ public class FormData {
     private String preparedBy;
     private String securityRemarks;
     private String requestStatus;
+
+	private String requestID;
 
     public FormData() {
 
@@ -315,6 +323,14 @@ public class FormData {
     	return securityRemarks;
     }
 
+	public String getRequestID() {
+		return requestID;
+	}
+
+	public void setRequestID(String requestID) {
+		this.requestID = requestID;
+	}
+
 	public String getRequestStatus() {
 		return requestStatus;
 	}
@@ -380,6 +396,95 @@ public class FormData {
                 ", authorizationDate='" + authorizationDate + '\'' +
                 ", authorizerPhoneNumber='" + authorizerPhoneNumber + '\'' +
                 ", isAuthorized=" + isAuthorized +
+		        ", requestID=" + requestID + '\'' +
                 '}';
+    }
+
+    /**
+     * Writes the contents of this formdata to a csv file specified by fileName. fileName should
+     * probably be the requestID of the form, and NOT user input. If the file being written to already exists
+     * (in the case of writing multiple forms to a csv), a new row is appended to it; Otherwise the file is created.
+     * @param fileName - If this does not have the .csv extension it will be added.
+     */
+    public void saveAsCSV(String fileName) {
+        //Make sure fileName ends with .csv
+        if (!fileName.endsWith(".csv")) {
+            fileName = fileName + ".csv";
+        }
+        File csv = new File(fileName);
+        //Creating csvWriter below creates the file if not present, so check existance now.
+        boolean newFile = true;
+        if (csv.exists()) newFile = false;
+        try {
+            //"true" in this case is specifying to open the file in append mode
+            BufferedWriter csvWriter = new BufferedWriter(new FileWriter(fileName, true));
+            //Only add first row with field names if file doesn't exist yet
+            if (newFile) {
+                String firstRow = "Request ID" + ", " +
+                                  "Department" + ", " +
+                                  "Requester Name" + ", " +
+                                  "Phone Number" + ", " +
+                                  "Fax Number" + ", " +
+                                  "Email Address" + ", " +
+                                  "Event Name" + ", " +
+                                  "Requester ID" + ", " +
+                                  "Event Location" + ", " +
+                                  "Licensed?" + ", " +
+                                  "Number of Attendees" + ", " +
+                                  "Time(s)" + ", " +
+                                  "Event Dates" + ", " +
+                                  "Requested On Date" + ", " +
+                                  "Payment Account Code" + ", " +
+                                  "Invoice Requested?" + ", " +
+                                  "Event Details" + ", " +
+                                  "Service Request Number" + ", " +
+                                  "Recieving Security Supervisor" + ", " +
+                                  "Prepared By" + ", " +
+                                  "Security Remarks" + ", " +
+                                  "Authorizer Name" + ", " +
+                                  "Authorizer ID" + ", " +
+                                  "Authorization Date" + ", " +
+                                  "Authorizer Phone Number" + ", " +
+                                  "Authorized?" + "\n";
+                csvWriter.append(firstRow);
+            }
+            //Append fields to csv, strip out commas from places they could be present
+            String nextRow = requestID + ", " +
+                             department + ", " +
+                             requesterName + ", " +
+                             phoneNumber + ", " +
+                             faxNumber + ", " +
+                             emailAddress + ", " +
+                             eventName + ", " +
+                             requesterID + ", " +
+                             eventLocation + ", " +
+                             isLicensed + ", " +
+                             numAttendees + ", " +
+                             times + ", " +
+                             eventDates + ", " +
+                             requestedOnDate + ", " +
+                             paymentAccountCode + ", " +
+                             invoiceRequested + ", " +
+                             eventDetails.replace(",", "") + ", " +
+                             serviceRequestNumber + ", " +
+                             recievingSecuritySupervisor + ", " +
+                             preparedBy + ", " +
+                             securityRemarks.replace(",", "") + ", " +
+                             authorizerName + ", " +
+                             authorizerID + ", " +
+                             authorizationDate + ", " +
+                             authorizerPhoneNumber + ", " +
+                             isAuthorized + "\n";
+
+            //Do some prettying up
+            nextRow = nextRow.replace("null", "Not specified");
+            nextRow = nextRow.replace("false", "No");
+            nextRow = nextRow.replace("true", "Yes");
+            csvWriter.append(nextRow);
+            csvWriter.close();
+        } catch (IOException e)
+        {
+            System.err.println("Error writing to csv:  " + e.getMessage());
+        }
     }
 }

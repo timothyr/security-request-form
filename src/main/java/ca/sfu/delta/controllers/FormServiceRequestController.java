@@ -3,7 +3,9 @@ package ca.sfu.delta.controllers;
 import javax.validation.Valid;
 
 import ca.sfu.delta.models.FormData;
+import ca.sfu.delta.models.RequestID;
 import ca.sfu.delta.repository.FormRepository;
+import ca.sfu.delta.repository.RequestIDRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
@@ -12,25 +14,35 @@ import org.springframework.web.servlet.config.annotation.ViewControllerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
 
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.Calendar;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.ConsoleHandler;
 
 
 @Controller
-public class ServiceRequestController extends WebMvcConfigurerAdapter {
+public class FormServiceRequestController extends WebMvcConfigurerAdapter {
     @Autowired
     FormRepository formRepository;
+    @Autowired
+    RequestIDRepository requestIDRepository;
 
     @Override
     public void addViewControllers(ViewControllerRegistry registry) {
-        registry.addViewController("/results").setViewName("results");
+        registry.addViewController("/results").setViewName("results.html");
+        registry.addViewController("/requests").setViewName("requests.html");
     }
 
     @RequestMapping(value = "/api/form/get/{id}", method = RequestMethod.GET, produces = "application/json")
-    public @ResponseBody Map<String, Object> getForm(@PathVariable("id") Long id) {
-        FormData form = formRepository.findOne(id);
-        return form.jsonify();
+    public @ResponseBody Map<String, Object> getForm(@PathVariable("id") String id) {
+        for (FormData f : formRepository.findAll()) {
+        	if (f.getRequestID().equals(id)) {
+        		System.out.println("found form with requestID = "+f.getRequestID());
+        		return f.jsonify();
+			}
+		}
+
+        return null;
     }
 
     @CrossOrigin(origins = "http://localhost:8081")
@@ -44,6 +56,29 @@ public class ServiceRequestController extends WebMvcConfigurerAdapter {
 
         return forms;
     }
+
+	@RequestMapping(value = "/api/form/saveSecurity", method = RequestMethod.POST)
+	public @ResponseBody String saveSecurity(@RequestBody FormData form) {
+		formRepository.save(form);
+		for (FormData f : formRepository.findAll()) {
+			System.out.println(f.toString());
+		}
+
+		return null;
+	}
+
+    // Reserve the next request ID in the sequence to ensure each form has a unique request ID
+	private String reserveNextRequestID() {
+		int year = Calendar.getInstance().get(Calendar.YEAR) % 100;
+		Integer formDigit = requestIDRepository.getNextID(year);
+		//ToDo: ensure nextDigit is only four digits (i.e. less than 10,000)
+		RequestID requestID = new RequestID();
+		requestID.setYear(year);
+		requestID.setDigits(formDigit);
+		requestIDRepository.save(requestID);
+
+		return String.format("%02d", year) + "-" + String.format("%04d", formDigit);
+	}
 
     @RequestMapping(value = "/api/form/save", method = RequestMethod.GET, produces = "application/json")
     public @ResponseBody String addForm(
@@ -66,9 +101,10 @@ public class ServiceRequestController extends WebMvcConfigurerAdapter {
             @RequestParam(required=false) String authorizerName,
             @RequestParam(required=false) String eventDates,
             @RequestParam(required=false) String eventDetails,
-            @RequestParam(required=false) String faxNumber
-
+            @RequestParam(required=false) String faxNumber,
+			@RequestParam(required=false) String requestID
             ) {
+
         FormData form = new FormData();
         form.setDepartment(department);
         form.setRequesterName(requesterName);
@@ -91,34 +127,47 @@ public class ServiceRequestController extends WebMvcConfigurerAdapter {
         form.setEventDetails(eventDetails);
         form.setFaxNumber(faxNumber);
 
+        if (requestID != null && !requestID.isEmpty()) {
+	        form.setRequestID(requestID);
+        } else {
+        	// Need to reserve a request id for this form
+	        form.setRequestID(reserveNextRequestID());
+        }
 
         form = formRepository.save(form);
 
         if (form != null) {
+            System.out.println("Successfully saved Form with requestID=" + form.getRequestID());
             return String.valueOf(form.getId());
         } else {
+            System.out.println("Failed to save Form");
             return "ERROR: form didn't save";
         }
     }
 
     @GetMapping("/")
     public String showForm(FormData serviceRequestForm) {
-        return "form";
+        return "form.html";
     }
 
     @PostMapping("/")
     public String checkFormRequest(@Valid FormData serviceRequestForm, BindingResult bindingResult) {
 
         if (bindingResult.hasErrors()) {
-            return "form";
+            return "form.html";
         }
 
         saveFormToDatabase(serviceRequestForm);
 
-        return "redirect:/results";
+        return "redirect:/requests.html";
     }
 
     private void saveFormToDatabase(FormData formData) {
+    	System.out.println("Saving");
+        if (formData.getRequestID() == null || formData.getRequestID().isEmpty()) {
+    		// Need to reserve a request id
+		    formData.setRequestID(reserveNextRequestID());
+	    }
         formRepository.save(formData);
     }
 
