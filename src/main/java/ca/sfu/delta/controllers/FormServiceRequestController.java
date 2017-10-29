@@ -31,8 +31,8 @@ public class FormServiceRequestController extends WebMvcConfigurerAdapter {
 
     @Override
     public void addViewControllers(ViewControllerRegistry registry) {
-        registry.addViewController("/results").setViewName("results");
-        registry.addViewController("/requests").setViewName("requests");
+        registry.addViewController("/results").setViewName("results.html");
+        registry.addViewController("/requests").setViewName("requests.html");
     }
 
     @RequestMapping(value = "/api/form/get/{id}", method = RequestMethod.GET, produces = "application/json")
@@ -125,6 +125,7 @@ public class FormServiceRequestController extends WebMvcConfigurerAdapter {
         form = formRepository.save(form);
 
         if (form != null) {
+
             System.out.println("saved");
 
 
@@ -153,26 +154,26 @@ public class FormServiceRequestController extends WebMvcConfigurerAdapter {
 
             return String.valueOf(form.getId());
         } else {
-            System.out.println("Failed");
-            return "ERROR: Form didn't save";
+            System.out.println("Failed to save Form");
+            return "ERROR: form didn't save";
         }
     }
 
     @GetMapping("/")
     public String showForm(FormData serviceRequestForm) {
-        return "form";
+        return "form.html";
     }
 
     @PostMapping("/")
     public String checkFormRequest(@Valid FormData serviceRequestForm, BindingResult bindingResult) {
 
         if (bindingResult.hasErrors()) {
-            return "form";
+            return "form.html";
         }
 
         saveFormToDatabase(serviceRequestForm);
 
-        return "redirect:/requests";
+        return "redirect:/requests.html";
     }
 
     private void saveFormToDatabase(FormData formData) {
