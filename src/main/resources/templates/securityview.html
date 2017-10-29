@@ -162,7 +162,7 @@
 								<input class="form-control text-center" type="text" v-model="g.telephone">
 							</td>
 							<td>
-								<button type="button" class="btn btn-danger" v-on:click="deleteGuard(g)">Remove Guard</button>
+								<button type="button" class="btn btn-danger" v-on:click="deleteGuard(g)" v-if="guards.length > 1">Remove Guard</button>
 							</td>
 						</tr>
 					</tbody>
@@ -199,7 +199,7 @@
 			<div class="row my-5">
 				<div class="col col-md-3"></div>
 				<div class="col text-center">
-						<button class="btn btn-danger">Reject</button>
+						<button class="btn btn-danger" v-on:click="submit('reject')">Reject</button>
 
 						<button type="button" class="btn btn-success mx-2" data-toggle="modal" data-target="#myModal">Accept</button>
 						<div id="myModal" class="modal fade" role="dialog">
@@ -208,16 +208,10 @@
 									<div class="modal-header">
 										<p class="modal-title">Select who should be notified of this accepted service request</p>
 									</div>
-									<div class="modal-body mx-5 text-left" id="emailList">
+									<div class="modal-body mx-5 text-left" id="emailList" v-for="e in emailOptions">
 										<!-- TODO: get more emails from server -->
 										<div class="checkbox">
-											<label><input type="checkbox" v-model="emails" value="debug"> {{form.emailAddress}}</label>
-										</div>
-										<div class="checkbox">
-											<label><input type="checkbox" v-model="emails" value="asdf@sads.com"> asdf@sads.com</label>
-										</div>
-										<div class="checkbox">
-											<label><input type="checkbox" v-model="emails" value="qweerty342@fef.com"> qweerty342@fef.com</label>
+											<label><input type="checkbox" v-model="emails" :value="e"> {{e}}</label>
 										</div>
 									</div>
 									<div class="modal-footer">
@@ -229,7 +223,7 @@
 							</div>
 						</div>
 
-						<button class="btn">Update</button>
+						<button class="btn" v-on:click="submit('update')">Update</button>
 
 				</div>
 				<div class="col col-md-3"></div>
@@ -302,6 +296,11 @@
 							overtimeRate: null
 						}
 					],
+
+					emailOptions: [
+						"rcretu@sfu.ca"
+					],
+
 					emails: [],
 					remarks: ""
 				},
@@ -326,7 +325,13 @@
 					
 					deleteGuard: function (guard) {
 						let i = this.guards.indexOf(guard);
-						this.guards.splice(i, 1);
+						if (i !== 0) {
+							this.guards.splice(i, 1);
+						}
+
+						if (this.form.guards.length === 1) {
+
+						}
 					},
 
 					removeNull: function () {
@@ -352,6 +357,7 @@
 						this.$http.get('http://localhost:8080/api/form/get/'+this.requestID).then(function (response) {
 							this.form = response.data;
 							this.removeNull();
+							this.emailOptions.push(this.form.emailAddress);
 						}, function (error) {
 							console.log(error.statusText);
 						});
