@@ -140,28 +140,28 @@
 					<tbody id="guards">
 						<tr v-for="g in guards">
 							<td>
-								<input class="form-control text-center" type="text" v-model="g.guardID">
+								<input class="form-control text-center" type="text" v-model="g.guardID" required="required">
 							</td>
 							<td>
-								<input class="form-control text-center" type="text" v-model="g.location">
+								<input class="form-control text-center" type="text" v-model="g.location" required="required">
 							</td>
 							<td>
-								<input class="form-control text-center" type="date" v-model="g.startDate">
+								<input class="form-control text-center" type="date" v-model="g.startDate" required="required">
 							</td>
 							<td>
-								<input class="form-control text-center" type="date" v-model="g.endDate">
+								<input class="form-control text-center" type="date" v-model="g.endDate" required="required">
 							</td>
 							<td>
-								<input class="form-control text-center" type="time" v-model="g.startTime">
+								<input class="form-control text-center" type="time" v-model="g.startTime" required="required">
 							</td>
 							<td>
-								<input class="form-control text-center" type="time" v-model="g.endTime">
+								<input class="form-control text-center" type="time" v-model="g.endTime" required="required">
 							</td>
 							<td>
-								<input class="form-control text-center" type="text" v-model="g.name">
+								<input class="form-control text-center" type="text" v-model="g.name" required="required">
 							</td>
 							<td>
-								<input class="form-control text-center" type="text" v-model="g.telephone">
+								<input class="form-control text-center" type="text" v-model="g.telephone" required="required">
 							</td>
 							<td>
 								<button type="button" class="btn btn-danger" v-on:click="deleteGuard(g)" v-if="guards.length > 1">Remove Guard</button>
@@ -177,19 +177,25 @@
 			<div class="row my-3">
 				<div class="col">
 					<label for="regRate">Regular Rate</label>
-					<input class="form-control text-center" id="regRate" type="number" step="0.01" min="0" v-model="regularRate">
+					<input class="form-control text-center" id="regRate" type="number" step="0.01" min="0" v-model="regularRate" required="required">
 				</div>
 				<div class="col">
 					<label for="regHours">Regular Hours</label>
-					<input class="form-control text-center" id="regHours" type="number" step="0.01" min="0" v-model="regularHours">
+					<input class="form-control text-center" id="regHours" type="number" step="0.01" min="0" v-model="regularHours" required="required">
 				</div>
 				<div class="col">
 					<label for="overRate">Overtime Rate</label>
-					<input class="form-control text-center" id="overRate" type="number" step="0.01" min="0" v-model="overtimeRate">
+					<input class="form-control text-center" id="overRate" type="number" step="0.01" min="0" v-model="overtimeRate" required="required">
 				</div>
 				<div class="col">
 					<label for="overHours">Overtime Hours</label>
-					<input class="form-control text-center" id="overHours" type="number" step="0.01" min="0" v-model="overtimeHours">
+					<input class="form-control text-center" id="overHours" type="number" step="0.01" min="0" v-model="overtimeHours" required="required">
+				</div>
+			</div>
+
+			<div class="row my-3">
+				<div class="col">
+					<p>Estimated Personnel Cost: {{cost}}</p>
 				</div>
 			</div>
 
@@ -324,10 +330,6 @@
 						if (i !== 0) {
 							this.guards.splice(i, 1);
 						}
-
-						if (this.form.guards.length === 1) {
-
-						}
 					},
 
 					removeNull: function () {
@@ -400,6 +402,10 @@
 							this.form.guards[i].overtimeHours = this.overtimeHours;
 							this.form.guards[i].regularRate = this.regularRate;
 							this.form.guards[i].overtimeRate = this.overtimeRate;
+
+							if (this.form.guards[i].name === "" || this.form.guards[i].name === null) {
+								this.form.guards[i].name = "not set";
+							}
 						}
 					},
 					
@@ -428,6 +434,16 @@
 				created() {
 					// TODO: redirect if user doesn't have security authorization
 					this.getFormData();
+				},
+
+				computed: {
+					cost: function () {
+						let guards = this.guards.length;
+						let cost = (this.regularHours * this.regularRate) + (this.overtimeHours * this.overtimeRate);
+						cost *= guards;
+
+						return cost;
+					}
 				}
 			});
 		</script>
