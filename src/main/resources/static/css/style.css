@@ -7,10 +7,21 @@ body {
 	background-color: #ededed;
 }
 
+h1 {
+    font-weight: 300;
+    font-size: 2em;
+}
+
+h3 {
+    font-weight: 300;
+    color: #686868;
+}
+
 .red-background {
 	background-color: #A8162B;
 }
 
+/* HEADER */
 header {
 	background-color: white;
 }
@@ -20,6 +31,7 @@ header {
 	margin-bottom: 20px;
 }
 
+/* BUTTON */
 button {
 	cursor: pointer;
 }
@@ -30,18 +42,7 @@ button {
 	}
 }
 
-h1 {
-	font-weight: 300;
-	font-size: 2em;
-}
-
-h3 {
-	font-weight: 300;
-	color: #686868;
-}
-
 /* WRAPPER */
-
 .wrapper {
 	/* white background thing */
 	background-color: white;
@@ -50,6 +51,7 @@ h3 {
     min-height: 1000px;
 }
 
+/* TITLE */
 .form-heading {
 	padding-bottom: 20px;
 	border-bottom: 1px solid #EFEFEF;
@@ -61,24 +63,25 @@ h3 {
 	font-weight: 300;
 }
 
+/* ICONS */
 .calendar-icon {
 	font-size: 2em;
 	color: #A8162B;
 }
 
+/* SPACING - add to div*/
 .bottom-space {
 	height: 100px;
 }
 
 
 /* TABLE */
-
 th {
-	font-family: "HelveticaNeue-Light", "Helvetica Neue Light", "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif;
-	text-transform: uppercase;
-	font-weight: 300;
+    font-size: 0.8em;
+    color: #686868;
 }
 
+/* SEARCH BAR */
 .search-group {
 	position: relative;
 }
@@ -90,6 +93,7 @@ th {
 	z-index: 5;
 }
 
+/* TABLE COLOURING */
 .nav-pills .nav-link.active, .show>.nav-pills .nav-link {
 	background-color: transparent;
 	border-bottom: 3px solid #007bff;
@@ -123,12 +127,30 @@ th {
 	background-color: #F4F8FB;
 }
 
+th {
+    white-space: nowrap;
+}
+td {
+    white-space: nowrap;
+}
+
 .clickable {
     cursor: pointer;
 }
 
-/* REQUEST */
+/* REQUESTS */
 /* font awesome */
 .fa-sort {
 	color: #c6c6c6;
+}
+
+
+/* LOADING ICON - edit if interferes with other svg */
+svg path, svg rect {
+    fill: #007bff;
+}
+
+/* V-CLOAK - hides element until vue loads eg. {{hidesThis}} */
+[v-cloak] {
+    display: none;
 }
