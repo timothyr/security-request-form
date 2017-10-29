@@ -151,7 +151,7 @@ public class FormServiceRequestController extends WebMvcConfigurerAdapter {
             } else {
                 System.out.println("Could not send Email. Please ensure all the parameters are valid.");
             }
-
+            System.out.println("Successfully saved Form with requestID=" + form.getId());
             return String.valueOf(form.getId());
         } else {
             System.out.println("Failed to save Form");
