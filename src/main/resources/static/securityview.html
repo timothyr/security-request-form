@@ -374,7 +374,7 @@
 							window.location.replace("/requests.html");
 						}
 
-						this.$http.get('http://localhost:8080/api/form/get/'+this.requestID).then(function (response) {
+						this.$http.get('http://localhost:8080/api/form/getByRequestID/'+this.requestID).then(function (response) {
 							if (response.data === null || response.data === undefined || response.data === "") {
 								window.location.replace("/requests.html");
 							}

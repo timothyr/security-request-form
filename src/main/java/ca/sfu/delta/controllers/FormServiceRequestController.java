@@ -42,6 +42,8 @@ public class FormServiceRequestController extends WebMvcConfigurerAdapter {
 
         return form.jsonify();
     }
+
+    @RequestMapping(value = "/api/form/getByRequestID/{id}", method = RequestMethod.GET, produces = "application/json")
     public @ResponseBody Map<String, Object> getForm(@PathVariable("id") String id) {
         for (FormData f : formRepository.findAll()) {
         	if (f.getRequestID().equals(id)) {
