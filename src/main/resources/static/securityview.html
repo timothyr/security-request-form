@@ -327,7 +327,7 @@
 					
 					deleteGuard: function (guard) {
 						let i = this.guards.indexOf(guard);
-						if (i !== 0) {
+						if (this.guards.length > 1) {
 							this.guards.splice(i, 1);
 						}
 					},
