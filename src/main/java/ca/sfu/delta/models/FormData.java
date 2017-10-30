@@ -18,6 +18,8 @@ public class FormData {
     @GeneratedValue(strategy= GenerationType.AUTO)
     private Long id;
 
+    // TODO: ensure all fields are saved in csv
+
     //Specified by user
     private String department;
     private String requesterName;
@@ -46,6 +48,7 @@ public class FormData {
     private List<String> distributionList;
     private String preparedBy;
     private String securityRemarks;
+    private String requestStatus;
 
 	private String requestID;
 
@@ -100,6 +103,10 @@ public class FormData {
     public Long getId() {
         return this.id;
     }
+
+	public void setId(long id) {
+		this.id = id;
+	}
 
     //Getter and Setter methods
     //Set by requester
@@ -324,8 +331,15 @@ public class FormData {
 		this.requestID = requestID;
 	}
 
+	public String getRequestStatus() {
+		return requestStatus;
+	}
 
-	public void setSecurityFields(
+	public void setRequestStatus(String requestStatus) {
+		this.requestStatus = requestStatus;
+	}
+
+    public void setSecurityFields(
             String recievingSecuritySupervisor,
             List<Guard> guards,
             List<String> distributionList,
@@ -376,6 +390,7 @@ public class FormData {
                 ", distributionList=" + distributionList +
                 ", preparedBy='" + preparedBy + '\'' +
                 ", securityRemarks='" + securityRemarks + '\'' +
+				", requestStatus='" + requestStatus + '\'' +
                 ", authorizerName='" + authorizerName + '\'' +
                 ", authorizerID='" + authorizerID + '\'' +
                 ", authorizationDate='" + authorizationDate + '\'' +
