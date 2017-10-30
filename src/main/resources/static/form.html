@@ -110,7 +110,7 @@
 						</table>
 						<div class="row mt-4">
 							<i class="fa fa-calendar calendar-icon mr-3"></i>
-							<button class="btn btn-danger">Add Date</button>
+							<button type="button" class="btn btn-danger">Add Date</button>
 						</div>
 					</div>
 					<div>
@@ -118,10 +118,16 @@
 					</div>
 					<div class="row mt-5">
 						<div class="form-group col-md-4">
+							<button type="button" v-on:click="signIn" id="sign-in" class="btn btn-danger btn-lg col-md-8">Sign In</button>
+						</div>
+					</div>
+					<div class="row mt-6">
+						<div class="form-group col-md-4">
 							<label for="account-code-input">Account code</label>
 							<input type="text" id="account-code-input" v-model="formData.paymentAccountCode" class="form-control" required="required"/>
 						</div>
-
+					</div>
+					<div class="row mt-7" v-show="showAuthFields">
                             <div class="form-group col-md-4">
                                 <label for="name-of-authorizee-input">Authorized by</label>
                                 <input type="text" id="name-of-authorizee-input" v-model="formData.authorizerName" class="form-control"/>
@@ -261,6 +267,10 @@
 			},
 
             methods: {
+                signIn : function() {
+					this.showAuthFields = !this.showAuthFields;
+				},
+
                 closeModal : function () {
                     this.resetFields();
 				},
