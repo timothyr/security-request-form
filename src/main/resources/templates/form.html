@@ -101,7 +101,7 @@
 									<span class="input-group-addon">
 										<i id="chooseStartDateTime" class="fa fa-calendar calendar-icon " onChange="setStartDateTime(this)"></i>
 									</span>
-									<input type="text" class="form-control" id="startdatetime" />
+									<input type="text" class="form-control" id="startdatetime" disabled="disabled"/>
 								</div>
 							</th>
 
@@ -110,7 +110,7 @@
 									<span class="input-group-addon">
 										<i id="chooseEndDateTime" class="fa fa-calendar calendar-icon " onChange="setEndDateTime(this)"></i>
 									</span>
-									<input type="text" class="form-control" id="enddatetime" />
+									<input type="text" class="form-control" id="enddatetime" disabled="disabled"/>
 								</div>
 							</th>
 
@@ -226,13 +226,17 @@
 	<script>
 		$(document).ready(function(){
 			$("#chooseStartDateTime").datetimepicker({
-				dayOfWeekStart:1,
+				dayOfWeekStart:0,
+				stepMinute: 30,
 				lang: 'en',
+				minDate: 0,
+				minTime: 0,
 				formatTime: 'g:i a',
 			});
 			$("#chooseEndDateTime").datetimepicker({
-				dayOfWeekStart:1,
+				dayOfWeekStart:0,
 				lang: 'en',
+				minDate: new Date(getStartDateTime()),
 				formatTime: 'g:i a',
 			});
 			document.getElementById("chooseStartDateTime").value = '';
