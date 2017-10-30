@@ -58,7 +58,7 @@ public class FormData {
 
     //Specified by Authorizer
     private String authorizerName;
-    private String authorizerID; //SFU ID or BCDL
+    private String authorizerID; //SFU ID
 	//Todo: this will need to be changed back to a date once the front end supports dates
     private String authorizationDate;
     private String authorizerPhoneNumber;
