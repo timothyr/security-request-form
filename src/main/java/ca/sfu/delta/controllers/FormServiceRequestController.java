@@ -43,6 +43,19 @@ public class FormServiceRequestController extends WebMvcConfigurerAdapter {
         return form.jsonify();
     }
 
+    @RequestMapping(value = "/api/form/getByRequestID/{id}", method = RequestMethod.GET, produces = "application/json")
+    public @ResponseBody Map<String, Object> getForm(@PathVariable("id") String id) {
+        for (FormData f : formRepository.findAll()) {
+        	if (f.getRequestID().equals(id)) {
+        		System.out.println("found form with requestID = "+f.getRequestID());
+        		return f.jsonify();
+			}
+		}
+
+        return null;
+    }
+
+    @CrossOrigin(origins = "http://localhost:8081")
     @RequestMapping(value = "/api/form/search", method = RequestMethod.GET, produces = "application/json")
     public @ResponseBody
     List<Map<String, Object>> search() {
@@ -54,6 +67,16 @@ public class FormServiceRequestController extends WebMvcConfigurerAdapter {
 
         return forms;
     }
+
+	@RequestMapping(value = "/api/form/saveSecurity", method = RequestMethod.POST)
+	public @ResponseBody String saveSecurity(@RequestBody FormData form) {
+		formRepository.save(form);
+		for (FormData f : formRepository.findAll()) {
+			System.out.println(f.toString());
+		}
+
+		return null;
+	}
 
     // Reserve the next request ID in the sequence to ensure each form has a unique request ID
 	private String reserveNextRequestID() {
