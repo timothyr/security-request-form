@@ -21,6 +21,7 @@ import java.util.Calendar;
 import java.util.List;
 
 @Controller
+@RequestMapping("/api")
 public class ApiController {
 	@Autowired FormRepository formRepository;
 	@Autowired RequestIDRepository requestIDRepository;
@@ -41,7 +42,7 @@ public class ApiController {
 		});
 	}
 
-	@RequestMapping(value="/api/user/get/{id}", method = RequestMethod.GET, produces = "application/json")
+	@RequestMapping(value="/user/get/{id}", method = RequestMethod.GET, produces = "application/json")
 	public ResponseEntity<User> getUser(
 			@PathVariable("id") Long id,
 			@RequestParam(required=true) String authtoken
@@ -54,7 +55,7 @@ public class ApiController {
 		}
 	}
 
-	@RequestMapping(value="/api/user/search", method = RequestMethod.GET, produces = "application/json")
+	@RequestMapping(value="/user/search", method = RequestMethod.GET, produces = "application/json")
 	public ResponseEntity<List<User>> searchUsers(@RequestParam(required=true) String authtoken) {
 		List<User> users = new ArrayList<User>();
 		Iterable<User> itr = userRepository.findAll();
@@ -62,7 +63,7 @@ public class ApiController {
 		return ResponseEntity.ok(users);
 	}
 
-	@RequestMapping(value="/api/user/save", method = RequestMethod.GET, produces = "application/json")
+	@RequestMapping(value="/user/save", method = RequestMethod.GET, produces = "application/json")
 	public ResponseEntity<User> saveUser(
 			@RequestParam(required=true) String username,
 			@RequestParam(required=true) User.Role role,
@@ -79,7 +80,7 @@ public class ApiController {
 		}
 	}
 
-	@RequestMapping(value="/api/guard/get/{id}", method = RequestMethod.GET, produces = "application/json")
+	@RequestMapping(value="/guard/get/{id}", method = RequestMethod.GET, produces = "application/json")
 	public ResponseEntity<Guard> getGuard(@PathVariable("id") Long id) {
 		Guard guard = guardRepository.findOne(id);
 		if (guard != null) {
@@ -89,7 +90,7 @@ public class ApiController {
 		}
 	}
 
-	@RequestMapping(value="/api/guard/search", method = RequestMethod.GET, produces = "application/json")
+	@RequestMapping(value="/guard/search", method = RequestMethod.GET, produces = "application/json")
 	public ResponseEntity<List<Guard>> searchGuard() {
 		List<Guard> guards = new ArrayList<Guard>();
 		Iterable<Guard> itr = guardRepository.findAll();
@@ -97,7 +98,7 @@ public class ApiController {
 		return ResponseEntity.ok(guards);
 	}
 
-	@RequestMapping(value="/api/guard/save", method = RequestMethod.GET, produces = "application/json")
+	@RequestMapping(value="/guard/save", method = RequestMethod.GET, produces = "application/json")
 	public ResponseEntity<Guard> saveGuard(
 			@RequestParam(required=true) String name,
 			@RequestParam(required=true) Integer regularHours,
@@ -114,7 +115,7 @@ public class ApiController {
 		}
 	}
 
-	@RequestMapping(value = "/api/form/get/{id}", method = RequestMethod.GET, produces = "application/json")
+	@RequestMapping(value = "/form/get/{id}", method = RequestMethod.GET, produces = "application/json")
 	public ResponseEntity<FormData> getForm(@PathVariable("id") Long id) {
 		FormData form = formRepository.findOne(id);
 		if (form != null) {
@@ -124,7 +125,7 @@ public class ApiController {
 		}
 	}
 
-	@RequestMapping(value = "/api/form/search", method = RequestMethod.GET, produces = "application/json")
+	@RequestMapping(value = "/form/search", method = RequestMethod.GET, produces = "application/json")
 	public ResponseEntity<List<FormData>> search() {
 		List<FormData> forms = new ArrayList<FormData>();
 		Iterable<FormData> itr = formRepository.findAll();
@@ -145,7 +146,7 @@ public class ApiController {
 		return String.format("%02d", year) + "-" + String.format("%04d", formDigit);
 	}
 
-	@RequestMapping(value = "/api/form/save", method = RequestMethod.GET, produces = "application/json")
+	@RequestMapping(value = "/form/save", method = RequestMethod.GET, produces = "application/json")
 	public ResponseEntity<FormData> addForm(
 			@RequestParam(required=false) String department,
 			@RequestParam(required=false) String requesterName,
