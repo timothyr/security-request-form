@@ -119,10 +119,9 @@
 					<div class="row mt-5">
 						<div class="form-group col-md-4">
 							<label for="account-code-input">Account code</label>
-							<!-- no corresponding formData variable -->
-							<input type="text" id="account-code-input" class="form-control"/>
+							<input type="text" id="account-code-input" v-model="formData.paymentAccountCode" class="form-control" required="required"/>
 						</div>
-                        <div v-show="showAuthFields">
+
                             <div class="form-group col-md-4">
                                 <label for="name-of-authorizee-input">Authorized by</label>
                                 <input type="text" id="name-of-authorizee-input" v-model="formData.authorizerName" class="form-control"/>
@@ -166,7 +165,7 @@
 						</div>
 					</div>
 					<div class="bottom-space"></div>
-				</div>
+
 			</div>
 		</form>
 		<modal v-if="showModal" @close="showModal = false"></modal>
