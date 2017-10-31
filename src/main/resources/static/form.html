@@ -175,7 +175,7 @@
 			</div>
 		</form>
 		<modal v-if="showModal" @close="showModal = false">
-			<h2 slot="link">{{tokenID}}</h2>
+			<h2 slot="link">{{submittedFormLink}}</h2>
 		</modal>
 	</div>
 	<script src="/js/jquery-3.2.1.min.js"></script>
@@ -242,7 +242,7 @@
             },
 
  			data: () => ({
-				tokenID: '',
+                submittedFormLink: '',
 
                 showAuthFields: true,
 
@@ -304,7 +304,8 @@
                 submitForm: function () {
                     function successCallback() {
                         console.log("success");
-                        this.tokenID='link goes here';
+                        this.submittedFormLink='link goes here' +
+                            '';
                         this.showModal = true;
                     }
 

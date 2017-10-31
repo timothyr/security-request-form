@@ -210,7 +210,8 @@ public class FormServiceRequestController extends WebMvcConfigurerAdapter {
                 System.out.println("Could not send Email. Please ensure all the parameters are valid.");
             }
 	        System.out.println("Successfully saved Form with requestID = " + form.getId() + " and token = " + token);
-	        return String.valueOf(token);
+            String returnLink = formFromTokenURL + token;
+	        return returnLink;
         } else {
             System.out.println("Failed to save Form");
             return "ERROR: form didn't save";
