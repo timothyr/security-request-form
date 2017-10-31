@@ -132,7 +132,7 @@ public class FormServiceRequestController extends WebMvcConfigurerAdapter {
 		return token;
     }
 
-    @RequestMapping(value = "/api/form/save", method = RequestMethod.GET, produces = "application/json")
+    @RequestMapping(value = "/api/form/save", method = RequestMethod.GET, produces = "text/plain")
     public @ResponseBody String addForm(
             @RequestParam(required=false) String department,
             @RequestParam(required=false) String requesterName,

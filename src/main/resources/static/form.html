@@ -175,7 +175,9 @@
 			</div>
 		</form>
 		<modal v-if="showModal" @close="showModal = false">
-			<h2 slot="link">{{submittedFormLink}}</h2>
+			<h3 slot="header">{{submittedFormHeader}}</h3>
+			<span slot="body">{{submittedFormMessage}}</span>
+			<a v-if="submittedFormLink" v-bind:href="submittedFormLink" slot="link">Click here to view your submission.</a>
 		</modal>
 	</div>
 	<script src="/js/jquery-3.2.1.min.js"></script>
@@ -187,25 +189,15 @@
 			<div class="modal-mask">
 				<div class="modal-wrapper">
 					<div class="modal-container">
-
 						<div class="modal-header">
-							<h3 slot name="header">
-								Request Submitted
-							</h3>
+							<slot name="header"></slot>
 						</div>
-
 						<div class="modal-body">
-							<slot name="body">
-								Thank you, the Security Service Request has been submitted.
-							</slot>
+							<slot name="body"></slot>
 						</div>
-
 						<div class="modal-body">
-							<slot name="link">
-
-							</slot>
+							<slot name="link"></slot>
 						</div>
-
 						<div class="modal-footer">
 							<slot name="footer">
 								<button class="modal-default-button btn btn-danger btn-lg" v-on:click="close">
@@ -220,7 +212,12 @@
 	</script>
 
 	<script>
-        const emailValid = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
+        const emailValid = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+
+		const successHeader = "Request Submitted";
+        const errorHeader = "Something went wrong";
+		const successMessage = "Thank you, the Security Service Request has been submitted.";
+        const errorMessage = "Sorry, there was an error. Your form was not submitted. Please try again later.";
 
         var Modal = Vue.component('modal', {
             template: '#modal-template',
@@ -242,6 +239,8 @@
             },
 
  			data: () => ({
+				submittedFormHeader:'',
+				submittedFormMessage: '',
                 submittedFormLink: '',
 
                 showAuthFields: true,
@@ -293,6 +292,31 @@
 					this.showAuthFields = !this.showAuthFields;
 				},
 
+                setSubmittedFormHeader(header) {
+                    this.submittedFormHeader=header;
+                },
+
+				setSubmittedFormMessage(message) {
+					this.submittedFormMessage=message;
+				},
+
+				setSubmittedFormLink(link) {
+                    this.submittedFormLink=link;
+				},
+
+				displaySuccessModal : function (formLink) {
+                    this.setSubmittedFormHeader(successHeader);
+                    this.setSubmittedFormMessage(successMessage);
+                    this.setSubmittedFormLink(formLink);
+                    this.showModal = true;
+				},
+
+                displayErrorModal : function () {
+                    this.setSubmittedFormHeader(errorHeader);
+                    this.setSubmittedFormMessage(errorMessage);
+                    this.showModal = true;
+                },
+
                 closeModal : function () {
                     this.resetFields();
 				},
@@ -302,16 +326,17 @@
                 },
 
                 submitForm: function () {
-                    function successCallback() {
-                        console.log("success");
-                        this.submittedFormLink='link goes here' +
-                            '';
-                        this.showModal = true;
+                    let self = this;
+                    function successCallback(response) {
+                        if(response.ok) {
+							self.displaySuccessModal(response.body);
+						} else {
+                            errorCallback();
+						}
                     }
 
                     function errorCallback() {
-                        console.log("error");
-                        this.submitting = false;
+                        self.displayErrorModal();
                     }
 
                     if (this.isValid && !this.submitting) {
@@ -340,7 +365,11 @@
                                 eventDetails: 			this.formData.eventDetails,
                                 faxNumber: 				this.formData.faxNumber
                             }
-                        }).then(successCallback, errorCallback);
+                        }).then(response => {
+                            successCallback(response)
+                        }, response => {
+                            errorCallback();
+                        });
                     }
                 }
             },
