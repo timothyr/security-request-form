@@ -106,7 +106,7 @@ public class FormServiceRequestController extends WebMvcConfigurerAdapter {
 		return null;
 	}
 
-    @RequestMapping(value = "/api/csv/form/{id}", method = RequestMethod.GET)
+    @RequestMapping(value = "/api/csv/form/{id}", method = RequestMethod.GET, produces = "text/csv")
     @ResponseBody
     public FileSystemResource getCSV(@PathVariable("id") long id) {
         for (FormData form : formRepository.findAll()) {
@@ -118,7 +118,7 @@ public class FormServiceRequestController extends WebMvcConfigurerAdapter {
         return new FileSystemResource(id + ".csv");
     }
 
-    @RequestMapping(value = "/api/csv/form/all", method = RequestMethod.GET)
+    @RequestMapping(value = "/api/csv/form/all", method = RequestMethod.GET, produces = "text/csv")
     @ResponseBody
     public FileSystemResource getAllCSV() {
         for (FormData form : formRepository.findAll()) {
