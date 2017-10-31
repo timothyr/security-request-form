@@ -102,18 +102,18 @@
 							</tr>
 							<tr>
 								<th class="col-xs-3">
-									<div class ="input-group">
+									<div id="chooseStartDateTime" class ="input-group" onChange="setDateTime(this,'startdatetime')">
 									<span class="input-group-addon">
-										<i id="chooseStartDateTime" class="fa fa-calendar calendar-icon" onChange="setStartDateTime(this)"></i>
+										<i class="fa fa-calendar calendar-icon"></i>
 									</span>
 										<input type="text" id="startdatetime" class="form-control" disabled="disabled"/>
 									</div>
 								</th>
 
 								<th class="col-xs-3">
-									<div class ="input-group">
+									<div id="chooseEndDateTime" class ="input-group" onChange="setDateTime(this,'enddatetime')">
 									<span class="input-group-addon">
-										<i id="chooseEndDateTime" class="fa fa-calendar calendar-icon" onChange="setEndDateTime(this)"></i>
+										<i class="fa fa-calendar calendar-icon"></i>
 									</span>
 										<input type="text" id="enddatetime" class="form-control" disabled="disabled"/>
 									</div>
@@ -203,7 +203,7 @@
 
 	<script src="/js/jquery.datetimepicker.full.js"></script>
 	<script src="/js/jquery.datetimepicker.js"></script>
-	<!--<script src="/js/vue.min.js"></script>-->
+	<script src="/js/datetime.js"></script>
 
 
 	<script>
@@ -302,8 +302,8 @@
                 },
 
                 addDatetime: function(){
-            		this.startdatetime = getStartDateTime();
-            		this.enddatetime = getEndDateTime();
+            		this.startdatetime = getDateTime("chooseStartDateTime","startdatetime");
+            		this.enddatetime = getDateTime("chooseEndDateTime","enddatetime");
             		if(this.startdatetime!='' && this.enddatetime!=''){
 						this.datetimelist.push( {start: this.startdatetime, end: this.enddatetime} );
 						this.formData.eventDates += this.startdatetime +"-"+ this.enddatetime +", ";
@@ -319,54 +319,6 @@
             	},
             }
 		});
-	</script>
-	<script>
-		$(document).ready(function(){
-			$("#chooseStartDateTime").datetimepicker({
-				dayOfWeekStart:0,
-				stepMinute: 30,
-				lang: 'en',
-				minDate: 0,
-				formatTime: 'g:i a',
-			});
-			$("#chooseEndDateTime").datetimepicker({
-				dayOfWeekStart:0,
-				lang: 'en',
-				minDate: new Date(getStartDateTime()),
-				formatTime: 'g:i a',
-			});
-			document.getElementById("chooseStartDateTime").value = '';
-			document.getElementById("startdatetime").value = '';
-			document.getElementById("chooseEndDateTime").value = '';
-			document.getElementById("enddatetime").value = '';
-		});
-
-		function setStartDateTime(e){
-			document.getElementById("startdatetime").value = chooseStartDateTime.value;
-		}
-		function setEndDateTime(e){
-			document.getElementById("enddatetime").value = chooseEndDateTime.value;
-		}
-		function getStartDateTime(){
-			var x = document.getElementById("chooseStartDateTime").value;
-			document.getElementById("chooseStartDateTime").value = '';
-			document.getElementById("startdatetime").value = '';
-			return x;
-		}
-		function getEndDateTime(){
-			var x = document.getElementById("chooseEndDateTime").value;
-			document.getElementById("chooseEndDateTime").value = '';
-			document.getElementById("enddatetime").value = '';
-			return x;
-		}
-		function deleteEventDate(s,e,l){
-			var newString = "";
-			var tobermvd = s+"-"+e+", ";
-			newString = l.replace(tobermvd,"");
-			console.log(newString);
-			return newString;
-		}
-
 	</script>
 </body>
 </html>
