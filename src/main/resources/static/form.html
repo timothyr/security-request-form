@@ -223,8 +223,11 @@
             },
 
  			data: () => ({
+				tokenID: '',
+
                 showAuthFields: true,
 
+				submitting: false,
 				showModal: false,
 
                 formData: {
@@ -287,9 +290,11 @@
 
                     function errorCallback() {
                         console.log("error");
+                        this.submitting = false;
                     }
 
-                    if (this.isValid) {
+                    if (this.isValid && !this.submitting) {
+                        this.submitting = true;
                         <!-- submit GET request with vue -->
                         this.$http.get('api/form/save', {
                             params: {
