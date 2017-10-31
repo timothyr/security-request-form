@@ -1,13 +1,7 @@
 package ca.sfu.delta.controllers;
 
-import ca.sfu.delta.models.FormData;
-import ca.sfu.delta.models.Guard;
-import ca.sfu.delta.models.RequestID;
-import ca.sfu.delta.models.User;
-import ca.sfu.delta.repository.FormRepository;
-import ca.sfu.delta.repository.GuardRepository;
-import ca.sfu.delta.repository.RequestIDRepository;
-import ca.sfu.delta.repository.UserRepository;
+import ca.sfu.delta.models.*;
+import ca.sfu.delta.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -27,27 +21,62 @@ public class ApiController {
 	@Autowired RequestIDRepository requestIDRepository;
 	@Autowired GuardRepository guardRepository;
 	@Autowired UserRepository userRepository;
+	@Autowired DistributionRepository distributionRepository;
 
 	/**
 	 * This method allows us to set up data binders for custom objects, e.g.
-	 * the User.Role enum.
+	 * the SecurityUser.Role enum.
 	 */
 	@InitBinder
 	public void initBinder(WebDataBinder dataBinder) {
-		dataBinder.registerCustomEditor(User.Role.class, new PropertyEditorSupport() {
+		dataBinder.registerCustomEditor(SecurityUser.Role.class, new PropertyEditorSupport() {
 			@Override
 			public void setAsText(String text) throws IllegalArgumentException {
-				setValue(User.Role.valueOf(text.toUpperCase()));
+				setValue(SecurityUser.Role.valueOf(text.toUpperCase()));
 			}
 		});
 	}
 
+	@RequestMapping(value="/distribution/get/{id}", method = RequestMethod.GET, produces = "application/json")
+	public ResponseEntity<DistributionEntry> getDistribution(@PathVariable("id") Long id) {
+		DistributionEntry d = distributionRepository.findOne(id);
+		if (d != null) {
+			return ResponseEntity.ok(d);
+		} else {
+			return new ResponseEntity(HttpStatus.NOT_FOUND);
+		}
+	}
+
+	@RequestMapping(value="/distribution/search", method = RequestMethod.GET, produces = "application/json")
+	public ResponseEntity<List<DistributionEntry>> searchDistributions(@RequestParam(required=true) String authtoken) {
+		List<DistributionEntry> distributions = new ArrayList<DistributionEntry>();
+		Iterable<DistributionEntry> itr = distributionRepository.findAll();
+		itr.forEach(distributions::add);
+		return ResponseEntity.ok(distributions);
+	}
+
+	@RequestMapping(value="/distribution/save", method = RequestMethod.GET, produces = "application/json")
+	public ResponseEntity<DistributionEntry> saveDistribution(
+			@RequestParam(required=true) String email,
+			@RequestParam(required=true) String name
+	) {
+		DistributionEntry distribution = new DistributionEntry();
+		distribution.setName(name);
+		distribution.setEmail(email);
+		distribution = distributionRepository.save(distribution);
+		if (distribution != null) {
+			return ResponseEntity.ok(distribution);
+		} else {
+			return new ResponseEntity(HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
+
 	@RequestMapping(value="/user/get/{id}", method = RequestMethod.GET, produces = "application/json")
-	public ResponseEntity<User> getUser(
+	public ResponseEntity<SecurityUser> getUser(
 			@PathVariable("id") Long id,
 			@RequestParam(required=true) String authtoken
 	) {
-		User user = userRepository.findOne(id);
+		SecurityUser user = userRepository.findOne(id);
 		if (user != null) {
 			return ResponseEntity.ok(user);
 		} else {
@@ -56,20 +85,20 @@ public class ApiController {
 	}
 
 	@RequestMapping(value="/user/search", method = RequestMethod.GET, produces = "application/json")
-	public ResponseEntity<List<User>> searchUsers(@RequestParam(required=true) String authtoken) {
-		List<User> users = new ArrayList<User>();
-		Iterable<User> itr = userRepository.findAll();
+	public ResponseEntity<List<SecurityUser>> searchUsers(@RequestParam(required=true) String authtoken) {
+		List<SecurityUser> users = new ArrayList<SecurityUser>();
+		Iterable<SecurityUser> itr = userRepository.findAll();
 		itr.forEach(users::add);
 		return ResponseEntity.ok(users);
 	}
 
 	@RequestMapping(value="/user/save", method = RequestMethod.GET, produces = "application/json")
-	public ResponseEntity<User> saveUser(
+	public ResponseEntity<SecurityUser> saveUser(
 			@RequestParam(required=true) String username,
-			@RequestParam(required=true) User.Role role,
+			@RequestParam(required=true) SecurityUser.Role role,
 			@RequestParam(required=true) String authtoken
 	) {
-		User user = new User();
+		SecurityUser user = new SecurityUser();
 		user.setUsername(username);
 		user.setRole(role);
 		user = userRepository.save(user);
