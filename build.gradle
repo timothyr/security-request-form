@@ -1,13 +1,13 @@
 buildscript {
 	ext {
-		springBootVersion = '1.5.7.RELEASE'
+		springBootVersion = '1.5.8.RELEASE'
 	}
 	repositories {
 		mavenCentral()
 	}
 	dependencies {
 		classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
-		classpath ("org.junit.platform:junit-platform-gradle-plugin:1.0.0-M4")
+		classpath("org.junit.platform:junit-platform-gradle-plugin:1.0.0-M4")
 	}
 }
 
@@ -28,7 +28,7 @@ repositories {
 
 
 dependencies {
-	compile("org.springframework.boot:spring-boot-starter-thymeleaf")
+	compile('org.springframework.boot:spring-boot-starter-web')
 	compile ("org.thymeleaf.extras:thymeleaf-extras-springsecurity4:3.0.0.RELEASE")
 	compile ("io.github.jpenren:thymeleaf-spring-data-dialect:3.1.1")
 
@@ -37,6 +37,10 @@ dependencies {
 	compile("org.apache.tomcat.embed:tomcat-embed-el")
 	compile('org.springframework.boot:spring-boot-starter-data-jpa')
 	compile('mysql:mysql-connector-java')
+	compile('org.springframework.boot:spring-boot-starter-mail')
+	compile('org.springframework.boot:spring-boot-starter-web')
+	compile('javax.mail:mail:1.4.7')
+
 	testCompile('org.springframework.boot:spring-boot-starter-test')
 	testCompile('junit:junit:4.12')
 }
