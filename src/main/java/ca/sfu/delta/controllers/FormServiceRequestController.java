@@ -79,7 +79,6 @@ public class FormServiceRequestController extends WebMvcConfigurerAdapter {
 	    }
     }
 
-	@CrossOrigin(origins = "http://localhost:8081")
     @RequestMapping(value = "/api/form/search", method = RequestMethod.GET, produces = "application/json")
     public @ResponseBody
     List<Map<String, Object>> search() {
@@ -218,17 +217,38 @@ public class FormServiceRequestController extends WebMvcConfigurerAdapter {
             return "ERROR: form didn't save";
         }
     }
-/*
+
     @RequestMapping(value = "/api/form/update/{id}", method = RequestMethod.PUT)
     public ResponseEntity<FormData> updateForm(@PathVariable("id") long id, @RequestBody FormData data) {
-        FormData formData = FormRepository.findById(id);
-        if (formData==null) {
+        FormData form = formRepository.findOne(id);
+        if (form==null) {
             System.out.println("User with id " + id + " not found");
             return new ResponseEntity<FormData>(HttpStatus.NOT_FOUND);
         }
+        form.setDepartment(form.getDepartment());
+        form.setRequesterName(form.getRequesterName());
+        form.setPhoneNumber(form.getPhoneNumber());
+        form.setRequestedOnDate(form.getRequestedOnDate());
+        form.setRequesterID(form.getRequesterID());
+        form.setAuthorizationDate(form.getAuthorizationDate());
+        form.setPaymentAccountCode(form.getPaymentAccountCode());
+        form.setEmailAddress(form.getEmailAddress());
+        form.setTimes(form.getTimes());
+        form.setEventName(form.getEventName());
+        form.setIsLicensed(form.getIsLicensed());
+        form.setNumAttendees(form.getNumAttendees());
+        form.setAuthorizerID(form.getAuthorizerId());
+        form.setAuthorizerPhoneNumber(form.getAuthorizerPhoneNumber());
+        form.setServiceRequestNumber(form.getServiceRequestNumber());
+        form.setEventLocation(form.getEventLocation());
+        form.setAuthorizerName(form.getAuthorizerName());
+        form.setEventDates(form.getEventDates());
+        form.setEventDetails(form.getEventDetails());
+        form.setFaxNumber(form.getFaxNumber());
 
+        return new ResponseEntity<FormData>(form, HttpStatus.OK);
     }
-*/
+
     @GetMapping("/")
     public String showForm(FormData serviceRequestForm) {
         return "form.html";
