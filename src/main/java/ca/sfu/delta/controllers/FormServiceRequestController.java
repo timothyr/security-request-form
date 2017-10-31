@@ -18,11 +18,17 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.config.annotation.ViewControllerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
+import org.springframework.core.io.FileSystemResource;
 
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Map;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.io.IOException;
+import java.io.File;
 
 
 @Controller
@@ -99,6 +105,46 @@ public class FormServiceRequestController extends WebMvcConfigurerAdapter {
 
 		return null;
 	}
+
+    @RequestMapping(value = "/api/csv/form/{id}", method = RequestMethod.GET)
+    @ResponseBody
+    public FileSystemResource getCSV(@PathVariable("id") long id) {
+        for (FormData form : formRepository.findAll()) {
+            if(form.getRequestID().equals(id))
+            {
+                form.saveAsCSV(id + ".csv");
+            }
+        }
+        return new FileSystemResource(id + ".csv");
+    }
+
+    @RequestMapping(value = "/api/csv/form/all", method = RequestMethod.GET)
+    @ResponseBody
+    public FileSystemResource getAllCSV() {
+        for (FormData form : formRepository.findAll()) {
+            form.saveAsCSV("allrequests.csv");
+        }
+        return new FileSystemResource("allrequests.csv");
+    }
+
+    private void deleteOldCSVs() {
+        File dir = new File(System.getProperty("user.dir"));
+        for(File file : dir.listFiles()) {
+            String filename = file.getName();
+            String extension = filename.substring(filename.lastIndexOf(".") + 1, filename.length());
+            if(extension.equals("csv"))
+            {
+                Path csvToDelete = Paths.get(filename);
+                try {
+                    Files.delete(csvToDelete);
+                }
+                catch(IOException e)
+                {
+                    System.out.println("Server error: unable to delete csv file.");
+                }
+            }
+        }  
+    }
 
     // Reserve the next request ID in the sequence to ensure each form has a unique request ID
 	private String reserveNextRequestID() {
