@@ -17,6 +17,11 @@
 	<div id="app">
 		<form method="post" v-on:submit.prevent="submitForm">
 			<div class="container col-md-10 offset-md-1 wrapper mb-5 col-lg-10">
+				<div class="row mt-5">
+					<div class="form-group col-md-4 add-space-top ">
+						<button type="button" v-on:click="signIn" id="sign-in" class="btn btn-danger btn-lg col-md-8">Sign In</button>
+					</div>
+				</div>
 				<div class="container col-md-10 mt-5">
 					<div class="row">
 						<h1 class="text-center form-heading">Security Service Request</h1>
@@ -115,11 +120,6 @@
 					</div>
 					<div>
 						<h3 class="auth-heading mt-4">Authorization</h3>
-					</div>
-					<div class="row mt-5">
-						<div class="form-group col-md-4">
-							<button type="button" v-on:click="signIn" id="sign-in" class="btn btn-danger btn-lg col-md-8">Sign In</button>
-						</div>
 					</div>
 					<div class="row mt-6">
 						<div class="form-group col-md-4">
