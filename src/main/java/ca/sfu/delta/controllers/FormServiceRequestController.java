@@ -1,12 +1,18 @@
 package ca.sfu.delta.controllers;
-
+import javax.mail.MessagingException;
 import javax.validation.Valid;
 
+import ca.sfu.delta.Utilities.GlobalConstants;
 import ca.sfu.delta.models.FormData;
 import ca.sfu.delta.models.RequestID;
+import ca.sfu.delta.models.URLToken;
+import ca.sfu.delta.models.SendEmail;
 import ca.sfu.delta.repository.FormRepository;
 import ca.sfu.delta.repository.RequestIDRepository;
+import ca.sfu.delta.repository.URLTokenRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
@@ -17,7 +23,6 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Map;
-import java.util.logging.ConsoleHandler;
 
 
 @Controller
@@ -26,6 +31,12 @@ public class FormServiceRequestController extends WebMvcConfigurerAdapter {
     FormRepository formRepository;
     @Autowired
     RequestIDRepository requestIDRepository;
+    @Autowired
+    URLTokenRepository urlTokenRepository;
+    @Autowired
+    SendEmail sendEmail;
+
+    private static final String formFromTokenURL = "/api/form/get/user/";
 
     @Override
     public void addViewControllers(ViewControllerRegistry registry) {
@@ -34,13 +45,42 @@ public class FormServiceRequestController extends WebMvcConfigurerAdapter {
     }
 
     @RequestMapping(value = "/api/form/get/{id}", method = RequestMethod.GET, produces = "application/json")
-    public @ResponseBody Map<String, Object> getForm(@PathVariable("id") Long id) {
+    public @ResponseBody
+    Map<String, Object> getForm(@PathVariable("id") Long id) {
         FormData form = formRepository.findOne(id);
+
         return form.jsonify();
     }
 
+    @RequestMapping(value = "/api/form/getByRequestID/{id}", method = RequestMethod.GET, produces = "application/json")
+    public @ResponseBody Map<String, Object> getForm(@PathVariable("id") String id) {
+        for (FormData f : formRepository.findAll()) {
+        	if (f.getRequestID().equals(id)) {
+        		System.out.println("found form with requestID = "+f.getRequestID());
+        		return f.jsonify();
+			}
+		}
+
+        return null;
+    }
+
+    @RequestMapping(value = formFromTokenURL + "{token}", method = RequestMethod.GET, produces = "application/json")
+	public @ResponseBody ResponseEntity getFormFromToken(@PathVariable("token") String token) {
+    	if (urlTokenRepository.existsByToken(token)) {
+		    URLToken urlToken = urlTokenRepository.getByToken(token);
+		    FormData form = formRepository.findOne(urlToken.getFormDataID());
+		    return ResponseEntity.ok(form.jsonify());
+	    }
+	    else {
+    		// could not find the form corresponding to the token
+		    return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+	    }
+    }
+
+	@CrossOrigin(origins = "http://localhost:8081")
     @RequestMapping(value = "/api/form/search", method = RequestMethod.GET, produces = "application/json")
-    public @ResponseBody List<Map<String, Object>> search() {
+    public @ResponseBody
+    List<Map<String, Object>> search() {
         List<Map<String, Object>> forms = new ArrayList<Map<String, Object>>();
 
         for (FormData form : formRepository.findAll()) {
@@ -50,11 +90,20 @@ public class FormServiceRequestController extends WebMvcConfigurerAdapter {
         return forms;
     }
 
+	@RequestMapping(value = "/api/form/saveSecurity", method = RequestMethod.POST)
+	public @ResponseBody String saveSecurity(@RequestBody FormData form) {
+		formRepository.save(form);
+		for (FormData f : formRepository.findAll()) {
+			System.out.println(f.toString());
+		}
+
+		return null;
+	}
+
     // Reserve the next request ID in the sequence to ensure each form has a unique request ID
 	private String reserveNextRequestID() {
 		int year = Calendar.getInstance().get(Calendar.YEAR) % 100;
 		Integer formDigit = requestIDRepository.getNextID(year);
-		//ToDo: ensure nextDigit is only four digits (i.e. less than 10,000)
 		RequestID requestID = new RequestID();
 		requestID.setYear(year);
 		requestID.setDigits(formDigit);
@@ -62,6 +111,26 @@ public class FormServiceRequestController extends WebMvcConfigurerAdapter {
 
 		return String.format("%02d", year) + "-" + String.format("%04d", formDigit);
 	}
+
+	private String createURLToken(Long formDataID) {
+		URLToken urlToken = new URLToken(formDataID);
+		String token = urlToken.getToken();
+
+		int numberOfAttempts = 0;
+		while (urlTokenRepository.existsByToken(token)) {
+			if (numberOfAttempts >= GlobalConstants.MAX__REPEAT_CHECK_UNIQUE) {
+				// TODO: Error: too many attempts at getting a unique token
+				return "";
+			}
+			token = urlToken.generateToken();
+			numberOfAttempts++;
+		}
+
+		urlToken.setToken(token);
+		urlTokenRepository.save(urlToken);
+
+		return token;
+    }
 
     @RequestMapping(value = "/api/form/save", method = RequestMethod.GET, produces = "application/json")
     public @ResponseBody String addForm(
@@ -120,8 +189,28 @@ public class FormServiceRequestController extends WebMvcConfigurerAdapter {
         form = formRepository.save(form);
 
         if (form != null) {
-            System.out.println("Successfully saved Form with requestID=" + form.getId());
-            return String.valueOf(form.getId());
+
+            System.out.println("saved");
+
+	        String token = createURLToken(form.getId());
+            // Send Email to the User to confirm the request has been sent
+            String userEmailAddress = form.getEmailAddress();
+            String userName = form.getRequesterName();
+            String trackingID = form.getRequestID();
+            String requestURL = GlobalConstants.SERVER_HOST_ADDRESS + formFromTokenURL + token;
+            //Probably don't need to check here if email Address is null
+            if(userEmailAddress != null && trackingID != null) {
+                try {
+                    sendEmail.sendTo(userEmailAddress, userName, trackingID, requestURL);
+                } catch (MessagingException ex) {
+                    System.out.println("Could not send the email. Error message: "+ ex.getMessage());
+                    //e.printStackTrace();
+                }
+            } else {
+                System.out.println("Could not send Email. Please ensure all the parameters are valid.");
+            }
+	        System.out.println("Successfully saved Form with requestID = " + form.getId() + " and token = " + token);
+	        return String.valueOf(form.getId());
         } else {
             System.out.println("Failed to save Form");
             return "ERROR: form didn't save";
@@ -151,11 +240,14 @@ public class FormServiceRequestController extends WebMvcConfigurerAdapter {
     		// Need to reserve a request id
 		    formData.setRequestID(reserveNextRequestID());
 	    }
+
+
         formRepository.save(formData);
+
     }
 
     @ModelAttribute("FormData")
-	public FormData createModel() {
-		return new FormData();
-	}
+    public FormData createModel() {
+        return new FormData();
+    }
 }
