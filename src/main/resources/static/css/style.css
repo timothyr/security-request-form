@@ -154,3 +154,12 @@ svg path, svg rect {
 [v-cloak] {
     display: none;
 }
+
+/* Adds space in between the submit and Authorization button when stacked in a smaller screen.  */
+
+@media screen and (max-width: 736px) {
+	.add-space-top{
+		padding-top: 1em;
+		font-size: smaller;
+	}
+}
