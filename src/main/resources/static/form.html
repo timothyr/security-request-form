@@ -6,7 +6,8 @@
 	<title>Security Service Request</title>
 
 	<link rel="stylesheet" href="/css/bootstrap.min.css">
-    <link rel="stylesheet" href="/css/font-awesome.min.css">
+	<link rel="stylesheet" href="/css/font-awesome.min.css">
+	<link rel="stylesheet" href="/css/jquery.datetimepicker.min.css">
 	<link rel="stylesheet" href="/css/style.css">
 </head>
 <body class="red-background">
@@ -88,30 +89,59 @@
 							</div>
 						</div>
 					</div>
+
+
+					<!--original master-->
 					<div class="row mt-4">
-						<table class="table table-striped">
+						<table class="table table-hover text-centered date-table">
 							<thead>
 							<tr>
-								<th>Date</th>
-								<th>Time</th>
+								<th>Start Time</th>
+								<th>End Time</th>
+								<th></th>
 							</tr>
+							<tr>
+								<th class="col-xs-3">
+									<div class ="input-group">
+									<span class="input-group-addon">
+										<i id="chooseStartDateTime" class="fa fa-calendar calendar-icon" onChange="setStartDateTime(this)"></i>
+									</span>
+										<input type="text" id="startdatetime" class="form-control" disabled="disabled"/>
+									</div>
+								</th>
+
+								<th class="col-xs-3">
+									<div class ="input-group">
+									<span class="input-group-addon">
+										<i id="chooseEndDateTime" class="fa fa-calendar calendar-icon" onChange="setEndDateTime(this)"></i>
+									</span>
+										<input type="text" id="enddatetime" class="form-control" disabled="disabled"/>
+									</div>
+								</th>
+
+								<th class="col-xs-1">
+									<button v-on:click="addDatetime" id="addDateTime" type="button" class="btn btn-danger ml-1">add</button>
+								</th>
+							</tr>
+
 							</thead>
-							<tbody>
+							<tbody v-for="dt in datetimelist">
 							<tr>
 								<td>
-									<input type="text" id="date" class="form-control" v-model="formData.eventDates" required="required"/>
+									<span class="ml-2">{{dt.start}}</span>
 								</td>
 								<td>
-									<input type="text" id="time" class="form-control" v-model="formData.times" required="required"/>
+									<span class="ml-2">{{dt.end}}</span>
+								</td>
+								<td>
+									<i v-on:click="deleteDatetime(dt)" class="fa fa-trash-o trash-icon ml-1"></i>
 								</td>
 							</tr>
 							</tbody>
 						</table>
-						<div class="row mt-4">
-							<i class="fa fa-calendar calendar-icon mr-3"></i>
-							<button class="btn btn-danger">Add Date</button>
-						</div>
 					</div>
+
+
 					<div>
 						<h3 class="auth-heading mt-4">Authorization</h3>
 					</div>
@@ -170,6 +200,12 @@
 	<script src="/js/jquery-3.2.1.min.js"></script>
 	<script src="/js/vue.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/vue-resource@1.3.4"></script>
+
+	<script src="/js/jquery.datetimepicker.full.js"></script>
+	<script src="/js/jquery.datetimepicker.js"></script>
+	<!--<script src="/js/vue.min.js"></script>-->
+
+
 	<script>
         var emailValid = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
 
@@ -205,8 +241,11 @@
                     eventDates: '',
                     eventDetails: '',
                     faxNumber: '',
-                    requestID: ''
-                }
+                    requestID: '',
+                },
+                startdatetime: '',
+				enddatetime: '',
+				datetimelist: [],
             },
 
 			computed: {
@@ -260,9 +299,74 @@
                             }
                         }).then(successCallback, errorCallback);
                     }
-                }
+                },
+
+                addDatetime: function(){
+            		this.startdatetime = getStartDateTime();
+            		this.enddatetime = getEndDateTime();
+            		if(this.startdatetime!='' && this.enddatetime!=''){
+						this.datetimelist.push( {start: this.startdatetime, end: this.enddatetime} );
+						this.formData.eventDates += this.startdatetime +"-"+ this.enddatetime +", ";
+						this.startdatetime = '';
+						this.enddatetime = '';
+            		}
+            	},
+            	deleteDatetime: function(dt){
+            		var index = this.datetimelist.indexOf(dt);
+            		this.formData.eventDates = deleteEventDate(dt.start,dt.end,this.formData.eventDates );
+            		this.datetimelist.splice(index,1);
+
+            	},
             }
 		});
+	</script>
+	<script>
+		$(document).ready(function(){
+			$("#chooseStartDateTime").datetimepicker({
+				dayOfWeekStart:0,
+				stepMinute: 30,
+				lang: 'en',
+				minDate: 0,
+				formatTime: 'g:i a',
+			});
+			$("#chooseEndDateTime").datetimepicker({
+				dayOfWeekStart:0,
+				lang: 'en',
+				minDate: new Date(getStartDateTime()),
+				formatTime: 'g:i a',
+			});
+			document.getElementById("chooseStartDateTime").value = '';
+			document.getElementById("startdatetime").value = '';
+			document.getElementById("chooseEndDateTime").value = '';
+			document.getElementById("enddatetime").value = '';
+		});
+
+		function setStartDateTime(e){
+			document.getElementById("startdatetime").value = chooseStartDateTime.value;
+		}
+		function setEndDateTime(e){
+			document.getElementById("enddatetime").value = chooseEndDateTime.value;
+		}
+		function getStartDateTime(){
+			var x = document.getElementById("chooseStartDateTime").value;
+			document.getElementById("chooseStartDateTime").value = '';
+			document.getElementById("startdatetime").value = '';
+			return x;
+		}
+		function getEndDateTime(){
+			var x = document.getElementById("chooseEndDateTime").value;
+			document.getElementById("chooseEndDateTime").value = '';
+			document.getElementById("enddatetime").value = '';
+			return x;
+		}
+		function deleteEventDate(s,e,l){
+			var newString = "";
+			var tobermvd = s+"-"+e+", ";
+			newString = l.replace(tobermvd,"");
+			console.log(newString);
+			return newString;
+		}
+
 	</script>
 </body>
 </html>
