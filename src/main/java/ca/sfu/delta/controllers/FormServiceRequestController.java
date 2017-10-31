@@ -38,10 +38,12 @@ public class FormServiceRequestController extends WebMvcConfigurerAdapter {
 
     private static final String formFromTokenURL = "/api/form/get/user/";
 
+
     @Override
     public void addViewControllers(ViewControllerRegistry registry) {
         registry.addViewController("/results").setViewName("results.html");
         registry.addViewController("/requests").setViewName("requests.html");
+        registry.addViewController("/updateform").setViewName("userupdateform.html");
     }
 
     @RequestMapping(value = "/api/form/get/{id}", method = RequestMethod.GET, produces = "application/json")
@@ -216,7 +218,17 @@ public class FormServiceRequestController extends WebMvcConfigurerAdapter {
             return "ERROR: form didn't save";
         }
     }
+/*
+    @RequestMapping(value = "/api/form/update/{id}", method = RequestMethod.PUT)
+    public ResponseEntity<FormData> updateForm(@PathVariable("id") long id, @RequestBody FormData data) {
+        FormData formData = FormRepository.findById(id);
+        if (formData==null) {
+            System.out.println("User with id " + id + " not found");
+            return new ResponseEntity<FormData>(HttpStatus.NOT_FOUND);
+        }
 
+    }
+*/
     @GetMapping("/")
     public String showForm(FormData serviceRequestForm) {
         return "form.html";
@@ -240,7 +252,6 @@ public class FormServiceRequestController extends WebMvcConfigurerAdapter {
     		// Need to reserve a request id
 		    formData.setRequestID(reserveNextRequestID());
 	    }
-
 
         formRepository.save(formData);
 
