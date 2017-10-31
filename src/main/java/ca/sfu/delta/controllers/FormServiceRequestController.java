@@ -18,17 +18,12 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.config.annotation.ViewControllerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
-import org.springframework.core.io.FileSystemResource;
 
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Map;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.io.IOException;
-import java.io.File;
+import java.io.StringWriter;
 
 
 @Controller
@@ -108,42 +103,36 @@ public class FormServiceRequestController extends WebMvcConfigurerAdapter {
 
     @RequestMapping(value = "/api/csv/form/{id}", method = RequestMethod.GET, produces = "text/csv")
     @ResponseBody
-    public FileSystemResource getCSV(@PathVariable("id") long id) {
+    public String getCSV(@PathVariable("id") long id) {
+        String csvString = new String();
         for (FormData form : formRepository.findAll()) {
             if(form.getRequestID().equals(id))
             {
-                form.saveAsCSV(id + ".csv");
+                csvString = form.getAsCSV(true);
             }
         }
-        return new FileSystemResource(id + ".csv");
+        return csvString;
     }
 
     @RequestMapping(value = "/api/csv/form/all", method = RequestMethod.GET, produces = "text/csv")
     @ResponseBody
-    public FileSystemResource getAllCSV() {
+    public String getAllCSV() {
+        boolean first = true;
+        String thisForm;
+        StringWriter csvWriter = new StringWriter();
         for (FormData form : formRepository.findAll()) {
-            form.saveAsCSV("allrequests.csv");
-        }
-        return new FileSystemResource("allrequests.csv");
-    }
-
-    private void deleteOldCSVs() {
-        File dir = new File(System.getProperty("user.dir"));
-        for(File file : dir.listFiles()) {
-            String filename = file.getName();
-            String extension = filename.substring(filename.lastIndexOf(".") + 1, filename.length());
-            if(extension.equals("csv"))
-            {
-                Path csvToDelete = Paths.get(filename);
-                try {
-                    Files.delete(csvToDelete);
-                }
-                catch(IOException e)
-                {
-                    System.out.println("Server error: unable to delete csv file.");
-                }
+            if(first) {
+                thisForm = form.getAsCSV(true);
+                first = false;
+                csvWriter.append(thisForm);
+            } 
+            else {
+                thisForm = form.getAsCSV(false);
+                csvWriter.append(thisForm);
             }
-        }  
+        }
+
+        return csvWriter.toString();
     }
 
     // Reserve the next request ID in the sequence to ensure each form has a unique request ID
