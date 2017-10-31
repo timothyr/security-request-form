@@ -225,27 +225,28 @@ public class FormServiceRequestController extends WebMvcConfigurerAdapter {
             System.out.println("User with id " + id + " not found");
             return new ResponseEntity<FormData>(HttpStatus.NOT_FOUND);
         }
-        form.setDepartment(form.getDepartment());
-        form.setRequesterName(form.getRequesterName());
-        form.setPhoneNumber(form.getPhoneNumber());
-        form.setRequestedOnDate(form.getRequestedOnDate());
-        form.setRequesterID(form.getRequesterID());
-        form.setAuthorizationDate(form.getAuthorizationDate());
-        form.setPaymentAccountCode(form.getPaymentAccountCode());
-        form.setEmailAddress(form.getEmailAddress());
-        form.setTimes(form.getTimes());
-        form.setEventName(form.getEventName());
-        form.setIsLicensed(form.getIsLicensed());
-        form.setNumAttendees(form.getNumAttendees());
-        form.setAuthorizerID(form.getAuthorizerId());
-        form.setAuthorizerPhoneNumber(form.getAuthorizerPhoneNumber());
-        form.setServiceRequestNumber(form.getServiceRequestNumber());
-        form.setEventLocation(form.getEventLocation());
-        form.setAuthorizerName(form.getAuthorizerName());
-        form.setEventDates(form.getEventDates());
-        form.setEventDetails(form.getEventDetails());
-        form.setFaxNumber(form.getFaxNumber());
+        form.setDepartment(data.getDepartment());
+        form.setRequesterName(data.getRequesterName());
+        form.setPhoneNumber(data.getPhoneNumber());
+        form.setRequestedOnDate(data.getRequestedOnDate());
+        form.setRequesterID(data.getRequesterID());
+        form.setAuthorizationDate(data.getAuthorizationDate());
+        form.setPaymentAccountCode(data.getPaymentAccountCode());
+        form.setEmailAddress(data.getEmailAddress());
+        form.setTimes(data.getTimes());
+        form.setEventName(data.getEventName());
+        form.setIsLicensed(data.getIsLicensed());
+        form.setNumAttendees(data.getNumAttendees());
+        form.setAuthorizerID(data.getAuthorizerID());
+        form.setAuthorizerPhoneNumber(data.getAuthorizerPhoneNumber());
+        form.setServiceRequestNumber(data.getServiceRequestNumber());
+        form.setEventLocation(data.getEventLocation());
+        form.setAuthorizerName(data.getAuthorizerName());
+        form.setEventDates(data.getEventDates());
+        form.setEventDetails(data.getEventDetails());
+        form.setFaxNumber(data.getFaxNumber());
 
+        formRepository.save(form);
         return new ResponseEntity<FormData>(form, HttpStatus.OK);
     }
 
