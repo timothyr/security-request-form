@@ -18,7 +18,7 @@
 		<form method="post" v-on:submit.prevent="submitForm">
 			<div class="container col-md-10 offset-md-1 wrapper mb-5 col-lg-10">
 				<div class="form-group col-md-4 add-space-top float-right">
-					<button type="button" v-on:click="signIn" id="sign-in" class="btn btn-danger btn-lg col-md-8 float-right">Sign In</button>
+					<button type="button" v-on:click="signIn" id="sign-in" class="btn btn-danger btn-lg col-md-8 float-right">{{changeSignInStatus}}</button>
 				</div>
 				<div class="row mt-5">
 
@@ -223,6 +223,8 @@
         const errorHeader = "Something went wrong";
 		const successMessage = "Thank you, the Security Service Request has been submitted.";
         const errorMessage = "Sorry, there was an error. Your form was not submitted. Please try again later.";
+        const signIn = "Sign In";
+        const signOut = "Sign Out";
 
         var Modal = Vue.component('modal', {
             template: '#modal-template',
@@ -249,6 +251,7 @@
 				submittedFormHeader:'',
 				submittedFormMessage: '',
                 submittedFormLink: '',
+            	changeSignInStatus: signIn,
 
                 showAuthFields: true,
 
@@ -282,7 +285,7 @@
             }),
 
 			computed: {
-				validation: function () {
+				validation: function() {
 				    if(signedIn){
                         return {
                             emailAddress: emailValid.test(this.formData.emailAddress)
@@ -305,9 +308,17 @@
 			},
 
             methods: {
+                signInStatus:function(){
+                    if (this.signedIn){
+                        this.changeSignInStatus = signOut;
+					}else{
+                        this.changeSignInStatus = signIn;
+					}
+				}
                 signIn : function() {
                     this.signedIn = !this.signedIn;
 					this.showAuthFields = !this.showAuthFields;
+					this.signInStatus();
 				},
 
                 setSubmittedFormHeader(header) {
