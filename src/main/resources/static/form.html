@@ -20,6 +20,8 @@
                 <div class="form-group col-md-4 add-space-top float-right">
                     <button type="button" v-on:click="signInOut" id="sign-in" class="btn btn-danger btn-lg col-md-8 float-right">{{signedInButtonMessage}}</button>
                 </div>
+                <div class="row mt-5">
+                </div>
 				<div class="container col-md-10 mt-5">
 					<div class="row">
 						<h1 class="text-center form-heading">Security Service Request</h1>
@@ -144,18 +146,6 @@
                             <button v-if="!signedIn" id="requestAuth" class="btn btn-danger btn-lg col-md-8">Request Authorization</button>
 						</div>
 					</div>
-					<div class="row">
-						<div class="col-md-8 mx-auto">
-							<nav aria-label="Page navagation">
-								<ul class="pagination mt-5 justify-content-center">
-									<li class="page-item disabled"><a class="page-link" href="#">Previous</a></li>
-									<li class="page-item"><a class="page-link" href="#">1</a></li>
-									<li class="page-item"><a class="page-link" href="#">2</a></li>
-									<li class="page-item"><a class="page-link" href="#">Next</a></li>
-								</ul>
-							</nav>
-						</div>
-					</div>
 					<div class="bottom-space"></div>
 
 			</div>
@@ -233,7 +223,7 @@
 
  			data: () => ({
 				signedIn: false,
-                signedInButtonMessage: signOutMessage,
+                signedInButtonMessage: signInMessage,
 
 				submittedFormHeader:'',
 				submittedFormMessage: '',
@@ -290,14 +280,14 @@
                 signInOut : function() {
                     this.signedIn = !this.signedIn;
 					this.showAuthFields = this.signedIn;
-					updateSignInStatus();
+					this.updateSignInStatus();
 				},
 
                 updateSignInStatus : function() {
                   if(this.signedIn) {
-                      signedInButtonMessage = signOutMessage;
+                      this.signedInButtonMessage = signOutMessage;
                   }else{
-                      signedInButtonMessage = signInMessage;
+                      this.signedInButtonMessage = signInMessage;
                   }
                 },
 
@@ -360,6 +350,10 @@
 
                     if (this.isValid && !this.submitting) {
                         this.submitting = true;
+                        <!-- guarantee that authorizer email address is empty -->
+                        if(this.signedIn) {
+                            this.formData.authorizerEmailAddress='';
+                        }
                         <!-- submit GET request with vue -->
                         this.$http.get('api/form/save', {
                             params: {
