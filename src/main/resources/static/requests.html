@@ -22,7 +22,7 @@
                 <div class="dropdown">
                     <div class="dropdown-toggle" id="dropdownMenuButton" data-toggle="dropdown"><i class="fa fa-cog"></i></div>
                     <ul class="dropdown-menu">
-                        <li class="dropdown-item">Export to CSV</li>
+                        <li class="dropdown-item" v-on:click="exportAllCSV()">Export to CSV</li>
                     </ul>
                 </div>
 
@@ -152,6 +152,13 @@
             },
             showNoResults: function() {
                 return this.filteredRequests.length == 0 && !this.loading;
+            },
+            exportAllCSV: function() {
+                console.log("button pressed CSV");
+                this.$http.get('/api/csv/form/all')
+                    .then(function(response) {
+                        console.log(response.data);
+                    })
             }
         },
         computed: {
