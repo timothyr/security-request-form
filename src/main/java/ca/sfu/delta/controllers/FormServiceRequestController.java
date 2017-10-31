@@ -23,6 +23,9 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Map;
+import java.util.Date;
+import java.text.SimpleDateFormat;
+import java.text.DateFormat;
 
 
 @Controller
@@ -161,7 +164,6 @@ public class FormServiceRequestController extends WebMvcConfigurerAdapter {
         form.setDepartment(department);
         form.setRequesterName(requesterName);
         form.setPhoneNumber(phoneNumber);
-        form.setRequestedOnDate(requestedOnDate);
         form.setRequesterID(requesterID);
         form.setAuthorizationDate(authorizationDate);
         form.setPaymentAccountCode(paymentAccountCode);
@@ -178,6 +180,11 @@ public class FormServiceRequestController extends WebMvcConfigurerAdapter {
         form.setEventDates(eventDates);
         form.setEventDetails(eventDetails);
         form.setFaxNumber(faxNumber);
+
+        //Set requestedOnDate to current date
+        DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
+        Date date = new Date();
+        form.setRequestedOnDate(dateFormat.format(date));
 
         if (requestID != null && !requestID.isEmpty()) {
 	        form.setRequestID(requestID);
