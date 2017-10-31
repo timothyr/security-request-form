@@ -138,6 +138,10 @@
 							<label for="phone-of-authorizee-input">Phone</label>
 							<input type="text" placeholder="xxx-xxx-xxxx" id="phone-of-authorizee-input" v-model="formData.authorizerPhoneNumber" class="form-control masked" pattern="[0-9]{3}[ |-][0-9]{3}[ |-][0-9]{4}" data-valid-example="000-000-0000"/>
 						</div>
+						<div class="form-group col-md-4">
+							<label for="email-of-authorizee-input">Email</label>
+							<input type="email" id="email-of-authorizee-input" class="form-control" v-model="formData.authorizerEmailAddress" placeholder="example@sfu.ca" required="required"/>
+						</div>
 					</div>
 					<div class="row">
 						<div class="form-group col-md-12">
