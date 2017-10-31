@@ -154,7 +154,8 @@ public class FormServiceRequestController extends WebMvcConfigurerAdapter {
             @RequestParam(required=false) String eventDates,
             @RequestParam(required=false) String eventDetails,
             @RequestParam(required=false) String faxNumber,
-			@RequestParam(required=false) String requestID
+			@RequestParam(required=false) String requestID,
+            @RequestParam(required=false) String authorizerEmailAddress
             ) {
 
         FormData form = new FormData();
@@ -178,6 +179,7 @@ public class FormServiceRequestController extends WebMvcConfigurerAdapter {
         form.setEventDates(eventDates);
         form.setEventDetails(eventDetails);
         form.setFaxNumber(faxNumber);
+        form.setAuthorizerEmailAddress(authorizerEmailAddress);
 
         if (requestID != null && !requestID.isEmpty()) {
 	        form.setRequestID(requestID);
@@ -188,33 +190,57 @@ public class FormServiceRequestController extends WebMvcConfigurerAdapter {
 
         form = formRepository.save(form);
 
+        String token = createURLToken(form.getId());
+        // Send Email to the User to confirm the request has been sent
+        String userName = form.getRequesterName();
+        String userEmailAddress = form.getEmailAddress();
+        String authEmailAddress = form.getAuthorizerEmailAddress();
+        String trackingID = form.getRequestID();
+        String requestURL = GlobalConstants.SERVER_HOST_ADDRESS + formFromTokenURL + token;
+
         if (form != null) {
 
             System.out.println("saved");
 
-	        String token = createURLToken(form.getId());
-            // Send Email to the User to confirm the request has been sent
-            String userEmailAddress = form.getEmailAddress();
-            String userName = form.getRequesterName();
-            String trackingID = form.getRequestID();
-            String requestURL = GlobalConstants.SERVER_HOST_ADDRESS + formFromTokenURL + token;
+
             //Probably don't need to check here if email Address is null
-            if(userEmailAddress != null && trackingID != null) {
+            if (trackingID != null) {
                 try {
-                    sendEmail.sendTo(userEmailAddress, userName, trackingID, requestURL);
-                } catch (MessagingException ex) {
-                    System.out.println("Could not send the email. Error message: "+ ex.getMessage());
-                    //e.printStackTrace();
+                if (userEmailAddress != null && authEmailAddress != null) {
+
+                        sendEmail.sendTo(userEmailAddress, userName, trackingID, requestURL);
+                        //todo: send email to Authorizer
+
+                    } else {
+                    System.out.println("Error sending Email. Please ensure all the parameters are valid.");
                 }
-            } else {
-                System.out.println("Could not send Email. Please ensure all the parameters are valid.");
+                } catch (MessagingException ex) {
+                System.out.println("Could not send the email. Error message: " + ex.getMessage());
+                //e.printStackTrace();
+            }
             }
 	        System.out.println("Successfully saved Form with requestID = " + form.getId() + " and token = " + token);
             String returnLink = formFromTokenURL + token;
 	        return returnLink;
         } else {
-            System.out.println("Failed to save Form");
-            return "ERROR: form didn't save";
+            if (authorizerEmailAddress == null || authorizerEmailAddress.isEmpty()) {
+
+                try {
+                    sendEmail.sendTo(userEmailAddress, userName, trackingID, requestURL);
+
+                } catch (MessagingException ex) {
+                    System.out.println("Could not send the email to the user. Error message: " + ex.getMessage());
+                }
+
+                System.out.println("Successfully saved Form with requestID = " + form.getId() + " and token = " + token);
+                String returnLink = formFromTokenURL + token;
+                return returnLink;
+
+            }else {
+
+                System.out.println("Failed to save Form");
+                return "ERROR: form didn't save";
+            }
         }
     }
 
