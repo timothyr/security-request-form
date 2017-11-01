@@ -1,12 +1,8 @@
 package ca.sfu.delta.models;
 
 import javax.persistence.*;
-import java.lang.String;
+import java.io.StringWriter;
 import java.util.List;
-import java.io.File;
-import java.io.BufferedWriter;
-import java.io.FileWriter;
-import java.io.IOException;
 
 
 @Entity
@@ -14,6 +10,8 @@ public class FormData {
     @Id
     @GeneratedValue(strategy= GenerationType.AUTO)
     private Long id;
+
+    // TODO: ensure all fields are saved in csv
 
     //Specified by user
     private String department;
@@ -33,7 +31,7 @@ public class FormData {
 
     private String paymentAccountCode;
     private Boolean invoiceRequested;
-    private String eventDetails;
+    private String eventDetails = null;
     private String serviceRequestNumber; //Generated automatically, pre-populate.
     private String recievingSecuritySupervisor;
 
@@ -42,7 +40,8 @@ public class FormData {
     @ElementCollection
     private List<String> distributionList;
     private String preparedBy;
-    private String securityRemarks;
+    private String securityRemarks = null;
+    private String requestStatus;
 
 	private String requestID;
 
@@ -52,7 +51,7 @@ public class FormData {
 
     //Specified by Authorizer
     private String authorizerName;
-    private String authorizerID; //SFU ID or BCDL
+    private String authorizerID; //SFU ID
 	//Todo: this will need to be changed back to a date once the front end supports dates
     private String authorizationDate;
     private String authorizerPhoneNumber;
@@ -97,6 +96,10 @@ public class FormData {
     public Long getId() {
         return this.id;
     }
+
+	public void setId(long id) {
+		this.id = id;
+	}
 
     //Getter and Setter methods
     //Set by requester
@@ -321,8 +324,15 @@ public class FormData {
 		this.requestID = requestID;
 	}
 
+	public String getRequestStatus() {
+		return requestStatus;
+	}
 
-	public void setSecurityFields(
+	public void setRequestStatus(String requestStatus) {
+		this.requestStatus = requestStatus;
+	}
+
+    public void setSecurityFields(
             String recievingSecuritySupervisor,
             List<Guard> guards,
             List<String> distributionList,
@@ -361,6 +371,7 @@ public class FormData {
                 ", distributionList=" + distributionList +
                 ", preparedBy='" + preparedBy + '\'' +
                 ", securityRemarks='" + securityRemarks + '\'' +
+				", requestStatus='" + requestStatus + '\'' +
                 ", authorizerName='" + authorizerName + '\'' +
                 ", authorizerID='" + authorizerID + '\'' +
                 ", authorizationDate='" + authorizationDate + '\'' +
@@ -376,20 +387,11 @@ public class FormData {
      * (in the case of writing multiple forms to a csv), a new row is appended to it; Otherwise the file is created.
      * @param fileName - If this does not have the .csv extension it will be added.
      */
-    public void saveAsCSV(String fileName) {
-        //Make sure fileName ends with .csv
-        if (!fileName.endsWith(".csv")) {
-            fileName = fileName + ".csv";
-        }
-        File csv = new File(fileName);
-        //Creating csvWriter below creates the file if not present, so check existance now.
-        boolean newFile = true;
-        if (csv.exists()) newFile = false;
-        try {
-            //"true" in this case is specifying to open the file in append mode
-            BufferedWriter csvWriter = new BufferedWriter(new FileWriter(fileName, true));
-            //Only add first row with field names if file doesn't exist yet
-            if (newFile) {
+    public String getAsCSV(Boolean needHeader) {
+            StringWriter csvWriter = new StringWriter();
+            //Only add first row with field names if we need the header (in case that we are creating a new CSV
+            //with this string)
+            if (needHeader) {
                 String firstRow = "Request ID" + ", " +
                                   "Department" + ", " +
                                   "Requester Name" + ", " +
@@ -419,6 +421,15 @@ public class FormData {
                 csvWriter.append(firstRow);
             }
             //Append fields to csv, strip out commas from places they could be present
+            //Avoid null pointer exceptions if certain fields are blank
+
+            if(eventDetails == null){
+                eventDetails = new String("null");
+            }
+            if(securityRemarks == null){
+                securityRemarks = new String("null");
+            }
+
             String nextRow = requestID + ", " +
                              department + ", " +
                              requesterName + ", " +
@@ -451,10 +462,6 @@ public class FormData {
             nextRow = nextRow.replace("false", "No");
             nextRow = nextRow.replace("true", "Yes");
             csvWriter.append(nextRow);
-            csvWriter.close();
-        } catch (IOException e)
-        {
-            System.err.println("Error writing to csv:  " + e.getMessage());
-        }
+            return csvWriter.toString();
     }
 }

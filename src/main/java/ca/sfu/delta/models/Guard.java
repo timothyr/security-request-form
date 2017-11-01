@@ -1,19 +1,24 @@
 package ca.sfu.delta.models;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
 import java.math.BigDecimal;
 
 @Entity
-public class Guard {
+@Embeddable
+public class Guard{
 
 	@Id
 	@GeneratedValue(strategy= GenerationType.AUTO)
 	private Long id;
 
+	private String guardID;
+	private String location;
+	private String startDate;
+	private String endDate;
+	private String startTime;
+	private String endTime;
 	private String name;
+	private String telephone;
 	private int regularHours;
 	private int overtimeHours;
 	private BigDecimal regularRate;
@@ -64,13 +69,13 @@ public class Guard {
 		}
 	}
 
-	public Long getId() {
-		return id;
+	public String getGuardID() {
+		return guardID;
 	}
 
-	public void setId(Long id) throws IllegalArgumentException {
-		if (id != null) {
-			this.id = id;
+	public void setGuardID(String guardID) throws IllegalArgumentException {
+		if (guardID != null) {
+			this.guardID = guardID;
 		} else {
 			throw new IllegalArgumentException("ID must be non-null");
 		}
@@ -129,11 +134,41 @@ public class Guard {
 	@Override
 	public String toString() {
 		return "Guard{" +
-				"name='" + name + "\'" +
-				", id='" + id + "\'" +
-				", regularHours=" + regularHours +
-				", overtimeHours=" + overtimeHours +
-				", regularRate=" + regularRate +
-				", overtimeRate=" + overtimeRate + "}";
+				"guardID='" + guardID + "\'" +
+				", location='" + location + "\'" +
+				", startDate='" + startDate + "\'" +
+				", endDate='" + endDate + "\'" +
+				", startTime='" + startTime + "\'" +
+				", endTime='" + endTime + "\'" +
+				", name='" + name + "\'" +
+				", telephone='" + telephone + "\'" +
+				", regularHours='" + regularHours + "\'" +
+				", overtimeHours='" + overtimeHours + "\'" +
+				", regularRate='" + regularRate + "\'" +
+				", overtimeRate='" + overtimeRate + "\'}";
+	}
+
+	public void setLocation(String location) {
+		this.location = location;
+	}
+
+	public void setStartDate(String startDate) {
+		this.startDate = startDate;
+	}
+
+	public void setEndDate(String endDate) {
+		this.endDate = endDate;
+	}
+
+	public void setStartTime(String startTime) {
+		this.startTime = startTime;
+	}
+
+	public void setEndTime(String endTime) {
+		this.endTime = endTime;
+	}
+
+	public void setTelephone(String telephone) {
+		this.telephone = telephone;
 	}
 }

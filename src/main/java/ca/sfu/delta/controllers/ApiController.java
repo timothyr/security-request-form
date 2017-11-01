@@ -1,5 +1,6 @@
 package ca.sfu.delta.controllers;
 
+import ca.sfu.delta.Utilities.GlobalConstants;
 import ca.sfu.delta.models.*;
 import ca.sfu.delta.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,8 +12,11 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.PostConstruct;
 import java.beans.PropertyEditorSupport;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 @Controller
@@ -23,6 +27,12 @@ public class ApiController {
 	@Autowired GuardRepository guardRepository;
 	@Autowired UserRepository userRepository;
 	@Autowired DistributionRepository distributionRepository;
+
+	@Autowired
+	SendEmail sendEmail;
+
+	@Autowired
+	URLTokenRepository urlTokenRepository;
 
 	@Autowired AuthController authController;
 
@@ -250,8 +260,28 @@ public class ApiController {
 		return String.format("%02d", year) + "-" + String.format("%04d", formDigit);
 	}
 
+	private String createURLToken(Long formDataID) {
+		URLToken urlToken = new URLToken(formDataID);
+		String token = urlToken.getToken();
+
+		int numberOfAttempts = 0;
+		while (urlTokenRepository.existsByToken(token)) {
+			if (numberOfAttempts >= GlobalConstants.MAX__REPEAT_CHECK_UNIQUE) {
+				// TODO: Error: too many attempts at getting a unique token
+				return "";
+			}
+			token = urlToken.generateToken();
+			numberOfAttempts++;
+		}
+
+		urlToken.setToken(token);
+		urlTokenRepository.save(urlToken);
+
+		return token;
+	}
+
 	@RequestMapping(value = "/form/save", method = RequestMethod.GET, produces = "application/json")
-	public ResponseEntity<FormData> addForm(
+	public @ResponseBody String addForm(
 			@RequestParam(required=false) String department,
 			@RequestParam(required=false) String requesterName,
 			@RequestParam(required=false) String phoneNumber,
@@ -297,21 +327,48 @@ public class ApiController {
 		form.setEventDetails(eventDetails);
 		form.setFaxNumber(faxNumber);
 
-		if (requestID == null || requestID.isEmpty()) {
+		//Set requestedOnDate to current date
+		DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
+		java.util.Date date = new Date();
+		form.setRequestedOnDate(dateFormat.format(date));
+
+		//TODO: make this actually useful instead of this bandaid solution
+		form.setRequestStatus("waiting");
+
+		if (requestID != null && !requestID.isEmpty()) {
+			form.setRequestID(requestID);
+		} else {
 			// Need to reserve a request id for this form
 			form.setRequestID(reserveNextRequestID());
-		} else {
-			form.setRequestID(requestID);
 		}
 
 		form = formRepository.save(form);
 
 		if (form != null) {
 			System.out.println("Successfully saved Form with requestID=" + form.getId());
-			return ResponseEntity.ok(form);
+			String token = createURLToken(form.getId());
+			// Send Email to the User to confirm the request has been sent
+			String userEmailAddress = form.getEmailAddress();
+			String userName = form.getRequesterName();
+			String trackingID = form.getRequestID();
+			String requestURL = GlobalConstants.SERVER_HOST_ADDRESS +
+					FormServiceRequestController.formFromTokenURL + token;
+			//Probably don't need to check here if email Address is null
+			if(userEmailAddress != null && trackingID != null) {
+				try {
+					sendEmail.sendTo(userEmailAddress, userName, trackingID, requestURL);
+				} catch (Exception ex) {
+					System.out.println("Could not send the email. Error message: "+ ex.getMessage());
+					//e.printStackTrace();
+				}
+			} else {
+				System.out.println("Could not send Email. Please ensure all the parameters are valid.");
+			}
+			System.out.println("Successfully saved Form with requestID = " + form.getId() + " and token = " + token);
+			return String.valueOf(token);
 		} else {
 			System.out.println("Failed to save Form");
-			return new ResponseEntity(HttpStatus.INTERNAL_SERVER_ERROR);
+			return null;
 		}
 	}
 

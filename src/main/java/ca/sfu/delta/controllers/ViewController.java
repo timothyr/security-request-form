@@ -15,11 +15,16 @@ public class ViewController extends WebMvcConfigurerAdapter {
 
 	@Override
 	public void addViewControllers(ViewControllerRegistry registry) {
-		registry.addViewController("").setViewName("form.html");
+//		registry.addViewController("/").setViewName("form.html");
 		registry.addViewController("/results").setViewName("results.html");
 
 		registry.addViewController("/admin").setViewName("adminPage.html");
 		registry.addViewController("/securitylogin").setViewName("securitylogin.html");
+	}
+
+	@RequestMapping("/")
+	public String viewForm() {
+		return "form.html";
 	}
 
 	@RequestMapping("/requests")

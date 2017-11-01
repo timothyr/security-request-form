@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Update Form</title>
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/css/font-awesome.min.css">
+    <link rel="stylesheet" href="/css/jquery.datetimepicker.min.css">
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<body class="red-background">
+<header>
+    <img class="logo" src="/img/sfu-logo@2x.png" alt="sfu-logo"/>
+</header>
+<div id="app">
+    <form method="post" v-on:submit.prevent="submitForm">
+        <div class="container col-md-10 offset-md-1 wrapper mb-5 col-lg-10">
+            <div class="container col-md-10 mt-5">
+                <div class="row">
+                    <h1 class="text-center form-heading">Update Security Service Request</h1>
+                </div>
+                <div class="row">
+                    <h1>#{{formData.requestID}}</h1>
+                </div>
+                <div class="row">
+                    <div class="form-group col-md-4">
+                        <label for="requested-by-input">Requested By</label>
+                        <input type="text" id="requested-by-input" v-model="formData.requesterName" class="form-control" required="required"/>
+                    </div>
+                    <div class="form-group col-md-4">
+                        <label for="department-input">Department</label>
+                        <input type="text" id="department-input" v-model="formData.department" class="form-control" required="required"/>
+                    </div>
+                    <div class="form-group col-md-4">
+                        <label for="sfu-id-input">SFU ID</label>
+                        <input type="text" id="sfu-id-input" v-model="formData.requesterID" class="form-control" required="required"/>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="form-group col-md-4">
+                        <label for="phone-input">Phone</label>
+                        <input type="text" placeholder="xxx-xxx-xxxx" id="phone-input" v-model="formData.phoneNumber" class="form-control masked" pattern="[0-9]{3}[ |-][0-9]{3}[ |-][0-9]{4}" data-valid-example="000-000-0000" required="required"/>
+                    </div>
+                    <div class="form-group col-md-4">
+                        <label for="email-input">Email</label>
+                        <input type="email" id="email-input" class="form-control" v-model="formData.emailAddress" placeholder="example@sfu.ca" required="required"/>
+                    </div>
+                    <div class="form-group col-md-4">
+                        <label for="fax-input">Fax (optional)</label>
+                        <input type="text" id="fax-input" v-model="formData.faxNumber" class="form-control"/>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="form-group col-md-4">
+                        <label for="type-name-of-event-input">Type/Name of Event</label>
+                        <input type="text" id="type-name-of-event-input" v-model="formData.eventName" class="form-control" required="required"/>
+                    </div>
+                    <div class="form-group col-md-4">
+                        <label for="location-input">Location</label>
+                        <!--<input type="text" th:field="*{eventLocation}" id="location-input" class="form-control"/>-->
+                        <select required class="form-control" id="location-input" v-model="formData.eventLocation">
+                            <option value="">Choose...</option>
+                            <option value="bur">Burnaby</option>
+                            <option value="sur">Surrey</option>
+                            <option value="van">Vancouver</option>
+                            <option value="oth">Other</option>
+                        </select>
+                    </div>
+                    <div class="form-group col-md-4">
+                        <label for="number-of-attendees-input"># of Attendees</label>
+                        <input type="number" min="1" value="1" id="number-of-attendees-input" v-model="formData.numAttendees" class="form-control" required="required"/>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="form-group col-md-12">
+                        <label for="details-input" placeholder="">Details</label>
+                        <textarea rows="5" id="details-input" v-model="formData.eventDetails" class="form-control"></textarea>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="form-group col-md-12">
+                        <input type="checkbox" id="licensed-input" v-model="formData.isLicensed" class="mr-1 mt-4"/>
+                        <label for="licensed-input">Licensed</label>
+                    </div>
+                </div>
+                <div>
+                    <div class="row">
+                        <div class="form-group col-md-12">
+
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row mt-4">
+                    <table class="table table-hover text-centered date-table">
+                        <thead>
+                        <tr>
+                            <th>Start Time</th>
+                            <th>End Time</th>
+                            <th></th>
+                        </tr>
+                        <tr>
+                            <th class="col-xs-3">
+                                <div id="chooseStartDateTime" class ="input-group" onChange="setDateTime(this,'startdatetime')">
+									<span class="input-group-addon">
+										<i class="fa fa-calendar calendar-icon"></i>
+									</span>
+                                    <input type="text" id="startdatetime" class="form-control" disabled="disabled"/>
+                                </div>
+                            </th>
+
+                            <th class="col-xs-3">
+                                <div id="chooseEndDateTime" class ="input-group" onChange="setDateTime(this,'enddatetime')">
+									<span class="input-group-addon">
+										<i class="fa fa-calendar calendar-icon"></i>
+									</span>
+                                    <input type="text" id="enddatetime" class="form-control" disabled="disabled"/>
+                                </div>
+                            </th>
+
+                            <th class="col-xs-1">
+                                <button v-on:click="addDatetime" id="addDateTime" type="button" class="btn btn-danger ml-1">add</button>
+                            </th>
+                        </tr>
+
+                        </thead>
+                        <tbody v-for="dt in datetimelist">
+                        <tr>
+                            <td>
+                                <span class="ml-2">{{dt.start}}</span>
+                            </td>
+                            <td>
+                                <span class="ml-2">{{dt.end}}</span>
+                            </td>
+                            <td>
+                                <i v-on:click="deleteDatetime(dt)" class="fa fa-trash-o trash-icon ml-1"></i>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div>
+                    <h3 class="auth-heading mt-4">Authorization</h3>
+                </div>
+                <div class="row mt-5">
+                    <div class="form-group col-md-4">
+                        <label for="account-code-input">Account code</label>
+                        <!-- no corresponding formData variable -->
+                        <input type="text" id="account-code-input" class="form-control"/>
+                    </div>
+                    <div class="form-group col-md-4">
+                        <label for="name-of-authorizee-input">Authorized by</label>
+                        <input type="text" id="name-of-authorizee-input" v-model="formData.authorizerName" class="form-control"/>
+                    </div>
+                    <div class="form-group col-md-4">
+                        <label for="sfu-id-or-bcdl-of-authorizee-input">Authorizee SFU ID </label>
+                        <input type="text" id="sfu-id-or-bcdl-of-authorizee-input" v-model="formData.authorizerId" class="form-control"/>
+                    </div>
+                    <div class="form-group col-md-4">
+                        <label for="date-of-authorization-input">Date</label>
+                        <input type="text" id="date-of-authorization-input" v-model="formData.authorizationDate" class="form-control"/>
+
+                    </div>
+                    <div class="form-group col-md-4">
+                        <label for="phone-of-authorizee-input">Phone</label>
+                        <input type="text" placeholder="xxx-xxx-xxxx" id="phone-of-authorizee-input" v-model="formData.authorizerPhoneNumber" class="form-control masked" pattern="[0-9]{3}[ |-][0-9]{3}[ |-][0-9]{4}" data-valid-example="000-000-0000"/>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="form-group col-md-12">
+                        <input type="checkbox" id="invoice-input" class="mr-1"/>
+                        <label for="invoice-input">Please Invoice</label>
+                    </div>
+                </div>
+                <div class="row mt-5">
+                    <div class="col-md-12 text-center">
+                        <button class="btn btn-danger btn-lg col-md-8" v-on:click="updateForm()">Update</button>
+                    </div>
+                </div>
+                <div class="bottom-space"></div>
+            </div>
+        </div>
+    </form>
+</div>
+<script src="/js/jquery-3.2.1.min.js"></script>
+<script src="/js/vue.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/vue-resource@1.3.4"></script>
+<script src="/js/jquery.datetimepicker.full.js"></script>
+<script src="/js/jquery.datetimepicker.js"></script>
+<script src="/js/datetimefeature.js"></script>
+<script src="/js/datetime.js"></script>
+<script>
+    var getUrlParams = function (url) {
+        var params = {};
+        (url + '?').split('?')[1].split('&').forEach(function (pair) {
+            pair = (pair + '=').split('=').map(decodeURIComponent);
+            if (pair[0].length) {
+                params[pair[0]] = pair[1];
+            }
+        });
+        return params;
+    };
+    var emailValid = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
+
+    var app = new Vue({
+        el: '#app',
+
+        http: {
+            root: '/',
+            headers: {
+                Authorization: 'Basic YXBpOnBhc3N3b3Jk'
+            }
+        },
+
+        data: {
+            formData: {
+                department: '',
+                requesterName: '',
+                phoneNumber: '',
+                requestedOnDate: '',
+                requesterID: '',
+                authorizationDate: '',
+                paymentAccountCode: '',
+                emailAddress: '',
+                times: '',
+                eventName: '',
+                isLicensed: '',
+                numAttendees: '0',
+                authorizerId: '',
+                authorizerPhoneNumber: '',
+                serviceRequestNumber: '',
+                eventLocation: '',
+                authorizerName: '',
+                eventDates: '',
+                eventDetails: '',
+                faxNumber: '',
+                requestID: '',
+            },
+            startdatetime: '',
+			enddatetime: '',
+			datetimelist: [],
+        },
+
+        computed: {
+            validation: function () {
+                return {
+                    emailAddress: emailValid.test(this.formData.emailAddress)
+                }
+            },
+            isValid: function () {
+                var validation = this.validation;
+                return Object.keys(validation).every(function (key) {
+                    return validation[key]
+                })
+            }
+        },
+
+        methods: {
+            submitForm: function () {
+                function successCallback() {
+                    console.log("success");
+                }
+                function errorCallback() {
+                    console.log("error");
+                }
+            },
+            updateForm: function () {
+
+                if (this.isValid) {
+                    this.$http.put('api/form/update/' + this.formData.id, {
+                        department: this.formData.department,
+                        requesterName: this.formData.requesterName,
+                        phoneNumber: this.formData.phoneNumber,
+                        requestedOnDate: this.formData.requestedOnDate,
+                        requesterID: this.formData.requesterID,
+                        authorizationDate: this.formData.authorizationDate,
+                        paymentAccountCode: this.formData.paymentAccountCode,
+                        emailAddress: this.formData.emailAddress,
+                        times: this.formData.times,
+                        eventName: this.formData.eventName,
+                        isLicensed: this.formData.isLicensed,
+                        numAttendees: this.formData.numAttendees,
+                        authorizerId: this.formData.authorizerId,
+                        authorizerPhoneNumber: this.formData.authorizerPhoneNumber,
+                        serviceRequestNumber: this.formData.serviceRequestNumber,
+                        eventLocation: this.formData.eventLocation,
+                        authorizerName: this.formData.authorizerName,
+                        eventDates: this.formData.eventDates,
+                        eventDetails: this.formData.eventDetails,
+                        faxNumber: this.formData.faxNumber
+
+                    }).then(function() {
+                        console.log("updated form");
+                    });
+                }
+            },
+            addDatetime: function(){
+            	this.startdatetime = getDateTime("chooseStartDateTime","startdatetime");
+            	this.enddatetime = getDateTime("chooseEndDateTime","enddatetime");
+            	if(this.startdatetime!='' && this.enddatetime!=''){
+            	    if(this.datetimelist.length==0){
+						this.formData.eventDates += this.startdatetime +"-"+ this.enddatetime;
+					}else{
+						this.formData.eventDates += ", "+this.startdatetime +"-"+ this.enddatetime;
+					}
+					this.datetimelist.push( {start: this.startdatetime, end: this.enddatetime} );
+					this.startdatetime = '';
+					this.enddatetime = '';
+            	}
+            },
+            deleteDatetime: function(dt){
+            	var index = this.datetimelist.indexOf(dt);
+            	this.formData.eventDates = deleteEventDate(dt.start,dt.end,this.formData.eventDates,index,this.datetimelist.length);
+            	this.datetimelist.splice(index,1);
+            },
+        },
+        created: function() {
+            let urlParams = getUrlParams(window.location);
+            this.$http.get('/api/form/get/user/' + urlParams.token, {
+            }).then(response  => {
+                this.formData = response.data;
+                this.datetimelist = updateDateTime(this.formData.eventDates);
+            });
+        }
+    });
+</script>
+</body>
+</html>

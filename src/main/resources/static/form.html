@@ -4,10 +4,11 @@
 <head>
 	<meta charset="UTF-8">
 	<title>Security Service Request</title>
-
 	<link rel="stylesheet" href="/css/bootstrap.min.css">
-    <link rel="stylesheet" href="/css/font-awesome.min.css">
+	<link rel="stylesheet" href="/css/font-awesome.min.css">
+	<link rel="stylesheet" href="/css/jquery.datetimepicker.min.css">
 	<link rel="stylesheet" href="/css/style.css">
+	<link rel="stylesheet" href="/css/modal.css">
 </head>
 <body class="red-background">
 	<header>
@@ -16,6 +17,11 @@
 	<div id="app">
 		<form method="post" v-on:submit.prevent="submitForm">
 			<div class="container col-md-10 offset-md-1 wrapper mb-5 col-lg-10">
+				<div class="form-group col-md-4 add-space-top float-right">
+					<button type="button" v-on:click="signInOut" id="sign-in" class="btn btn-danger btn-lg col-md-8 float-right">{{signedInButtonMessage}}</button>
+				</div>
+				<div class="row mt-5">
+				</div>
 				<div class="container col-md-10 mt-5">
 					<div class="row">
 						<h1 class="text-center form-heading">Security Service Request</h1>
@@ -89,92 +95,153 @@
 						</div>
 					</div>
 					<div class="row mt-4">
-						<table class="table table-striped">
+						<table class="table table-hover text-centered date-table">
 							<thead>
 							<tr>
-								<th>Date</th>
-								<th>Time</th>
+								<th>Start Time</th>
+								<th>End Time</th>
+								<th></th>
 							</tr>
+							<tr>
+								<th class="col-xs-3">
+									<div id="chooseStartDateTime" class ="input-group" onChange="setDateTime(this,'startdatetime')">
+									<span class="input-group-addon">
+										<i class="fa fa-calendar calendar-icon"></i>
+									</span>
+										<input type="text" id="startdatetime" class="form-control" disabled="disabled"/>
+									</div>
+								</th>
+
+								<th class="col-xs-3">
+									<div id="chooseEndDateTime" class ="input-group" onChange="setDateTime(this,'enddatetime')">
+									<span class="input-group-addon">
+										<i class="fa fa-calendar calendar-icon"></i>
+									</span>
+										<input type="text" id="enddatetime" class="form-control" disabled="disabled"/>
+									</div>
+								</th>
+
+								<th class="col-xs-1">
+									<button v-on:click="addDatetime" id="addDateTime" type="button" class="btn btn-danger ml-1">add</button>
+								</th>
+							</tr>
+
 							</thead>
-							<tbody>
+							<tbody v-for="dt in datetimelist">
 							<tr>
 								<td>
-									<input type="text" id="date" class="form-control" v-model="formData.eventDates" required="required"/>
+									<span class="ml-2">{{dt.start}}</span>
 								</td>
 								<td>
-									<input type="text" id="time" class="form-control" v-model="formData.times" required="required"/>
+									<span class="ml-2">{{dt.end}}</span>
+								</td>
+								<td>
+									<i v-on:click="deleteDatetime(dt)" class="fa fa-trash-o trash-icon ml-1"></i>
 								</td>
 							</tr>
 							</tbody>
 						</table>
-						<div class="row mt-4">
-							<i class="fa fa-calendar calendar-icon mr-3"></i>
-							<button class="btn btn-danger">Add Date</button>
-						</div>
 					</div>
 					<div>
 						<h3 class="auth-heading mt-4">Authorization</h3>
 					</div>
-					<div class="row mt-5">
+					<div class="row mt-6">
 						<div class="form-group col-md-4">
 							<label for="account-code-input">Account code</label>
-							<!-- no corresponding formData variable -->
-							<input type="text" id="account-code-input" class="form-control"/>
-						</div>
-						<div class="form-group col-md-4">
-							<label for="name-of-authorizee-input">Authorized by</label>
-							<input type="text" id="name-of-authorizee-input" v-model="formData.authorizerName" class="form-control"/>
-						</div>
-						<div class="form-group col-md-4">
-							<label for="sfu-id-or-bcdl-of-authorizee-input">Authorizee SFU ID </label>
-							<input type="text" id="sfu-id-or-bcdl-of-authorizee-input" v-model="formData.authorizerId" class="form-control"/>
-						</div>
-						<div class="form-group col-md-4">
-							<label for="date-of-authorization-input">Date</label>
-							<input type="text" id="date-of-authorization-input" v-model="formData.authorizationDate" class="form-control"/>
-
-						</div>
-						<div class="form-group col-md-4">
-							<label for="phone-of-authorizee-input">Phone</label>
-							<input type="text" placeholder="xxx-xxx-xxxx" id="phone-of-authorizee-input" v-model="formData.authorizerPhoneNumber" class="form-control masked" pattern="[0-9]{3}[ |-][0-9]{3}[ |-][0-9]{4}" data-valid-example="000-000-0000"/>
+							<input type="number" id="account-code-input" v-model="formData.paymentAccountCode" class="form-control" required="required"/>
 						</div>
 					</div>
-					<div class="row">
-						<div class="form-group col-md-12">
-							<input type="checkbox" id="invoice-input" class="mr-1"/>
-							<label for="invoice-input">Please Invoice</label>
+					<div class="row mt-7" v-show="!signedIn">
+						<div v-if="!signedIn" class="form-group col-md-4">
+							<label for="authorizer-email-input">Email</label>
+							<input type="email" id="authorizer-email-input" class="form-control" v-model="formData.authorizerEmailAddress" placeholder="example@sfu.ca" required/>
 						</div>
+					</div>
+					<div v-if="signedIn" class="form-group col-md-12">
+						<input type="checkbox" id="invoice-input" class="mr-1"/>
+						<label for="invoice-input">Please Invoice</label>
+					</div>
+				</div>
+					<div class="row mt-8">
+
 					</div>
 					<div class="row mt-5">
 						<div class="col-md-12 text-center">
-							<button class="btn btn-danger btn-lg col-md-8">Submit</button>
-						</div>
-					</div>
-					<div class="row">
-						<div class="col-md-8 mx-auto">
-							<nav aria-label="Page navagation">
-								<ul class="pagination mt-5 justify-content-center">
-									<li class="page-item disabled"><a class="page-link" href="#">Previous</a></li>
-									<li class="page-item"><a class="page-link" href="#">1</a></li>
-									<li class="page-item"><a class="page-link" href="#">2</a></li>
-									<li class="page-item"><a class="page-link" href="#">Next</a></li>
-								</ul>
-							</nav>
+							<button v-if="signedIn" id="submit" class="btn btn-danger btn-lg col-md-8">Submit</button>
+							<button v-if="!signedIn" id="requestAuth" class="btn btn-danger btn-lg col-md-8">Request Authorization</button>
 						</div>
 					</div>
 					<div class="bottom-space"></div>
 				</div>
-			</div>
 		</form>
+		<modal v-if="showModal" @close="showModal = false">
+			<h3 slot="header">{{submittedFormHeader}}</h3>
+			<span slot="body">{{submittedFormMessage}}</span>
+			<a v-if="submittedFormLink" v-bind:href="submittedFormLink" slot="link">Click here to view your submission.</a>
+		</modal>
 	</div>
 	<script src="/js/jquery-3.2.1.min.js"></script>
 	<script src="/js/vue.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/vue-resource@1.3.4"></script>
+	<script src="/js/vue-resource.min.js"></script>
+	<script src="/js/jquery.datetimepicker.full.js"></script>
+	<script src="/js/jquery.datetimepicker.js"></script>
+	<script src="/js/datetimefeature.js"></script>
+    <script src="/js/datetime.js"></script>
+	<script type="text/x-template" id="modal-template">
+		<transition name="modal">
+			<div class="modal-mask">
+				<div class="modal-wrapper">
+					<div class="modal-container">
+						<div class="modal-header">
+							<slot name="header"></slot>
+						</div>
+						<div class="modal-body">
+							<slot name="body"></slot>
+						</div>
+						<div class="modal-body">
+							<slot name="link"></slot>
+						</div>
+						<div class="modal-footer">
+							<slot name="footer">
+								<button class="modal-default-button btn btn-danger btn-lg" v-on:click="close">
+									OK
+								</button>
+							</slot>
+						</div>
+					</div>
+				</div>
+			</div>
+		</transition>
+	</script>
 	<script>
-        var emailValid = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
+        const emailValid = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+		const formSaveAPI = 'api/form/save';
+		const formGetAPI = 'updateform?token=';
 
-        var app = new Vue({
- 			el: '#app',
+        const submitSuccessHeader = "Request Submitted";
+        const submitSuccessMessage = "Thank you, the Security Service Request has been submitted.";
+
+        const requestSuccessHeader = "Request Sent";
+        const requestSuccessMessage = "Thank you, the Security Service Request has been sent.";
+
+        const errorHeader = "Something went wrong";
+        const errorMessage = "Sorry, there was an error. Your form was not submitted. Please try again later.";
+
+        const signInMessage = "Sign In";
+        const signOutMessage = "Sign Out";
+
+        var Modal = Vue.component('modal', {
+            template: '#modal-template',
+
+            methods: {
+                close: function () {
+                    form.closeModal();
+                    this.$emit('close');
+                }
+            }
+        });
+
+        const FormApp = Vue.extend({
 
             http: {
                 root: '/',
@@ -183,7 +250,18 @@
                 }
             },
 
- 			data: {
+			data: () => ({
+				 signedIn: false,
+				 signedInButtonMessage: signInMessage,
+
+				 submittedFormHeader:'',
+				 submittedFormMessage: '',
+				 submittedFormLink: '',
+
+				 showAuthFields: true,
+
+				 submitting: false,
+				 showModal: false,
                 formData: {
                     department: '',
                     requesterName: '',
@@ -205,15 +283,20 @@
                     eventDates: '',
                     eventDetails: '',
                     faxNumber: '',
-                    requestID: ''
-                }
-            },
+                    requestID: '',
+                    authorizerEmailAddress: ''
+                },
+                startdatetime: '',
+				enddatetime: '',
+				datetimelist: [],
+            }),
 
 			computed: {
 				validation: function () {
-					return {
+                    return {
+                        authorizerEmailAddress: this.signedIn || emailValid.test(this.formData.authorizerEmailAddress),
                         emailAddress: emailValid.test(this.formData.emailAddress)
-					}
+                    }
 				},
 				isValid: function () {
 					var validation = this.validation;
@@ -224,45 +307,145 @@
 			},
 
             methods: {
+                signInOut : function() {
+                    this.signedIn = !this.signedIn;
+                    this.showAuthFields = this.signedIn;
+                    this.updateSignInStatus();
+                },
+
+                updateSignInStatus : function() {
+                    if(this.signedIn) {
+                        this.signedInButtonMessage = signOutMessage;
+                    }else{
+                        this.signedInButtonMessage = signInMessage;
+                    }
+                },
+
+                setSubmittedFormHeader(header) {
+                    this.submittedFormHeader=header;
+                },
+
+                setSubmittedFormMessage(message) {
+                    this.submittedFormMessage=message;
+                },
+
+                setSubmittedFormLink(link) {
+                    this.submittedFormLink=link;
+                },
+
+                displaySubmitSuccessModal : function (formLink) {
+                    this.setSubmittedFormHeader(submitSuccessHeader);
+                    this.setSubmittedFormMessage(submitSuccessMessage);
+                    this.setSubmittedFormLink(formLink);
+                    this.showModal = true;
+                },
+
+                displayRequestSuccessModal : function (formLink) {
+                    this.setSubmittedFormHeader(requestSuccessHeader);
+                    this.setSubmittedFormMessage(requestSuccessMessage);
+                    this.setSubmittedFormLink(formLink);
+                    this.showModal = true;
+                },
+
+                displayErrorModal : function () {
+                    this.setSubmittedFormHeader(errorHeader);
+                    this.setSubmittedFormMessage(errorMessage);
+                    this.showModal = true;
+                },
+
+                closeModal : function () {
+                    this.resetFields();
+                },
+
+                resetFields : function () {
+                    Object.assign(this.$data, this.$options.data.call(this));
+                },
+
                 submitForm: function () {
-                    function successCallback() {
-                        console.log("success");
+                    let self = this;
+                    function successCallback(response) {
+                        if(response.ok) {
+                            if(self.signedIn)
+                                self.displaySubmitSuccessModal(formGetAPI + response.body);
+                            else
+                                self.displayRequestSuccessModal(formGetAPI + response.body);
+                        } else {
+                            errorCallback();
+                        }
                     }
 
                     function errorCallback() {
-                        console.log("error");
+                        self.displayErrorModal();
                     }
 
-                    if (this.isValid) {
+                    if (this.isValid && !this.submitting) {
+                        this.submitting = true;
+                        <!-- guarantee that authorizer email address is empty -->
+                        if(this.signedIn) {
+                            this.formData.authorizerEmailAddress='';
+                        }
+
+
                         <!-- submit GET request with vue -->
-                        this.$http.get('api/form/save', {
+                        this.$http.get(formSaveAPI, {
                             params: {
-                                department: 			this.formData.department,
-                                requesterName: 			this.formData.requesterName,
-                                phoneNumber: 			this.formData.phoneNumber,
-                                requestedOnDate: 		this.formData.requestedOnDate,
-                                requesterID: 			this.formData.requesterID,
-                                authorizationDate: 		this.formData.authorizationDate,
-                                paymentAccountCode: 	this.formData.paymentAccountCode,
-                                emailAddress: 			this.formData.emailAddress,
-                                times: 					this.formData.times,
-                                eventName: 				this.formData.eventName,
-                                isLicensed: 			this.formData.isLicensed,
-                                numAttendees:			this.formData.numAttendees,
-                                authorizerId: 			this.formData.authorizerId,
-                                authorizerPhoneNumber: 	this.formData.authorizerPhoneNumber,
-                                serviceRequestNumber: 	this.formData.serviceRequestNumber,
-                                eventLocation: 			this.formData.eventLocation,
-                                authorizerName: 		this.formData.authorizerName,
-                                eventDates: 			this.formData.eventDates,
-                                eventDetails: 			this.formData.eventDetails,
-                                faxNumber: 				this.formData.faxNumber
+                                department:             this.formData.department,
+                                requesterName:          this.formData.requesterName,
+                                phoneNumber:            this.formData.phoneNumber,
+                                requestedOnDate:        this.formData.requestedOnDate,
+                                requesterID:            this.formData.requesterID,
+                                authorizationDate:      this.formData.authorizationDate,
+                                paymentAccountCode:     this.formData.paymentAccountCode,
+                                emailAddress:           this.formData.emailAddress,
+                                times:                  this.formData.times,
+                                eventName:              this.formData.eventName,
+                                isLicensed:             this.formData.isLicensed,
+                                numAttendees:           this.formData.numAttendees,
+                                authorizerId:           this.formData.authorizerId,
+                                authorizerPhoneNumber:  this.formData.authorizerPhoneNumber,
+                                serviceRequestNumber:   this.formData.serviceRequestNumber,
+                                eventLocation:          this.formData.eventLocation,
+                                authorizerName:         this.formData.authorizerName,
+                                eventDates:             this.formData.eventDates,
+                                eventDetails:           this.formData.eventDetails,
+                                faxNumber:              this.formData.faxNumber,
+                                authorizerEmailAddress: this.formData.authorizerEmailAddress
                             }
-                        }).then(successCallback, errorCallback);
+                        }).then(response => {
+                            successCallback(response)
+                        }, response => {
+                            errorCallback();
+                        });
                     }
-                }
-            }
-		});
+                },
+
+                addDatetime: function(){
+            		this.startdatetime = getDateTime("chooseStartDateTime","startdatetime");
+            		this.enddatetime = getDateTime("chooseEndDateTime","enddatetime");
+            		if(this.startdatetime!='' && this.enddatetime!=''){
+						if(this.datetimelist.length==0){
+							this.formData.eventDates += this.startdatetime +"-"+ this.enddatetime;
+						}else{
+							this.formData.eventDates += ", "+this.startdatetime +"-"+ this.enddatetime;
+						}
+						this.datetimelist.push( {start: this.startdatetime, end: this.enddatetime} );
+						this.startdatetime = '';
+						this.enddatetime = '';
+            		}
+            	},
+            	deleteDatetime: function(dt){
+            		var index = this.datetimelist.indexOf(dt);
+            		this.formData.eventDates = deleteEventDate(dt.start,dt.end,this.formData.eventDates, index,this.datetimelist.length);
+            		this.datetimelist.splice(index,1);
+            	},
+            },
+
+            components: {Modal}
+        });
+
+        form = new FormApp({
+            el: '#app'
+        });
 	</script>
 </body>
 </html>

@@ -1,0 +1,508 @@
+<!DOCTYPE html>
+
+<html lang="en" xmlns:v-on="http://www.w3.org/1999/xhtml">
+<head>
+	<meta charset="UTF-8">
+	<title>Request Details</title>
+	<link rel="stylesheet" href="/css/bootstrap.min.css">
+	<link rel="stylesheet" href="/css/font-awesome.min.css">
+	<link rel="stylesheet" href="/css/style.css">
+</head>
+
+<!-- fixes guard table display -->
+<style>
+	@media all and (max-width:768px) {
+		.guardtable tr {
+			display: table;
+			width: 100%;
+		}
+		.guardtable td {
+			display: table-row;
+		}
+	}
+</style>
+
+<body>
+	<header>
+		<img class="logo" src="/img/sfu-logo@2x.png" alt="sfu-logo"/>
+	</header>
+	<div class="container col-md-10 offset-md-1 wrapper mb-5 col-lg-10" id="app">
+		<div class="container">
+			<div class="row mt-5">
+				<h3 class="mt-5 mx-5">Request #{{requestID}}</h3>
+			</div>
+            <div class="row pull-right">
+                <div class="dropdown">
+                    <div class="dropdown-toggle" id="dropdownMenuButton" data-toggle="dropdown"><i class="fa fa-cog"></i></div>
+                    <ul class="dropdown-menu">
+                        <li class="dropdown-item" v-on:click="exportRequestCSV()">Export Request to CSV</li>
+                    </ul>
+                </div>
+            </div>
+			<div class="row mt-3">
+				<div class="col" v-if="form.requestStatus !== null">
+					<p class="mx-5">Status: {{form.requestStatus}}</p>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col" v-if="form.requesterName !== null">
+					<p class="mx-5">Requested By: {{form.requesterName}}</p>
+				</div>
+				<div class="col" v-if="form.requesterID !== null">
+					<p class="mx-5">SFU ID: {{form.requesterID}}</p>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col" v-if="form.phoneNumber !== null">
+					<p class="mx-5">Phone: {{form.phoneNumber}}</p>
+				</div>
+				<div class="col" v-if="form.faxNumber !== null">
+					<p class="mx-5">Fax: {{form.faxNumber}}</p>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col" v-if="form.emailAddress !== null">
+					<p class="mx-5">Email: {{form.emailAddress}}</p>
+				</div>
+				<div class="col">
+					<p class="mx-5">Location: {{form.eventLocation}}</p>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col" v-if="form.eventName !== null">
+					<p class="mx-5">Type/Name of Event: {{form.eventName}}</p>
+				</div>
+				<div class="col" v-if="form.numAttendees !== null">
+					<p class="mx-5"># of Attendees: {{form.numAttendees}}</p>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col" v-if="form.eventDetails !== null">
+					<p class="mx-5">Details: {{form.eventDetails}}</p>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col" v-if="form.isLicensed !== null">
+					<h5 class="mt-2 text-center">Licensed: {{form.isLicensed}}</h5>
+				</div>
+			</div>
+
+			<!-- TODO: get real values when that is ready -->
+			<div class="row my-4">
+				<table class="table table-striped">
+					<thead>
+						<tr>
+							<th class="text-center">Start Time</th>
+							<th class="text-center">End Time</th>
+							<th class="text-center">Hours</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr v-for="d in dates">
+							<td class="text-center">{{d.start}}</td>
+							<td class="text-center">{{d.end}}</td>
+							<td class="text-center">{{d.hours}}</td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+
+			<div class="row">
+				<div class="col" v-if="form.authorizerName !== null">
+					<p class="mx-5">Authorized by: {{form.authorizerName}}</p>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col" v-if="form.paymentAccountCode !== null">
+					<p class="mx-5">Account Code: {{form.paymentAccountCode}}</p>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col" v-if="form.authorizerID !== null">
+					<p class="mx-5">Authorizer ID: {{form.authorizerID}}</p>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col" v-if="form.authorizerPhoneNumber !== null">
+					<p class="mx-5">Phone: {{form.authorizerPhoneNumber}}</p>
+				</div>
+				<div class="col" v-if="form.invoiceRequested !== null">
+					<p class="mx-5">Invoice: {{form.invoiceRequested}}</p>
+				</div>
+			</div>
+
+			<div class="row my-3">
+				<div class="col">
+					<label for="regRate">Receiving Security Supervisor: </label>
+					<input class="form-control text-center" type="text" v-model="form.recievingSecuritySupervisor" required="required">
+				</div>
+				<div class="col">
+					<label for="regHours">Prepared By: </label>
+					<input class="form-control text-center" type="text" v-model="form.preparedBy" required="required">
+				</div>
+			</div>
+
+			<div class="row mt-5">
+				<table class="guardtable table-striped">
+					<thead>
+						<tr>
+							<th class="text-center">Dispatch #</th>
+							<th class="text-center">Location</th>
+							<th class="text-center">Start Date</th>
+							<th class="text-center">End Date</th>
+							<th class="text-center">Start Time</th>
+							<th class="text-center">End Time</th>
+							<th class="text-center">Name</th>
+							<th class="text-center">Telephone</th>
+						</tr>
+					</thead>
+					<tbody id="guards">
+						<tr v-for="g in form.guards">
+							<td>
+								<input class="form-control text-center" type="text" v-model="g.guardID" required="required">
+							</td>
+							<td>
+								<input class="form-control text-center" type="text" v-model="g.location" required="required">
+							</td>
+							<td>
+								<input class="form-control text-center" type="date" v-model="g.startDate" required="required">
+							</td>
+							<td>
+								<input class="form-control text-center" type="date" v-model="g.endDate" required="required">
+							</td>
+							<td>
+								<input class="form-control text-center" type="time" v-model="g.startTime" required="required">
+							</td>
+							<td>
+								<input class="form-control text-center" type="time" v-model="g.endTime" required="required">
+							</td>
+							<td>
+								<input class="form-control text-center" type="text" v-model="g.name" required="required">
+							</td>
+							<td>
+								<input class="form-control text-center" type="text" v-model="g.telephone" required="required">
+							</td>
+							<td>
+								<button type="button" class="btn btn-danger" v-on:click="deleteGuard(g)" v-if="form.guards.length > 1">Remove Guard</button>
+							</td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+			<div class="row text-right">
+				<button type="button" class="btn" v-on:click="addGuard">Add Guard</button>
+			</div>
+
+			<div class="row my-3">
+				<div class="col">
+					<label for="regRate">Regular Rate</label>
+					<input class="form-control text-center" id="regRate" type="number" step="0.01" min="0" v-model="regularRate" required="required">
+				</div>
+				<div class="col">
+					<label for="regHours">Regular Hours</label>
+					<input class="form-control text-center" id="regHours" type="number" step="0.01" min="0" v-model="regularHours" required="required">
+				</div>
+				<div class="col">
+					<label for="overRate">Overtime Rate</label>
+					<input class="form-control text-center" id="overRate" type="number" step="0.01" min="0" v-model="overtimeRate" required="required">
+				</div>
+				<div class="col">
+					<label for="overHours">Overtime Hours</label>
+					<input class="form-control text-center" id="overHours" type="number" step="0.01" min="0" v-model="overtimeHours" required="required">
+				</div>
+			</div>
+
+			<div class="row my-3">
+				<div class="col">
+					<p>Estimated Personnel Cost: {{cost}}</p>
+				</div>
+			</div>
+
+			<div class="form-group my-5">
+				<label for="remarksField">Remarks</label>
+				<textarea class="form-control" rows="4" v-model="form.securityRemarks" id="remarksField"></textarea>
+			</div>
+
+			<div class="row my-5">
+				<div class="col col-md-3"></div>
+				<div class="col text-center">
+						<button class="btn btn-danger" v-on:click="submit('reject')">Reject</button>
+
+						<button type="button" class="btn btn-success mx-2" data-toggle="modal" data-target="#emailModal" v-if="canAccept">Accept</button>
+						<div id="emailModal" class="modal fade" role="dialog">
+							<div class="modal-dialog">
+								<div class="modal-content">
+									<div class="modal-header">
+										<p class="modal-title">Select who should be notified of this accepted service request</p>
+									</div>
+									<div class="modal-body mx-5 text-left" id="emailList" v-for="e in emailOptions">
+										<div class="checkbox">
+											<label><input type="checkbox" v-model="emails" :value="e"> {{e}}</label>
+										</div>
+									</div>
+									<div class="modal-footer">
+										<button type="button" class="btn" data-dismiss="modal">Cancel</button>
+										<button type="button" class="btn btn-success mx-2" data-dismiss="model" v-on:click="submit('accept')" v-if="canAccept">Accept</button>
+									</div>
+								</div>
+
+							</div>
+						</div>
+						<button class="btn btn-success" v-on:click="submit('update')" v-if="canAccept">Update</button>
+
+				</div>
+				<div class="col col-md-3"></div>
+				<div class="bottom-space"></div>
+			</div>
+		</div>
+
+		<script src="/js/jquery-3.2.1.min.js"></script>
+        <script src="/js/bootstrap.bundle.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/tether/1.4.0/js/tether.min.js"></script>
+		<script src="/js/vue.js"></script>
+		<script src="/js/vue-resource.min.js"></script>
+		<script src="/js/datetime.js"></script>
+		<script>
+			var app = new Vue({
+				el: '#app',
+
+				data: {
+					requestID: null,
+                    test: true,
+					form: {
+						requestStatus: 'not set',
+						requesterName: 'not set',
+						requesterID: 'not set',
+						phoneNumber: 'not set',
+						faxNumber: 'not set',
+						emailAddress: 'not set',
+						eventLocation: 'not set',
+						eventName: 'not set',
+						eventDetails: 'not set',
+						isLicensed: 'not set',
+						authorizerName: 'not set',
+						paymentAccountCode: 'not set',
+						authorizerID: 'not set',
+						authorizerPhoneNumber: 'not set',
+						invoiceRequested: 'not set',
+						eventDates: 'not set',
+
+						guards: [
+							{
+								guardID: 0,
+								location: '',
+								startDate: '',
+								endDate: '',
+								startTime: '',
+								endTime: '',
+								name: '',
+								telephone: '',
+								regularHours: 0,
+								overtimeHours: 0,
+								regularRate: 0,
+								overtimeRate: 0
+							}
+						],
+					},
+					dates: [],
+
+					regularRate: 0,
+					regularHours: 0,
+					overtimeRate: 0,
+					overtimeHours: 0,
+
+					emailOptions: [],
+					emails: [],
+				},
+
+				methods: {
+                    exportRequestCSV: function() {
+                        window.location.assign("/api/csv/form/" + this.requestID + ".csv");
+                    },
+
+					addGuard: function() {
+						this.form.guards.push({
+							guardID: 0,
+							location: '',
+							startDate: '',
+							endDate: '',
+							startTime: '',
+							endTime: '',
+							name: '',
+							telephone: '',
+							regularHours: null,
+							overtimeHours: null,
+							regularRate: null,
+							overtimeRate: null
+						})
+					},
+
+					deleteGuard: function (guard) {
+						let i = this.form.guards.indexOf(guard);
+						if (this.form.guards.length > 1) {
+							this.form.guards.splice(i, 1);
+						}
+					},
+
+					removeNull: function () {
+						for (let p in this.form) {
+							if (this.form[p] === null || this.form[p] === undefined || this.form[p] === '') {
+								this.form[p] = 'not set';
+							}
+							//console.log("form["+p+"] = "+ this.form[p]);
+						}
+
+						if (this.form.guards === 'not set') {
+							this.form.guards = null;
+						}
+
+						if (this.form.isAuthorized === 'not set') {
+							this.form.isAuthorized = false;
+						}
+
+						if (this.form.invoiceRequested === 'not set') {
+							this.form.invoiceRequested = false;
+						}
+
+						if (this.form.isLicensed === 'not set') {
+							this.form.isLicensed = false;
+						}
+					},
+
+					getURLParam: function (param) {
+						let url = window.location.search.substring(1);
+						let urlVars = url.split('&');
+						let paramName;
+						for (let i = 0; i < urlVars.length; ++i) {
+							paramName = urlVars[i].split('=');
+							if (paramName[0] === param) {
+								return paramName[1];
+							}
+						}
+						return null;
+					},
+
+					getFormData: function () {
+						this.requestID = this.getURLParam('id');
+						if (this.requestID === null) {
+							window.location.replace("/requests");
+						}
+
+						this.$http.get('/api/form/getByRequestID/'+this.requestID).then(function (response) {
+							if (response.data === null || response.data === undefined || response.data === "") {
+								window.location.replace("/requests");
+							}
+
+							// TODO: figure out why some guard fields are disappearing mid-transmission
+							// 		the JSON sent from api is correct, but JSON received is missing half the fields
+							//console.log(JSON.stringify(response.data));
+
+							if (response.data.guards[0] === null || response.data.guards[0] === undefined) {
+								response.data.guards = JSON.parse(JSON.stringify(this.form.guards));
+							}
+
+							g = response.data.guards[0];
+							this.regularRate = g.regularRate;
+							this.regularHours = g.regularHours;
+							this.overtimeRate = g.overtimeRate;
+							this.overtimeHours = g.overtimeHours;
+
+							this.form = JSON.parse(JSON.stringify(response.data));
+							this.removeNull();
+							this.dates = updateDateTime(this.form.eventDates);
+
+							this.emailOptions.push(this.form.emailAddress); // TODO: get more emails
+						}, function (error) {
+							console.log(error.statusText);
+						});
+
+					},
+
+					setSecFields: function () {
+						this.form.distributionList = this.emails;
+
+						let i, len;
+						len = this.form.guards.length;
+						for (i = 0; i < len; ++i) {
+							this.form.guards[i].regularHours = this.regularHours;
+							this.form.guards[i].overtimeHours = this.overtimeHours;
+							this.form.guards[i].regularRate = this.regularRate;
+							this.form.guards[i].overtimeRate = this.overtimeRate;
+
+							if (this.form.guards[i].name === "" || this.form.guards[i].name === null) {
+								this.form.guards[i].name = "not set";
+							}
+						}
+					},
+
+					submit: function (action) {
+						this.setSecFields();
+
+						if (action === 'accept') {
+							this.form.requestStatus = "APPROVED";
+							if (!this.canAccept)
+								return;
+						} else if (action === 'reject') {
+							this.form.requestStatus = 'REJECTED';
+						} else {
+							if (!this.canAccept) {
+								return;
+							}
+						}
+
+
+						//console.log("---------- Submitting:");
+						this.removeNull();
+
+						this.$http.post('/api/form/saveSecurity', this.form).then(function (response) {
+							console.log('Successfully sent form');
+							window.location.replace('/requests')
+						}, function (error) {
+							alert('Failed to send form!');
+						});
+					},
+
+				},
+
+				created() {
+					// TODO: redirect if user doesn't have security authorization
+					this.getFormData();
+				},
+
+				computed: {
+                    canAccept: function () {
+                        let numGuards = this.form.guards.length;
+                        if (numGuards < 1)
+                            return false;
+                        let isValid = true;
+                        this.form.guards.forEach(function (g) {
+							//console.log(g.guardID+"+"+g.location);
+                            if (g.guardID === '0' || g.guardID === '' || g.location === '' || g.location === undefined
+								|| g.startDate === '' || g.startDate === undefined || g.endDate === ''
+								|| g.endDate === undefined || g.startTime === ''  || g.startTime === undefined
+								|| g.endTime === '' || g.endTime === undefined || g.name === '' || g.name === undefined
+								|| g.telephone === '' || g.telephone === undefined) {
+
+                                isValid = false;
+                                return isValid;
+                            }
+                        });
+						//console.log("all guards are good");
+
+                        return isValid;
+                    },
+
+					cost: function () {
+						let guards = this.form.guards.length;
+						let cost = (this.regularHours * this.regularRate) + (this.overtimeHours * this.overtimeRate);
+						cost *= guards;
+
+						return cost;
+					}
+				}
+			});
+		</script>
+
+	</div>
+</body>
+</html>
