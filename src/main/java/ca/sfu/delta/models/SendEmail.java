@@ -46,4 +46,22 @@ public class SendEmail {
             System.err.println(ex.getMessage());
         }
     }
+
+    public void sendTo(String sendToEmailAddress, String trackingID, String requestURL) throws MessagingException {
+
+        MimeMessage message = javaMailSender.createMimeMessage();
+        MimeMessageHelper helper = new MimeMessageHelper(message);
+
+        helper.setTo(sendToEmailAddress);
+        helper.setSubject("SFU: Request for authorization");
+        helper.setText("Hi! You have been requested to authorize request: " + trackingID +
+                " You may view the request at: " + requestURL);
+
+        try{
+            javaMailSender.send(message);
+        }
+        catch (MailException ex){
+            System.err.println(ex.getMessage());
+        }
+    }
 }

@@ -212,7 +212,7 @@ public class FormServiceRequestController extends WebMvcConfigurerAdapter {
 
                         //todo: send email to Authorizer
                         //todo: probably use Method Overloading
-                        sendEmail.sendTo(authEmailAddress, userName, trackingID, requestURL);
+                        sendEmail.sendTo(authEmailAddress, trackingID, requestURL);
 
                     } else {
                     System.out.println("Error sending Email. Please ensure all the parameters are valid.");
