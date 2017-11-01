@@ -23,6 +23,8 @@ public class ApiController {
 	@Autowired UserRepository userRepository;
 	@Autowired DistributionRepository distributionRepository;
 
+	@Autowired AuthController authController;
+
 	/**
 	 * This method allows us to set up data binders for custom objects, e.g.
 	 * the SecurityUser.Role enum.
@@ -45,6 +47,11 @@ public class ApiController {
 		} else {
 			return new ResponseEntity(HttpStatus.NOT_FOUND);
 		}
+	}
+
+	@RequestMapping(value="/distribution/delete/{id}", method = RequestMethod.GET, produces = "application/json")
+	public void deleteDistribution(@PathVariable("id") Long id) {
+		distributionRepository.delete(id);
 	}
 
 	@RequestMapping(value="/distribution/search", method = RequestMethod.GET, produces = "application/json")
@@ -84,6 +91,13 @@ public class ApiController {
 		}
 	}
 
+	@RequestMapping(value="/user/delete/{id}", method = RequestMethod.GET, produces = "application/json")
+	public void deleteUser(
+			@PathVariable("id") Long id
+	) {
+		userRepository.delete(id);
+	}
+
 	@RequestMapping(value="/user/search", method = RequestMethod.GET, produces = "application/json")
 	public ResponseEntity<List<SecurityUser>> searchUsers(@RequestParam(required=true) String authtoken) {
 		List<SecurityUser> users = new ArrayList<SecurityUser>();
@@ -96,8 +110,11 @@ public class ApiController {
 	public ResponseEntity<SecurityUser> saveUser(
 			@RequestParam(required=true) String username,
 			@RequestParam(required=true) SecurityUser.Role role,
-			@RequestParam(required=true) String authtoken
+			@RequestHeader(value="X-Authorization") String authtoken
 	) {
+		if (!authController.isValid(authtoken)) {
+			return new ResponseEntity(HttpStatus.FORBIDDEN);
+		}
 		SecurityUser user = new SecurityUser();
 		user.setUsername(username);
 		user.setRole(role);
