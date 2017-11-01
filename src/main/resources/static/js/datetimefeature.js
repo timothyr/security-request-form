@@ -32,9 +32,30 @@ $(document).ready(function(){
 		}
 
 		//This function is temp. when DB supports table {R_id, startDate, startTime, endDate, endTime}, this will be removed.
-		function deleteEventDate(start,end,list){
+		function deleteEventDate(start,end,list,index,len){
 			var newString = "";
-			var tobermvd = start+"-"+end+", ";
+			var tobermvd = "";
+			if(len==1){
+			    tobermvd = start+"-"+end;
+			}else if(index==len-1 && len>0){
+			    tobermvd = ", "+start+"-"+end;
+			}else{
+			    tobermvd = start+"-"+end+", ";
+			}
 			newString = list.replace(tobermvd,"");
 			return newString;
+		}
+
+		function updateDateTime(aString){
+		    var array = aString.split(", ");
+		    var dates = [];
+
+            for(i = 0 ; i < array.length ; i++){
+                var dateTime = array[i].split("-");
+                dates.push( {
+                    start:dateTime[0],
+                    end:dateTime[1]
+                } );
+            }
+		    return dates;
 		}

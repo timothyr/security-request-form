@@ -153,6 +153,16 @@ td {
     cursor: pointer;
 }
 
+.td-delete-button {
+    border: none;
+    background-color: transparent;
+    visibility: hidden;
+}
+
+.tr-delete:hover .td-delete-button {
+    visibility: visible;
+}
+
 /* REQUESTS */
 /* font awesome */
 .fa-sort {
