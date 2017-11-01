@@ -343,10 +343,10 @@
 
 					removeNull: function () {
 						for (let p in this.form) {
-							if (this.form[p] === null) {
+							if (this.form[p] === null || this.form[p] === undefined || this.form[p] === '') {
 								this.form[p] = 'not set';
 							}
-							console.log("form["+p+"] = "+ this.form[p]);
+							//console.log("form["+p+"] = "+ this.form[p]);
 						}
 
 						if (this.form.guards === 'not set') {
@@ -392,8 +392,8 @@
 							}
 
 							// TODO: figure out why some guard fields are disappearing mid-transmission
-							// 			the JSON sent from api is correct, but JSON received isn't
-							console.log(JSON.stringify(response.data));
+							// 		the JSON sent from api is correct, but JSON received is missing half the fields
+							//console.log(JSON.stringify(response.data));
 
 							if (response.data.guards[0] === null || response.data.guards[0] === undefined) {
 								response.data.guards = JSON.parse(JSON.stringify(this.form.guards));
@@ -426,8 +426,6 @@
 							this.form.guards[i].regularRate = this.regularRate;
 							this.form.guards[i].overtimeRate = this.overtimeRate;
 
-							console.log("stringified guard: "+JSON.stringify(this.form.guards));
-
 							if (this.form.guards[i].name === "" || this.form.guards[i].name === null) {
 								this.form.guards[i].name = "not set";
 							}
@@ -450,7 +448,7 @@
 						}
 
 
-						console.log("---------- Submitting:");
+						//console.log("---------- Submitting:");
 						this.removeNull();
 
 						this.$http.post('/api/form/saveSecurity', this.form).then(function (response) {
@@ -475,16 +473,18 @@
                             return false;
                         let isValid = true;
                         this.form.guards.forEach(function (g) {
-							console.log(g.guardID+"+"+g.location);
+							//console.log(g.guardID+"+"+g.location);
                             if (g.guardID === '0' || g.guardID === '' || g.location === '' || g.location === undefined
-								|| g.startDate === '' || g.endDate === '' || g.startTime === '' || g.endTime === ''
-                                || g.name === '' || g.telephone === '') {
+								|| g.startDate === '' || g.startDate === undefined || g.endDate === ''
+								|| g.endDate === undefined || g.startTime === ''  || g.startTime === undefined
+								|| g.endTime === '' || g.endTime === undefined || g.name === '' || g.name === undefined
+								|| g.telephone === '' || g.telephone === undefined) {
 
                                 isValid = false;
                                 return false;
                             }
                         });
-						console.log("all guards are good");
+						//console.log("all guards are good");
 
                         return isValid;
                     },
