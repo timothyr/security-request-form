@@ -1,15 +1,22 @@
 package ca.sfu.delta.controllers;
 
+import ca.sfu.delta.models.SecurityUser;
+import ca.sfu.delta.repository.UserRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -21,39 +28,25 @@ import java.util.regex.Pattern;
  */
 @Controller
 public class AuthController {
-    private String username;
+    public static final String COOKIE_NAME = "sfu-event-form-authtoken";
 
-    /**
-     * Checks whether or not the current user is authenticated.
-     *
-     * @return <b>true</b> if the current user is authenticated, otherwise <b>false</b>
-     */
-    public boolean isAuthenticated() {
-        return username != null;
-    }
+    @Autowired UserRepository userRepository;
 
-    /**
-     * @return The SFU username of the current user if the user is authenticated, otherwise <b>null</b>
-     */
-    public String getUsername() {
-        return username;
-    }
+    private TokenManager tokenManager = new TokenManager();
 
-    /**
-     * Ensures that all further calls to {@code isAuthenticated()} returns <b>false</b>.
-     * Does not actually log out through CAS, since this is not recommended by the CAS documentation.
-     */
-    public void logout() {
-        username = null;
+    public boolean isValid(String token) {
+        return tokenManager.tokenExists(token);
     }
 
     @RequestMapping(value = "/login", method = RequestMethod.GET)
     public String handleLoginRequest(
             @RequestParam(value = "ticket", required = false) String ticket,
             @RequestParam(value = "redirect", required = false) String redirect,
-            HttpServletRequest req
+            HttpServletRequest request,
+            HttpServletResponse response,
+            RedirectAttributes attributes
     ) {
-        String baseUrl = getBaseUrl(req);
+        String baseUrl = getBaseUrl(request);
 
         String service = baseUrl + "/login";
 
@@ -66,11 +59,35 @@ public class AuthController {
         } else {
             String url = "https://cas.sfu.ca/cas/serviceValidate?ticket=" + ticket + "&service=" + service;
 
-            String response = httpRequest(url);
+            String casResponse = httpRequest(url);
 
-            username = getStringBetween(response, "<cas:user>", "</cas:user>");
+            String username = getStringBetween(casResponse, "<cas:user>", "</cas:user>");
 
-            return "redirect:/" + redirect;
+            List<SecurityUser> users = userRepository.getUser(username);
+            if (users != null && !users.isEmpty()) {
+                SecurityUser user = users.get(0);
+                SecurityUser.Role role = user.getRole();
+                boolean isAdmin = user.getRole() == SecurityUser.Role.ADMIN;
+                boolean isSecurity = user.getRole() == SecurityUser.Role.SECURITY;
+
+                if (!isSecurity && !isAdmin) {
+                    throw new RuntimeException("Error 401");
+                }
+            } else {
+                throw new RuntimeException("Error 401");
+            }
+
+            if (username != null) {
+                String token = tokenManager.getToken(username);
+                token = token != null ? token : tokenManager.createToken(username);
+
+                attributes.addFlashAttribute("X-Authorization", token);
+                response.addCookie(new Cookie(COOKIE_NAME, token));
+                response.addHeader("X-Authorization", token);
+                return "redirect:/" + redirect;
+            } else {
+                throw new RuntimeException("Username could not be extracted from CAS response");
+            }
         }
     }
 
