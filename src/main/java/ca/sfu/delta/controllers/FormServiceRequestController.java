@@ -112,20 +112,22 @@ public class FormServiceRequestController extends WebMvcConfigurerAdapter {
 		return null;
 	}
 
-    @RequestMapping(value = "/api/csv/form/{id}", method = RequestMethod.GET, produces = "text/csv")
+    @RequestMapping(value = "/api/csv/form/{id}.csv", method = RequestMethod.GET, produces = "text/csv")
     @ResponseBody
-    public String getCSV(@PathVariable("id") long id) {
+    public String getCSV(@PathVariable("id") String id) {
         String csvString = new String();
         for (FormData form : formRepository.findAll()) {
+
             if(form.getRequestID().equals(id))
             {
                 csvString = form.getAsCSV(true);
             }
         }
+        System.out.println(csvString);
         return csvString;
     }
 
-    @RequestMapping(value = "/api/csv/form/all", method = RequestMethod.GET, produces = "text/csv")
+    @RequestMapping(value = "/api/csv/form/all.csv", method = RequestMethod.GET, produces = "text/csv")
     @ResponseBody
     public String getAllCSV() {
         boolean first = true;
@@ -136,7 +138,7 @@ public class FormServiceRequestController extends WebMvcConfigurerAdapter {
                 thisForm = form.getAsCSV(true);
                 first = false;
                 csvWriter.append(thisForm);
-            }
+            } 
             else {
                 thisForm = form.getAsCSV(false);
                 csvWriter.append(thisForm);

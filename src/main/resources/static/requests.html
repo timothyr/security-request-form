@@ -153,11 +153,7 @@
                 return this.filteredRequests.length == 0 && !this.loading;
             },
             exportAllCSV: function() {
-                console.log("button pressed CSV");
-                this.$http.get('/api/csv/form/all')
-                    .then(function(response) {
-                        console.log(response);
-                    })
+                window.location.assign("/api/csv/form/all.csv");
             }
         },
         computed: {
