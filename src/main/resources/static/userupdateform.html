@@ -174,7 +174,7 @@
                 </div>
                 <div class="row mt-5">
                     <div class="col-md-12 text-center">
-                        <button class="btn btn-danger btn-lg col-md-8">Update</button>
+                        <button class="btn btn-danger btn-lg col-md-8" v-on:click="updateForm()">Update</button>
                     </div>
                 </div>
                 <div class="bottom-space"></div>
@@ -260,37 +260,38 @@
                 function successCallback() {
                     console.log("success");
                 }
-
                 function errorCallback() {
                     console.log("error");
                 }
+            },
+            updateForm: function () {
 
                 if (this.isValid) {
-                    <!-- submit GET request with vue -->
-                    this.$http.get('api/form/update/' + this.formData.requestID, {
-                        params: {
-                            department: 			this.formData.department,
-                            requesterName: 			this.formData.requesterName,
-                            phoneNumber: 			this.formData.phoneNumber,
-                            requestedOnDate: 		this.formData.requestedOnDate,
-                            requesterID: 			this.formData.requesterID,
-                            authorizationDate: 		this.formData.authorizationDate,
-                            paymentAccountCode: 	this.formData.paymentAccountCode,
-                            emailAddress: 			this.formData.emailAddress,
-                            times: 					this.formData.times,
-                            eventName: 				this.formData.eventName,
-                            isLicensed: 			this.formData.isLicensed,
-                            numAttendees:			this.formData.numAttendees,
-                            authorizerId: 			this.formData.authorizerId,
-                            authorizerPhoneNumber: 	this.formData.authorizerPhoneNumber,
-                            serviceRequestNumber: 	this.formData.serviceRequestNumber,
-                            eventLocation: 			this.formData.eventLocation,
-                            authorizerName: 		this.formData.authorizerName,
-                            eventDates: 			this.formData.eventDates,
-                            eventDetails: 			this.formData.eventDetails,
-                            faxNumber: 				this.formData.faxNumber
-                        }
-                    }).then(successCallback, errorCallback);
+                    this.$http.put('api/form/update/' + this.formData.id, {
+                        department: this.formData.department,
+                        requesterName: this.formData.requesterName,
+                        phoneNumber: this.formData.phoneNumber,
+                        requestedOnDate: this.formData.requestedOnDate,
+                        requesterID: this.formData.requesterID,
+                        authorizationDate: this.formData.authorizationDate,
+                        paymentAccountCode: this.formData.paymentAccountCode,
+                        emailAddress: this.formData.emailAddress,
+                        times: this.formData.times,
+                        eventName: this.formData.eventName,
+                        isLicensed: this.formData.isLicensed,
+                        numAttendees: this.formData.numAttendees,
+                        authorizerId: this.formData.authorizerId,
+                        authorizerPhoneNumber: this.formData.authorizerPhoneNumber,
+                        serviceRequestNumber: this.formData.serviceRequestNumber,
+                        eventLocation: this.formData.eventLocation,
+                        authorizerName: this.formData.authorizerName,
+                        eventDates: this.formData.eventDates,
+                        eventDetails: this.formData.eventDetails,
+                        faxNumber: this.formData.faxNumber
+
+                    }).then(function() {
+                        console.log("updated form");
+                    });
                 }
             },
             addDatetime: function(){
