@@ -311,6 +311,11 @@
                     this.signedIn = !this.signedIn;
                     this.showAuthFields = this.signedIn;
                     this.updateSignInStatus();
+
+                    if (this.signedIn) {
+                    	window.location.href = "/login?redirect=";
+                    }
+
                 },
 
                 updateSignInStatus : function() {
