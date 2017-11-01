@@ -21,12 +21,20 @@ function updateDateTime(aString){
 	var dates = [];
 
     for(i = 0 ; i < array.length ; i++){
-        var dateTime = array[i].split("-");
+        var dateTime = array[i].split("-"); //[ "2017/11/01 12:30", "2018/01/01 01:30"]
+        var startDate = (dateTime[0].split(" "))[0].split("/");
+        var startTime = (dateTime[0].split(" "))[1].split(":");
+        var endDate = (dateTime[1].split(" "))[0].split("/");
+        var endTime = (dateTime[1].split(" "))[1].split(":");
 
+        var start = new Date(startDate[0],startDate[1]-1,startDate[2],startTime[0],startTime[1]);
+        var end = new Date(endDate[0],endDate[1]-1,endDate[2],endTime[0],endTime[1]);
+
+        var diff = Math.abs(end.valueOf() - start.valueOf()) / 3600000;
         dates.push( {
             start:dateTime[0],
             end:dateTime[1],
-            hours: "1.5",
+            hours: diff,
         } );
     }
     return dates;
