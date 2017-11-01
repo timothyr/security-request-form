@@ -55,7 +55,14 @@ public class ApiController {
 	}
 
 	@RequestMapping(value="/distribution/get/{id}", method = RequestMethod.GET, produces = "application/json")
-	public ResponseEntity<DistributionEntry> getDistribution(@PathVariable("id") Long id) {
+	public ResponseEntity<DistributionEntry> getDistribution(
+			@PathVariable("id") Long id,
+			@PathVariable("token") String token
+	) {
+		if (authController.isInvalid(token)) {
+			return new ResponseEntity(HttpStatus.FORBIDDEN);
+		}
+
 		DistributionEntry d = distributionRepository.findOne(id);
 		if (d != null) {
 			return ResponseEntity.ok(d);
@@ -65,12 +72,26 @@ public class ApiController {
 	}
 
 	@RequestMapping(value="/distribution/delete/{id}", method = RequestMethod.GET, produces = "application/json")
-	public void deleteDistribution(@PathVariable("id") Long id) {
+	public ResponseEntity deleteDistribution(
+			@PathVariable("id") Long id,
+			@PathVariable("token") String token
+	) {
+		if (authController.isInvalid(token)) {
+			return new ResponseEntity(HttpStatus.FORBIDDEN);
+		}
+
 		distributionRepository.delete(id);
+		return new ResponseEntity(HttpStatus.OK);
 	}
 
 	@RequestMapping(value="/distribution/search", method = RequestMethod.GET, produces = "application/json")
-	public ResponseEntity<List<DistributionEntry>> searchDistributions(@RequestParam(required=true) String authtoken) {
+	public ResponseEntity<List<DistributionEntry>> searchDistributions(
+			@RequestParam(required=true) String token
+	) {
+		if (authController.isInvalid(token)) {
+			return new ResponseEntity(HttpStatus.FORBIDDEN);
+		}
+
 		List<DistributionEntry> distributions = new ArrayList<DistributionEntry>();
 		Iterable<DistributionEntry> itr = distributionRepository.findAll();
 		itr.forEach(distributions::add);
@@ -80,8 +101,13 @@ public class ApiController {
 	@RequestMapping(value="/distribution/save", method = RequestMethod.GET, produces = "application/json")
 	public ResponseEntity<DistributionEntry> saveDistribution(
 			@RequestParam(required=true) String email,
-			@RequestParam(required=true) String name
+			@RequestParam(required=true) String name,
+			@PathVariable("token") String token
 	) {
+		if (authController.isInvalid(token)) {
+			return new ResponseEntity(HttpStatus.FORBIDDEN);
+		}
+
 		DistributionEntry distribution = new DistributionEntry();
 		distribution.setName(name);
 		distribution.setEmail(email);
@@ -96,8 +122,12 @@ public class ApiController {
 	@RequestMapping(value="/user/get/{id}", method = RequestMethod.GET, produces = "application/json")
 	public ResponseEntity<SecurityUser> getUser(
 			@PathVariable("id") Long id,
-			@RequestParam(required=true) String authtoken
+			@PathVariable("token") String token
 	) {
+		if (authController.isInvalid(token)) {
+			return new ResponseEntity(HttpStatus.FORBIDDEN);
+		}
+
 		SecurityUser user = userRepository.findOne(id);
 		if (user != null) {
 			return ResponseEntity.ok(user);
@@ -107,14 +137,26 @@ public class ApiController {
 	}
 
 	@RequestMapping(value="/user/delete/{id}", method = RequestMethod.GET, produces = "application/json")
-	public void deleteUser(
-			@PathVariable("id") Long id
+	public ResponseEntity deleteUser(
+			@PathVariable("id") Long id,
+			@PathVariable("token") String token
 	) {
+		if (authController.isInvalid(token)) {
+			return new ResponseEntity(HttpStatus.FORBIDDEN);
+		}
+
 		userRepository.delete(id);
+		return new ResponseEntity(HttpStatus.OK);
 	}
 
 	@RequestMapping(value="/user/search", method = RequestMethod.GET, produces = "application/json")
-	public ResponseEntity<List<SecurityUser>> searchUsers(@RequestParam(required=true) String authtoken) {
+	public ResponseEntity<List<SecurityUser>> searchUsers(
+			@PathVariable("token") String token
+	) {
+		if (authController.isInvalid(token)) {
+			return new ResponseEntity(HttpStatus.FORBIDDEN);
+		}
+
 		List<SecurityUser> users = new ArrayList<SecurityUser>();
 		Iterable<SecurityUser> itr = userRepository.findAll();
 		itr.forEach(users::add);
@@ -125,11 +167,12 @@ public class ApiController {
 	public ResponseEntity<SecurityUser> saveUser(
 			@RequestParam(required=true) String username,
 			@RequestParam(required=true) SecurityUser.Role role,
-			@RequestHeader(value="X-Authorization") String authtoken
+			@PathVariable("token") String token
 	) {
-		if (!authController.isValid(authtoken)) {
+		if (authController.isInvalid(token)) {
 			return new ResponseEntity(HttpStatus.FORBIDDEN);
 		}
+
 		SecurityUser user = new SecurityUser();
 		user.setUsername(username);
 		user.setRole(role);
