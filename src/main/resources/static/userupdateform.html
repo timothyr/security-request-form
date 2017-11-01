@@ -306,11 +306,12 @@
 					this.datetimelist.push( {start: this.startdatetime, end: this.enddatetime} );
 					this.startdatetime = '';
 					this.enddatetime = '';
+
             	}
             },
             deleteDatetime: function(dt){
             	var index = this.datetimelist.indexOf(dt);
-            	this.formData.eventDates = deleteEventDate(dt.start,dt.end,this.formData.eventDates );
+            	this.formData.eventDates = deleteEventDate(dt.start,dt.end,this.formData.eventDates,index,this.datetimelist.length);
             	this.datetimelist.splice(index,1);
             },
         },
