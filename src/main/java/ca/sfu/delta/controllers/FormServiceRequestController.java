@@ -43,6 +43,7 @@ public class FormServiceRequestController extends WebMvcConfigurerAdapter {
     SendEmail sendEmail;
 
     private static final String formFromTokenURL = "/api/form/get/user/";
+    private static final String formRequestURL = "/updateform?token=";
 
     @Override
     public void addViewControllers(ViewControllerRegistry registry) {
@@ -250,7 +251,7 @@ public class FormServiceRequestController extends WebMvcConfigurerAdapter {
         String userEmailAddress = form.getEmailAddress();
         String authEmailAddress = form.getAuthorizerEmailAddress();
         String trackingID = form.getRequestID();
-        String requestURL = GlobalConstants.SERVER_HOST_ADDRESS + formFromTokenURL + token;
+        String requestURL = GlobalConstants.SERVER_HOST_ADDRESS + formRequestURL + formFromTokenURL + token;
 
         if (form != null) {
             System.out.println("saved");
