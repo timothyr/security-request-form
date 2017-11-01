@@ -38,6 +38,7 @@ button {
 
 @media (min-width: 1400px) {
 	.container{
+		padding-top: 1em;
 		max-width: 1200px;
 	}
 }
@@ -178,4 +179,21 @@ svg path, svg rect {
 /* V-CLOAK - hides element until vue loads eg. {{hidesThis}} */
 [v-cloak] {
     display: none;
+}
+
+/* Adds space in between the submit and Authorization button when stacked in a smaller screen. */
+@media screen and (max-width: 736px) {
+	.add-space-top{
+		padding-top: 1em;
+		font-size: smaller;
+	}
+}
+
+.add-space-top{
+	padding-top: 1em;
+	padding-right: 0;
+	width: 100%;
+}
+.float-right{
+	float:right;
 }
