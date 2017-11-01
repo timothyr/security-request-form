@@ -199,19 +199,17 @@ public class FormServiceRequestController extends WebMvcConfigurerAdapter {
         String requestURL = GlobalConstants.SERVER_HOST_ADDRESS + formFromTokenURL + token;
 
         if (form != null) {
-
             System.out.println("saved");
-
 
             //Probably don't need to check here if email Address is null
             if (trackingID != null) {
                 try {
                 if (userEmailAddress != null && authEmailAddress != null) {
 
+                        //send mail to User
                         sendEmail.sendTo(userEmailAddress, userName, trackingID, requestURL);
 
-                        //todo: send email to Authorizer
-                        //todo: probably use Method Overloading
+                        //send email to Authorizer
                         sendEmail.sendTo(authEmailAddress, trackingID, requestURL);
 
                     } else {
