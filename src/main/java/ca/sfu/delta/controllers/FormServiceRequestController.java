@@ -189,6 +189,9 @@ public class FormServiceRequestController extends WebMvcConfigurerAdapter {
         Date date = new Date();
         form.setRequestedOnDate(dateFormat.format(date));
 
+        //TODO: make this actually useful instead of this bandaid solution
+        form.setRequestStatus("waiting");
+
         if (requestID != null && !requestID.isEmpty()) {
 	        form.setRequestID(requestID);
         } else {
