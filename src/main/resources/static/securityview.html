@@ -240,8 +240,7 @@
 
 							</div>
 						</div>
-
-						<button class="btn" v-on:click="submit('update')" v-if="getCanAccept === true">Update</button>
+						<button class="btn btn-success" v-on:click="submit('update')" v-if="canAccept">Update</button>
 
 				</div>
 				<div class="col col-md-3"></div>
@@ -250,7 +249,7 @@
 		</div>
 
 		<script src="/js/jquery-3.2.1.min.js"></script>
-		<script src="/js/bootstrap.min.js"></script>
+
 		<script src="/js/vue.js"></script>
 		<script src="/js/vue-resource.min.js"></script>
 		<script>
@@ -259,7 +258,7 @@
 
 				data: {
 					requestID: null,
-
+                    test: true,
 					form: {
 						requestStatus: 'not set',
 						requesterName: 'not set',
@@ -462,31 +461,30 @@
 				},
 
 				computed: {
+                    canAccept: function () {
+                        let numGuards = this.form.guards.length;
+                        if (numGuards < 1)
+                            return false;
+                        let isValid = true;
+                        this.form.guards.forEach(function (g) {
+                            if (g.guardID === '0' || g.guardID === '' || g.location === '' || g.startDate === ''
+                                || g.endDate === '' || g.startTime === '' || g.endTime === ''
+                                || g.name === '' || g.telephone === '') {
+
+                                console.log(g.guardID + " is bad");
+                                isValid = false;
+                                return false;
+                            }
+                        });
+
+                        return isValid;
+                    },
 					cost: function () {
 						let guards = this.form.guards.length;
 						let cost = (this.regularHours * this.regularRate) + (this.overtimeHours * this.overtimeRate);
 						cost *= guards;
 
 						return cost;
-					},
-
-					canAccept: function () {
-						let numGuards = this.form.guards.length;
-						if (numGuards < 1)
-							return false;
-
-						this.form.guards.forEach(function (g) {
-							if (g.guardID === '0' || g.guardID === '' || g.location === '' || g.startDate === ''
-								|| g.endDate === '' || g.startTime === '' || g.endTime === ''
-								|| g.name === '' || g.telephone === '') {
-
-								console.log(g.guardID + " is bad");
-								return false;
-							}
-
-						});
-
-						return true;
 					}
 				}
 			});
