@@ -80,21 +80,23 @@
 			</div>
 
 			<!-- TODO: get real values when that is ready -->
+
 			<div class="row my-4">
 				<table class="table table-striped">
 					<thead>
 						<tr>
-							<th class="text-center">Date</th>
-							<th class="text-center">Time</th>
+							<th class="text-center">Start Time</th>
+							<th class="text-center">End Time</th>
 							<th class="text-center">Hours</th>
 						</tr>
 					</thead>
 					<tbody>
 						<tr v-for="d in dates">
-							<td class="text-center">{{d.date}}</td>
-							<td class="text-center">{{d.time}}</td>
+							<td class="text-center">{{d.start}}</td>
+							<td class="text-center">{{d.end}}</td>
 							<td class="text-center">{{d.hours}}</td>
 						</tr>
+						<tr>
 					</tbody>
 				</table>
 			</div>
@@ -252,6 +254,7 @@
 
 		<script src="/js/vue.js"></script>
 		<script src="/js/vue-resource.min.js"></script>
+		<script src="/js/datetime.js"></script>
 		<script>
 			var app = new Vue({
 				el: '#app',
@@ -275,6 +278,7 @@
 						authorizerID: 'not set',
 						authorizerPhoneNumber: 'not set',
 						invoiceRequested: 'not set',
+						eventDates: 'not set',
 
 						guards: [
 							{
@@ -293,19 +297,7 @@
 							}
 						],
 					},
-
-					dates: [
-						{
-							date: "Aug. 22, 2017",
-							time: "8:00pm - 2:00am",
-							hours: 7
-						},
-						{
-							date: "Aug. 27, 2017",
-							time: "9:00pm - 1:30am",
-							hours: 4.5
-						}
-					],
+					dates: [],
 
 					regularRate: 0,
 					regularHours: 0,
@@ -381,7 +373,6 @@
 
 					getFormData: function () {
 						this.requestID = this.getURLParam('id');
-
 						if (this.requestID === null) {
 							window.location.replace("/requests");
 						}
@@ -398,6 +389,7 @@
 
 							this.form = JSON.parse(JSON.stringify(response.data));
 							this.removeNull();
+							this.dates = updateDateTime(this.form.eventDates);
 
 							this.emailOptions.push(this.form.emailAddress); // TODO: get more emails
 						}, function (error) {
