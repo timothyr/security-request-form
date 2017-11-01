@@ -55,6 +55,7 @@ public class FormServiceRequestController extends WebMvcConfigurerAdapter {
         registry.addViewController("/admin").setViewName("admin.html");
         registry.addViewController("/securitylogin").setViewName("securitylogin.html");
         registry.addViewController("/updateform").setViewName("userupdateform.html");
+        registry.addViewController("/securityview").setViewName("securityview.html");
     }
 
     @RequestMapping(value = "/api/form/get/{id}", method = RequestMethod.GET, produces = "application/json")
@@ -66,11 +67,12 @@ public class FormServiceRequestController extends WebMvcConfigurerAdapter {
     }
 
     @RequestMapping(value = "/api/form/getByRequestID/{id}", method = RequestMethod.GET, produces = "application/json")
-    public @ResponseBody Map<String, Object> getForm(@PathVariable("id") String id) {
+    public @ResponseBody FormData getForm(@PathVariable("id") String id) {
         for (FormData f : formRepository.findAll()) {
         	if (f.getRequestID().equals(id)) {
         		System.out.println("found form with requestID = "+f.getRequestID());
-        		return f.jsonify();
+        		System.out.println(f.jsonify());
+        		return f;
 			}
 		}
 
