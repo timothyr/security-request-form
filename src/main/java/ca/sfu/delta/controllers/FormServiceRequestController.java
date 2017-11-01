@@ -180,7 +180,7 @@ public class FormServiceRequestController extends WebMvcConfigurerAdapter {
 		return token;
     }
 
-    @RequestMapping(value = "/api/form/save", method = RequestMethod.GET, produces = "application/json")
+    @RequestMapping(value = "/api/form/save", method = RequestMethod.GET, produces = "text/plain")
     public @ResponseBody String addForm(
             @RequestParam(required=false) String department,
             @RequestParam(required=false) String requesterName,
@@ -265,7 +265,7 @@ public class FormServiceRequestController extends WebMvcConfigurerAdapter {
                 System.out.println("Could not send Email. Please ensure all the parameters are valid.");
             }
 	        System.out.println("Successfully saved Form with requestID = " + form.getId() + " and token = " + token);
-	        return String.valueOf(form.getId());
+	        return String.valueOf(token);
         } else {
             System.out.println("Failed to save Form");
             return "ERROR: form didn't save";
