@@ -393,15 +393,11 @@
 								window.location.replace("/requests");
 							}
 
-							// TODO: figure out why some guard fields are disappearing mid-transmission
-							// 		the JSON sent from api is correct, but JSON received is missing half the fields
-							//console.log(JSON.stringify(response.data));
-
 							if (response.data.guards[0] === null || response.data.guards[0] === undefined) {
 								response.data.guards = JSON.parse(JSON.stringify(this.form.guards));
 							}
 
-							g = response.data.guards[0];
+							let g = response.data.guards[0];
 							this.regularRate = g.regularRate;
 							this.regularHours = g.regularHours;
 							this.overtimeRate = g.overtimeRate;
@@ -449,7 +445,6 @@
 								return;
 							}
 						}
-
 
 						//console.log("---------- Submitting:");
 						this.removeNull();
