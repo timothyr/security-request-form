@@ -47,7 +47,6 @@ $(document).ready(function(){
 		}
 
 		function updateDateTime(aString){
-		    //aString = "2017/11/11 13:20-2017/11/11 14:30, ";
 		    var array = aString.split(", ");
 		    var dates = [];
 

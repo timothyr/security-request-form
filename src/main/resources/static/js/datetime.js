@@ -14,8 +14,3 @@ function getArrayDateTimes( aString ) {
     }
     return dates;
 }
-
-//var hi = getArrayDateTimes("2017/11/01 12:30 2017/11/01 14:20, 2017/11/02 15:30 2017/11/02 16:20, 2017/11/03 19:30 2017/11/03 23:20");
-//for(i=0;i<hi.length;i++){
-//    console.log(hi[i]);
-//}

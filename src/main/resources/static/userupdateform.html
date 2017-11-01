@@ -185,7 +185,6 @@
 <script src="/js/jquery-3.2.1.min.js"></script>
 <script src="/js/vue.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/vue-resource@1.3.4"></script>
-
 <script src="/js/jquery.datetimepicker.full.js"></script>
 <script src="/js/jquery.datetimepicker.js"></script>
 <script src="/js/datetimefeature.js"></script>
@@ -306,7 +305,6 @@
 					this.datetimelist.push( {start: this.startdatetime, end: this.enddatetime} );
 					this.startdatetime = '';
 					this.enddatetime = '';
-
             	}
             },
             deleteDatetime: function(dt){
@@ -319,11 +317,9 @@
             let urlParams = getUrlParams(window.location);
             this.$http.get('/api/form/get/user/' + urlParams.token, {
             }).then(response  => {
-                console.log(response.data);
                 this.formData = response.data;
                 this.datetimelist = updateDateTime(this.formData.eventDates);
             });
-
         }
     });
 </script>
