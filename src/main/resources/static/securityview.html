@@ -220,7 +220,7 @@
 				<div class="col text-center">
 						<button class="btn btn-danger" v-on:click="submit('reject')">Reject</button>
 
-						<button type="button" class="btn btn-success mx-2" data-toggle="modal" data-target="#emailModal" v-if="getCanAccept === true">Accept</button>
+						<button type="button" class="btn btn-success mx-2" data-toggle="modal" data-target="#emailModal" v-if="canAccept">Accept</button>
 						<div id="emailModal" class="modal fade" role="dialog">
 							<div class="modal-dialog">
 								<div class="modal-content">
@@ -234,7 +234,7 @@
 									</div>
 									<div class="modal-footer">
 										<button type="button" class="btn" data-dismiss="modal">Cancel</button>
-										<button type="button" class="btn btn-success mx-2" data-dismiss="model" v-on:click="submit('accept')" v-if="getCanAccept === true">Accept</button>
+										<button type="button" class="btn btn-success mx-2" data-dismiss="model" v-on:click="submit('accept')" v-if="canAccept">Accept</button>
 									</div>
 								</div>
 
@@ -249,7 +249,7 @@
 		</div>
 
 		<script src="/js/jquery-3.2.1.min.js"></script>
-
+		<script src="/js/bootstrap.min.js"></script>
 		<script src="/js/vue.js"></script>
 		<script src="/js/vue-resource.min.js"></script>
 		<script>
@@ -395,9 +395,10 @@
 								response.data.guards = JSON.parse(JSON.stringify(this.form.guards));
 							}
 
-
 							this.form = JSON.parse(JSON.stringify(response.data));
 							this.removeNull();
+
+							console.log(this.form.guards[0].location);
 
 							this.emailOptions.push(this.form.emailAddress); // TODO: get more emails
 						}, function (error) {
@@ -428,12 +429,12 @@
 
 						if (action === 'accept') {
 							this.form.requestStatus = "APPROVED";
-							if (!this.canAccept())
+							if (!this.canAccept)
 								return;
 						} else if (action === 'reject') {
 							this.form.requestStatus = 'REJECTED';
 						} else {
-							if (!this.canAccept()) {
+							if (!this.canAccept) {
 								return;
 							}
 						}
@@ -450,9 +451,6 @@
 						});
 					},
 
-					getCanAccept: function () {
-						return this.canAccept;
-					}
 				},
 
 				created() {
@@ -476,9 +474,11 @@
                                 return false;
                             }
                         });
+						console.log("all guards are good");
 
                         return isValid;
                     },
+
 					cost: function () {
 						let guards = this.form.guards.length;
 						let cost = (this.regularHours * this.regularRate) + (this.overtimeHours * this.overtimeRate);
