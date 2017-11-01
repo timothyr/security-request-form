@@ -36,7 +36,7 @@ public class FormData {
 
     private String paymentAccountCode;
     private Boolean invoiceRequested;
-    private String eventDetails;
+    private String eventDetails = null;
     private String serviceRequestNumber; //Generated automatically, pre-populate.
     private String recievingSecuritySupervisor;
 
@@ -45,7 +45,7 @@ public class FormData {
     @ElementCollection
     private List<String> distributionList;
     private String preparedBy;
-    private String securityRemarks;
+    private String securityRemarks = null;
     private String requestStatus;
 
 	private String requestID;
@@ -438,6 +438,15 @@ public class FormData {
                 csvWriter.append(firstRow);
             }
             //Append fields to csv, strip out commas from places they could be present
+            //Avoid null pointer exceptions if certain fields are blank
+
+            if(eventDetails == null){
+                eventDetails = new String("null");
+            }
+            if(securityRemarks == null){
+                securityRemarks = new String("null");
+            }
+
             String nextRow = requestID + ", " +
                              department + ", " +
                              requesterName + ", " +
