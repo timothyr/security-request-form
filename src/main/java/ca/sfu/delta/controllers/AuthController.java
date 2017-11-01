@@ -57,9 +57,9 @@ public class AuthController {
         String baseUrl = getBaseUrl(req);
 
         if (ticket == null) {
-            return "redirect://cas.sfu.ca/cas/login?service=" + baseUrl + "/login";
+            return "redirect://cas.sfu.ca/cas/login?service=" + baseUrl + "/requests";
         } else {
-            String url = "https://cas.sfu.ca/cas/serviceValidate?service=" + baseUrl + "/login&ticket=" + ticket;
+            String url = "https://cas.sfu.ca/cas/serviceValidate?service=" + baseUrl + "/requests&ticket=" + ticket;
             String response = httpRequest(url);
 
             username = getStringBetween(response, "<cas:user>", "</cas:user>");

@@ -31,6 +31,14 @@
 			<div class="row mt-5">
 				<h3 class="mt-5 mx-5">Request #{{requestID}}</h3>
 			</div>
+            <div class="row pull-right">
+                <div class="dropdown">
+                    <div class="dropdown-toggle" id="dropdownMenuButton" data-toggle="dropdown"><i class="fa fa-cog"></i></div>
+                    <ul class="dropdown-menu">
+                        <li class="dropdown-item" v-on:click="exportRequestCSV()">Export Request to CSV</li>
+                    </ul>
+                </div>
+            </div>
 			<div class="row mt-3">
 				<div class="col" v-if="form.requestStatus !== null">
 					<p class="mx-5">Status: {{form.requestStatus}}</p>
@@ -80,7 +88,6 @@
 			</div>
 
 			<!-- TODO: get real values when that is ready -->
-
 			<div class="row my-4">
 				<table class="table table-striped">
 					<thead>
@@ -96,7 +103,6 @@
 							<td class="text-center">{{d.end}}</td>
 							<td class="text-center">{{d.hours}}</td>
 						</tr>
-						<tr>
 					</tbody>
 				</table>
 			</div>
@@ -251,7 +257,8 @@
 		</div>
 
 		<script src="/js/jquery-3.2.1.min.js"></script>
-		<script src="/js/bootstrap.min.js"></script>
+        <script src="/js/bootstrap.bundle.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/tether/1.4.0/js/tether.min.js"></script>
 		<script src="/js/vue.js"></script>
 		<script src="/js/vue-resource.min.js"></script>
 		<script src="/js/datetime.js"></script>
@@ -309,6 +316,10 @@
 				},
 
 				methods: {
+                    exportRequestCSV: function() {
+                        window.location.assign("/api/csv/form/" + this.requestID + ".csv");
+                    },
+
 					addGuard: function() {
 						this.form.guards.push({
 							guardID: 0,
@@ -325,7 +336,7 @@
 							overtimeRate: null
 						})
 					},
-					
+
 					deleteGuard: function (guard) {
 						let i = this.form.guards.indexOf(guard);
 						if (this.form.guards.length > 1) {
@@ -423,7 +434,7 @@
 							}
 						}
 					},
-					
+
 					submit: function (action) {
 						this.setSecFields();
 
@@ -473,7 +484,7 @@
 								|| g.telephone === '' || g.telephone === undefined) {
 
                                 isValid = false;
-                                return false;
+                                return isValid;
                             }
                         });
 						//console.log("all guards are good");
