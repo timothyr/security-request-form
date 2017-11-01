@@ -56,6 +56,7 @@ public class FormData {
     private String authorizationDate;
     private String authorizerPhoneNumber;
     private Boolean isAuthorized;
+    private String authorizerEmailAddress;
 
 
     //Constructor takes all info that a requester can provide (optional or no)
@@ -255,6 +256,14 @@ public class FormData {
 		authorizerPhoneNumber = newAuthorizerPhoneNumber;
 	}
 
+	public String getAuthorizerEmailAddress() {
+                return authorizerEmailAddress;
+    }
+
+    public void setAuthorizerEmailAddress(String newAuthorizerEmailAddress){
+                authorizerEmailAddress = newAuthorizerEmailAddress;
+    }
+
 	public String getAuthorizerName() {
     	return authorizerName;
 	}
@@ -275,12 +284,14 @@ public class FormData {
             String authorizerName,
             String authorizerID,
             String authorizationDate,
-            String authorizerPhoneNumber
+            String authorizerPhoneNumber,
+            String authorizerEmailAddress
     ){
         this.authorizerName = authorizerName;
         this.authorizerID = authorizerID;
         this.authorizationDate = authorizationDate;
         this.authorizerPhoneNumber = authorizerPhoneNumber;
+        this.authorizerEmailAddress = authorizerEmailAddress;
         this.isAuthorized = true;
     }
 

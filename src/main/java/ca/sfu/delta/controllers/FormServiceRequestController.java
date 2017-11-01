@@ -113,7 +113,7 @@ public class FormServiceRequestController extends WebMvcConfigurerAdapter {
                 thisForm = form.getAsCSV(true);
                 first = false;
                 csvWriter.append(thisForm);
-            } 
+            }
             else {
                 thisForm = form.getAsCSV(false);
                 csvWriter.append(thisForm);
@@ -153,6 +153,126 @@ public class FormServiceRequestController extends WebMvcConfigurerAdapter {
 		urlTokenRepository.save(urlToken);
 
 		return token;
+    }
+
+    @RequestMapping(value = "/api/form/save", method = RequestMethod.GET, produces = "text/plain")
+    public @ResponseBody String addForm(
+            @RequestParam(required=false) String department,
+            @RequestParam(required=false) String requesterName,
+            @RequestParam(required=false) String phoneNumber,
+            @RequestParam(required=false) String requestedOnDate,
+            @RequestParam(required=false) String requesterID,
+            @RequestParam(required=false) String authorizationDate,
+            @RequestParam(required=false) String paymentAccountCode,
+            @RequestParam(required=false) String emailAddress,
+            @RequestParam(required=false) String times,
+            @RequestParam(required=false) String eventName,
+            @RequestParam(required=false) Boolean isLicensed,
+            @RequestParam(required=false) Integer numAttendees,
+            @RequestParam(required=false) String authorizerId,
+            @RequestParam(required=false) String authorizerPhoneNumber,
+            @RequestParam(required=false) String serviceRequestNumber,
+            @RequestParam(required=false) String eventLocation,
+            @RequestParam(required=false) String authorizerName,
+            @RequestParam(required=false) String eventDates,
+            @RequestParam(required=false) String eventDetails,
+            @RequestParam(required=false) String faxNumber,
+			@RequestParam(required=false) String requestID,
+            @RequestParam(required=false) String authorizerEmailAddress
+            ) {
+
+        FormData form = new FormData();
+        form.setDepartment(department);
+        form.setRequesterName(requesterName);
+        form.setPhoneNumber(phoneNumber);
+        form.setRequesterID(requesterID);
+        form.setAuthorizationDate(authorizationDate);
+        form.setPaymentAccountCode(paymentAccountCode);
+        form.setEmailAddress(emailAddress);
+        form.setTimes(times);
+        form.setEventName(eventName);
+        form.setIsLicensed(isLicensed);
+        form.setNumAttendees(numAttendees);
+        form.setAuthorizerID(authorizerId);
+        form.setAuthorizerPhoneNumber(authorizerPhoneNumber);
+        form.setServiceRequestNumber(serviceRequestNumber);
+        form.setEventLocation(eventLocation);
+        form.setAuthorizerName(authorizerName);
+        form.setEventDates(eventDates);
+        form.setEventDetails(eventDetails);
+        form.setFaxNumber(faxNumber);
+        form.setAuthorizerEmailAddress(authorizerEmailAddress);
+
+        //Set requestedOnDate to current date
+        DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
+        Date date = new Date();
+        form.setRequestedOnDate(dateFormat.format(date));
+
+        //TODO: make this actually useful instead of this bandaid solution
+        form.setRequestStatus("waiting");
+
+        if (requestID != null && !requestID.isEmpty()) {
+	        form.setRequestID(requestID);
+        } else {
+        	// Need to reserve a request id for this form
+	        form.setRequestID(reserveNextRequestID());
+        }
+
+        form = formRepository.save(form);
+
+        String token = createURLToken(form.getId());
+        // Send Email to the User to confirm the request has been sent
+        String userName = form.getRequesterName();
+        String userEmailAddress = form.getEmailAddress();
+        String authEmailAddress = form.getAuthorizerEmailAddress();
+        String trackingID = form.getRequestID();
+        String requestURL = GlobalConstants.SERVER_HOST_ADDRESS + formFromTokenURL + token;
+
+        if (form != null) {
+            System.out.println("saved");
+
+            //Probably don't need to check here if email Address is null
+            if (trackingID != null) {
+                try {
+                if (userEmailAddress != null && authEmailAddress != null) {
+
+                        //send mail to User
+                        sendEmail.sendTo(userEmailAddress, userName, trackingID, requestURL);
+
+                        //send email to Authorizer
+                        sendEmail.sendTo(authEmailAddress, trackingID, requestURL);
+
+                    } else {
+                    System.out.println("Error sending Email. Please ensure all the parameters are valid.");
+                }
+                } catch (MessagingException ex) {
+                System.out.println("Could not send the email. Error message: " + ex.getMessage());
+                //e.printStackTrace();
+            }
+            }
+	        System.out.println("Successfully saved Form with requestID = " + form.getId() + " and token = " + token);
+            String returnLink = formFromTokenURL + token;
+	        return returnLink;
+        } else {
+            if (authorizerEmailAddress == null || authorizerEmailAddress.isEmpty()) {
+
+                try {
+                    sendEmail.sendTo(userEmailAddress, userName, trackingID, requestURL);
+
+                } catch (MessagingException ex) {
+                    System.out.println("Could not send the email to the user. Error message: " + ex.getMessage());
+                }
+
+                System.out.println("Successfully saved Form with requestID = " + form.getId() + " and token = " + token);
+                String returnLink = formFromTokenURL + token;
+                return returnLink;
+
+            }else {
+
+                System.out.println("Failed to save Form");
+                return "ERROR: form didn't save";
+            }
+        }
     }
 
     @RequestMapping(value = "/api/form/update/{id}", method = RequestMethod.PUT)

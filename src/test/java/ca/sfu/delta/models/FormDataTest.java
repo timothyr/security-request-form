@@ -260,11 +260,12 @@ public class FormDataTest {
     public void setAuthorizationFields() throws Exception {
 //        Date newDate = new Date(2017,9,30);
 	    String newDate = "September 30, 2017";
-        data.setAuthorizationFields("Kelly Jensen","6666666",newDate,"778-777-7777");
+        data.setAuthorizationFields("Kelly Jensen","6666666",newDate,"778-777-7777", "kelly@sfu.ca");
         assertEquals("Kelly Jensen",data.getAuthorizerName());
         assertEquals("6666666",data.getAuthorizerID());
         assertEquals(newDate,data.getAuthorizationDate());
         assertEquals("778-777-7777",data.getAuthorizerPhoneNumber());
+        assertEquals("keely@sfu.ca", data.getAuthorizerEmailAddress());
         assertEquals(true,data.getIsAuthorized());
     }
 
