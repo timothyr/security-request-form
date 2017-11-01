@@ -38,10 +38,12 @@ public class FormServiceRequestController extends WebMvcConfigurerAdapter {
 
     private static final String formFromTokenURL = "/api/form/get/user/";
 
+
     @Override
     public void addViewControllers(ViewControllerRegistry registry) {
         registry.addViewController("/results").setViewName("results.html");
         registry.addViewController("/requests").setViewName("requests.html");
+        registry.addViewController("/updateform").setViewName("userupdateform.html");
     }
 
     @RequestMapping(value = "/api/form/get/{id}", method = RequestMethod.GET, produces = "application/json")
@@ -77,7 +79,6 @@ public class FormServiceRequestController extends WebMvcConfigurerAdapter {
 	    }
     }
 
-	@CrossOrigin(origins = "http://localhost:8081")
     @RequestMapping(value = "/api/form/search", method = RequestMethod.GET, produces = "application/json")
     public @ResponseBody
     List<Map<String, Object>> search() {
@@ -217,6 +218,38 @@ public class FormServiceRequestController extends WebMvcConfigurerAdapter {
         }
     }
 
+    @RequestMapping(value = "/api/form/update/{id}", method = RequestMethod.PUT)
+    public ResponseEntity<FormData> updateForm(@PathVariable("id") long id, @RequestBody FormData data) {
+        FormData form = formRepository.findOne(id);
+        if (form==null) {
+            System.out.println("User with id " + id + " not found");
+            return new ResponseEntity<FormData>(HttpStatus.NOT_FOUND);
+        }
+        form.setDepartment(data.getDepartment());
+        form.setRequesterName(data.getRequesterName());
+        form.setPhoneNumber(data.getPhoneNumber());
+        form.setRequestedOnDate(data.getRequestedOnDate());
+        form.setRequesterID(data.getRequesterID());
+        form.setAuthorizationDate(data.getAuthorizationDate());
+        form.setPaymentAccountCode(data.getPaymentAccountCode());
+        form.setEmailAddress(data.getEmailAddress());
+        form.setTimes(data.getTimes());
+        form.setEventName(data.getEventName());
+        form.setIsLicensed(data.getIsLicensed());
+        form.setNumAttendees(data.getNumAttendees());
+        form.setAuthorizerID(data.getAuthorizerID());
+        form.setAuthorizerPhoneNumber(data.getAuthorizerPhoneNumber());
+        form.setServiceRequestNumber(data.getServiceRequestNumber());
+        form.setEventLocation(data.getEventLocation());
+        form.setAuthorizerName(data.getAuthorizerName());
+        form.setEventDates(data.getEventDates());
+        form.setEventDetails(data.getEventDetails());
+        form.setFaxNumber(data.getFaxNumber());
+
+        formRepository.save(form);
+        return new ResponseEntity<FormData>(form, HttpStatus.OK);
+    }
+
     @GetMapping("/")
     public String showForm(FormData serviceRequestForm) {
         return "form.html";
@@ -240,7 +273,6 @@ public class FormServiceRequestController extends WebMvcConfigurerAdapter {
     		// Need to reserve a request id
 		    formData.setRequestID(reserveNextRequestID());
 	    }
-
 
         formRepository.save(formData);
 
