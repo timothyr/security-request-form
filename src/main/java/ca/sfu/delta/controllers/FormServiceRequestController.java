@@ -41,11 +41,13 @@ public class FormServiceRequestController extends WebMvcConfigurerAdapter {
 
     private static final String formFromTokenURL = "/api/form/get/user/";
 
-
     @Override
     public void addViewControllers(ViewControllerRegistry registry) {
         registry.addViewController("/results").setViewName("results.html");
         registry.addViewController("/requests").setViewName("requests.html");
+
+        registry.addViewController("/admin").setViewName("admin.html");
+        registry.addViewController("/securitylogin").setViewName("securitylogin.html");
         registry.addViewController("/updateform").setViewName("userupdateform.html");
     }
 
@@ -280,6 +282,7 @@ public class FormServiceRequestController extends WebMvcConfigurerAdapter {
     		// Need to reserve a request id
 		    formData.setRequestID(reserveNextRequestID());
 	    }
+
 
         formRepository.save(formData);
 
