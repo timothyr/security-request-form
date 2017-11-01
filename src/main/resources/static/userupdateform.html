@@ -2,8 +2,10 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Update Form</title><link rel="stylesheet" href="/css/bootstrap.min.css">
+    <title>Update Form</title>
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
     <link rel="stylesheet" href="/css/font-awesome.min.css">
+    <link rel="stylesheet" href="/css/jquery.datetimepicker.min.css">
     <link rel="stylesheet" href="/css/style.css">
 </head>
 <body class="red-background">
@@ -88,29 +90,54 @@
                         </div>
                     </div>
                 </div>
+
                 <div class="row mt-4">
-                    <table class="table table-striped">
+                    <table class="table table-hover text-centered date-table">
                         <thead>
                         <tr>
-                            <th>Date</th>
-                            <th>Time</th>
+                            <th>Start Time</th>
+                            <th>End Time</th>
+                            <th></th>
                         </tr>
+                        <tr>
+                            <th class="col-xs-3">
+                                <div id="chooseStartDateTime" class ="input-group" onChange="setDateTime(this,'startdatetime')">
+									<span class="input-group-addon">
+										<i class="fa fa-calendar calendar-icon"></i>
+									</span>
+                                    <input type="text" id="startdatetime" class="form-control" disabled="disabled"/>
+                                </div>
+                            </th>
+
+                            <th class="col-xs-3">
+                                <div id="chooseEndDateTime" class ="input-group" onChange="setDateTime(this,'enddatetime')">
+									<span class="input-group-addon">
+										<i class="fa fa-calendar calendar-icon"></i>
+									</span>
+                                    <input type="text" id="enddatetime" class="form-control" disabled="disabled"/>
+                                </div>
+                            </th>
+
+                            <th class="col-xs-1">
+                                <button v-on:click="addDatetime" id="addDateTime" type="button" class="btn btn-danger ml-1">add</button>
+                            </th>
+                        </tr>
+
                         </thead>
-                        <tbody>
+                        <tbody v-for="dt in datetimelist">
                         <tr>
                             <td>
-                                <input type="text" id="date" class="form-control" v-model="formData.eventDates" required="required"/>
+                                <span class="ml-2">{{dt.start}}</span>
                             </td>
                             <td>
-                                <input type="text" id="time" class="form-control" v-model="formData.times" required="required"/>
+                                <span class="ml-2">{{dt.end}}</span>
+                            </td>
+                            <td>
+                                <i v-on:click="deleteDatetime(dt)" class="fa fa-trash-o trash-icon ml-1"></i>
                             </td>
                         </tr>
                         </tbody>
                     </table>
-                    <div class="row mt-4">
-                        <i class="fa fa-calendar calendar-icon mr-3"></i>
-                        <button class="btn btn-danger">Add Date</button>
-                    </div>
                 </div>
                 <div>
                     <h3 class="auth-heading mt-4">Authorization</h3>
@@ -147,7 +174,7 @@
                 </div>
                 <div class="row mt-5">
                     <div class="col-md-12 text-center">
-                        <button class="btn btn-danger btn-lg col-md-8">Update</button>
+                        <button class="btn btn-danger btn-lg col-md-8" v-on:click="updateForm()">Update</button>
                     </div>
                 </div>
                 <div class="bottom-space"></div>
@@ -158,6 +185,9 @@
 <script src="/js/jquery-3.2.1.min.js"></script>
 <script src="/js/vue.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/vue-resource@1.3.4"></script>
+<script src="/js/jquery.datetimepicker.full.js"></script>
+<script src="/js/jquery.datetimepicker.js"></script>
+<script src="/js/datetimefeature.js"></script>
 <script>
     var getUrlParams = function (url) {
         var params = {};
@@ -203,8 +233,11 @@
                 eventDates: '',
                 eventDetails: '',
                 faxNumber: '',
-                requestID: ''
-            }
+                requestID: '',
+            },
+            startdatetime: '',
+			enddatetime: '',
+			datetimelist: [],
         },
 
         computed: {
@@ -226,46 +259,66 @@
                 function successCallback() {
                     console.log("success");
                 }
-
                 function errorCallback() {
                     console.log("error");
                 }
+            },
+            updateForm: function () {
 
                 if (this.isValid) {
-                    <!-- submit GET request with vue -->
-                    this.$http.get('api/form/update/' + this.formData.requestID, {
-                        params: {
-                            department: 			this.formData.department,
-                            requesterName: 			this.formData.requesterName,
-                            phoneNumber: 			this.formData.phoneNumber,
-                            requestedOnDate: 		this.formData.requestedOnDate,
-                            requesterID: 			this.formData.requesterID,
-                            authorizationDate: 		this.formData.authorizationDate,
-                            paymentAccountCode: 	this.formData.paymentAccountCode,
-                            emailAddress: 			this.formData.emailAddress,
-                            times: 					this.formData.times,
-                            eventName: 				this.formData.eventName,
-                            isLicensed: 			this.formData.isLicensed,
-                            numAttendees:			this.formData.numAttendees,
-                            authorizerId: 			this.formData.authorizerId,
-                            authorizerPhoneNumber: 	this.formData.authorizerPhoneNumber,
-                            serviceRequestNumber: 	this.formData.serviceRequestNumber,
-                            eventLocation: 			this.formData.eventLocation,
-                            authorizerName: 		this.formData.authorizerName,
-                            eventDates: 			this.formData.eventDates,
-                            eventDetails: 			this.formData.eventDetails,
-                            faxNumber: 				this.formData.faxNumber
-                        }
-                    }).then(successCallback, errorCallback);
+                    this.$http.put('api/form/update/' + this.formData.id, {
+                        department: this.formData.department,
+                        requesterName: this.formData.requesterName,
+                        phoneNumber: this.formData.phoneNumber,
+                        requestedOnDate: this.formData.requestedOnDate,
+                        requesterID: this.formData.requesterID,
+                        authorizationDate: this.formData.authorizationDate,
+                        paymentAccountCode: this.formData.paymentAccountCode,
+                        emailAddress: this.formData.emailAddress,
+                        times: this.formData.times,
+                        eventName: this.formData.eventName,
+                        isLicensed: this.formData.isLicensed,
+                        numAttendees: this.formData.numAttendees,
+                        authorizerId: this.formData.authorizerId,
+                        authorizerPhoneNumber: this.formData.authorizerPhoneNumber,
+                        serviceRequestNumber: this.formData.serviceRequestNumber,
+                        eventLocation: this.formData.eventLocation,
+                        authorizerName: this.formData.authorizerName,
+                        eventDates: this.formData.eventDates,
+                        eventDetails: this.formData.eventDetails,
+                        faxNumber: this.formData.faxNumber
+
+                    }).then(function() {
+                        console.log("updated form");
+                    });
                 }
-            }
+            },
+            addDatetime: function(){
+            	this.startdatetime = getDateTime("chooseStartDateTime","startdatetime");
+            	this.enddatetime = getDateTime("chooseEndDateTime","enddatetime");
+            	if(this.startdatetime!='' && this.enddatetime!=''){
+            	    if(this.datetimelist.length==0){
+						this.formData.eventDates += this.startdatetime +"-"+ this.enddatetime;
+					}else{
+						this.formData.eventDates += ", "+this.startdatetime +"-"+ this.enddatetime;
+					}
+					this.datetimelist.push( {start: this.startdatetime, end: this.enddatetime} );
+					this.startdatetime = '';
+					this.enddatetime = '';
+            	}
+            },
+            deleteDatetime: function(dt){
+            	var index = this.datetimelist.indexOf(dt);
+            	this.formData.eventDates = deleteEventDate(dt.start,dt.end,this.formData.eventDates,index,this.datetimelist.length);
+            	this.datetimelist.splice(index,1);
+            },
         },
         created: function() {
             let urlParams = getUrlParams(window.location);
             this.$http.get('/api/form/get/user/' + urlParams.token, {
             }).then(response  => {
-                console.log(response.data);
                 this.formData = response.data;
+                this.datetimelist = updateDateTime(this.formData.eventDates);
             });
         }
     });
