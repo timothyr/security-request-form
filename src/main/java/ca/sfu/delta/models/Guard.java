@@ -166,4 +166,29 @@ public class Guard{
 	public void setTelephone(String telephone) {
 		this.telephone = telephone;
 	}
+
+	public String getLocation() {
+		return this.location;
+	}
+
+	public String getStartDate() {
+		return this.startDate;
+	}
+
+	public String getEndDate() {
+		return this.endDate;
+	}
+
+	public String getStartTime() {
+		return this.startTime;
+	}
+
+	public String getEndTime() {
+		return this.endTime;
+	}
+
+	public String getTelephone() {
+		return this.telephone;
+	}
+
 }

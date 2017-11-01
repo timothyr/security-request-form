@@ -3,10 +3,7 @@ import javax.mail.MessagingException;
 import javax.validation.Valid;
 
 import ca.sfu.delta.Utilities.GlobalConstants;
-import ca.sfu.delta.models.FormData;
-import ca.sfu.delta.models.RequestID;
-import ca.sfu.delta.models.URLToken;
-import ca.sfu.delta.models.SendEmail;
+import ca.sfu.delta.models.*;
 import ca.sfu.delta.repository.FormRepository;
 import ca.sfu.delta.repository.RequestIDRepository;
 import ca.sfu.delta.repository.URLTokenRepository;
@@ -23,9 +20,15 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Map;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.io.IOException;
+import java.io.File;
 import java.util.Date;
 import java.text.SimpleDateFormat;
 import java.text.DateFormat;
+import java.io.StringWriter;
 
 
 @Controller
@@ -49,6 +52,7 @@ public class FormServiceRequestController extends WebMvcConfigurerAdapter {
         registry.addViewController("/admin").setViewName("admin.html");
         registry.addViewController("/securitylogin").setViewName("securitylogin.html");
         registry.addViewController("/updateform").setViewName("userupdateform.html");
+        registry.addViewController("/securityview").setViewName("securityview.html");
     }
 
     @RequestMapping(value = "/api/form/get/{id}", method = RequestMethod.GET, produces = "application/json")
@@ -60,11 +64,12 @@ public class FormServiceRequestController extends WebMvcConfigurerAdapter {
     }
 
     @RequestMapping(value = "/api/form/getByRequestID/{id}", method = RequestMethod.GET, produces = "application/json")
-    public @ResponseBody Map<String, Object> getForm(@PathVariable("id") String id) {
+    public @ResponseBody FormData getForm(@PathVariable("id") String id) {
         for (FormData f : formRepository.findAll()) {
         	if (f.getRequestID().equals(id)) {
         		System.out.println("found form with requestID = "+f.getRequestID());
-        		return f.jsonify();
+        		System.out.println(f.jsonify());
+        		return f;
 			}
 		}
 
@@ -105,6 +110,42 @@ public class FormServiceRequestController extends WebMvcConfigurerAdapter {
 
 		return null;
 	}
+
+    @RequestMapping(value = "/api/csv/form/{id}.csv", method = RequestMethod.GET, produces = "text/csv")
+    @ResponseBody
+    public String getCSV(@PathVariable("id") String id) {
+        String csvString = new String();
+        for (FormData form : formRepository.findAll()) {
+
+            if(form.getRequestID().equals(id))
+            {
+                csvString = form.getAsCSV(true);
+            }
+        }
+        System.out.println(csvString);
+        return csvString;
+    }
+
+    @RequestMapping(value = "/api/csv/form/all.csv", method = RequestMethod.GET, produces = "text/csv")
+    @ResponseBody
+    public String getAllCSV() {
+        boolean first = true;
+        String thisForm;
+        StringWriter csvWriter = new StringWriter();
+        for (FormData form : formRepository.findAll()) {
+            if(first) {
+                thisForm = form.getAsCSV(true);
+                first = false;
+                csvWriter.append(thisForm);
+            }
+            else {
+                thisForm = form.getAsCSV(false);
+                csvWriter.append(thisForm);
+            }
+        }
+
+        return csvWriter.toString();
+    }
 
     // Reserve the next request ID in the sequence to ensure each form has a unique request ID
 	private String reserveNextRequestID() {
@@ -190,6 +231,9 @@ public class FormServiceRequestController extends WebMvcConfigurerAdapter {
         DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
         Date date = new Date();
         form.setRequestedOnDate(dateFormat.format(date));
+
+        //TODO: make this actually useful instead of this bandaid solution
+        form.setRequestStatus("waiting");
 
         if (requestID != null && !requestID.isEmpty()) {
 	        form.setRequestID(requestID);

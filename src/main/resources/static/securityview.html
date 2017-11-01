@@ -31,6 +31,14 @@
 			<div class="row mt-5">
 				<h3 class="mt-5 mx-5">Request #{{requestID}}</h3>
 			</div>
+            <div class="row pull-right">
+                <div class="dropdown">
+                    <div class="dropdown-toggle" id="dropdownMenuButton" data-toggle="dropdown"><i class="fa fa-cog"></i></div>
+                    <ul class="dropdown-menu">
+                        <li class="dropdown-item" v-on:click="exportRequestCSV()">Export Request to CSV</li>
+                    </ul>
+                </div>
+            </div>
 			<div class="row mt-3">
 				<div class="col" v-if="form.requestStatus !== null">
 					<p class="mx-5">Status: {{form.requestStatus}}</p>
@@ -84,15 +92,15 @@
 				<table class="table table-striped">
 					<thead>
 						<tr>
-							<th class="text-center">Date</th>
-							<th class="text-center">Time</th>
+							<th class="text-center">Start Time</th>
+							<th class="text-center">End Time</th>
 							<th class="text-center">Hours</th>
 						</tr>
 					</thead>
 					<tbody>
 						<tr v-for="d in dates">
-							<td class="text-center">{{d.date}}</td>
-							<td class="text-center">{{d.time}}</td>
+							<td class="text-center">{{d.start}}</td>
+							<td class="text-center">{{d.end}}</td>
 							<td class="text-center">{{d.hours}}</td>
 						</tr>
 					</tbody>
@@ -123,6 +131,17 @@
 				</div>
 			</div>
 
+			<div class="row my-3">
+				<div class="col">
+					<label for="regRate">Receiving Security Supervisor: </label>
+					<input class="form-control text-center" type="text" v-model="form.recievingSecuritySupervisor" required="required">
+				</div>
+				<div class="col">
+					<label for="regHours">Prepared By: </label>
+					<input class="form-control text-center" type="text" v-model="form.preparedBy" required="required">
+				</div>
+			</div>
+
 			<div class="row mt-5">
 				<table class="guardtable table-striped">
 					<thead>
@@ -138,7 +157,7 @@
 						</tr>
 					</thead>
 					<tbody id="guards">
-						<tr v-for="g in guards">
+						<tr v-for="g in form.guards">
 							<td>
 								<input class="form-control text-center" type="text" v-model="g.guardID" required="required">
 							</td>
@@ -164,7 +183,7 @@
 								<input class="form-control text-center" type="text" v-model="g.telephone" required="required">
 							</td>
 							<td>
-								<button type="button" class="btn btn-danger" v-on:click="deleteGuard(g)" v-if="guards.length > 1">Remove Guard</button>
+								<button type="button" class="btn btn-danger" v-on:click="deleteGuard(g)" v-if="form.guards.length > 1">Remove Guard</button>
 							</td>
 						</tr>
 					</tbody>
@@ -201,7 +220,7 @@
 
 			<div class="form-group my-5">
 				<label for="remarksField">Remarks</label>
-				<textarea class="form-control" rows="4" v-model="remarks" id="remarksField"></textarea>
+				<textarea class="form-control" rows="4" v-model="form.securityRemarks" id="remarksField"></textarea>
 			</div>
 
 			<div class="row my-5">
@@ -209,8 +228,8 @@
 				<div class="col text-center">
 						<button class="btn btn-danger" v-on:click="submit('reject')">Reject</button>
 
-						<button type="button" class="btn btn-success mx-2" data-toggle="modal" data-target="#myModal">Accept</button>
-						<div id="myModal" class="modal fade" role="dialog">
+						<button type="button" class="btn btn-success mx-2" data-toggle="modal" data-target="#emailModal" v-if="canAccept">Accept</button>
+						<div id="emailModal" class="modal fade" role="dialog">
 							<div class="modal-dialog">
 								<div class="modal-content">
 									<div class="modal-header">
@@ -223,14 +242,13 @@
 									</div>
 									<div class="modal-footer">
 										<button type="button" class="btn" data-dismiss="modal">Cancel</button>
-										<button type="button" class="btn btn-success mx-2" data-dismiss="model" v-on:click="submit('accept')">Accept</button>
+										<button type="button" class="btn btn-success mx-2" data-dismiss="model" v-on:click="submit('accept')" v-if="canAccept">Accept</button>
 									</div>
 								</div>
 
 							</div>
 						</div>
-
-						<button class="btn" v-on:click="submit('update')">Update</button>
+						<button class="btn btn-success" v-on:click="submit('update')" v-if="canAccept">Update</button>
 
 				</div>
 				<div class="col col-md-3"></div>
@@ -239,16 +257,18 @@
 		</div>
 
 		<script src="/js/jquery-3.2.1.min.js"></script>
-		<script src="/js/bootstrap.min.js"></script>
+        <script src="/js/bootstrap.bundle.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/tether/1.4.0/js/tether.min.js"></script>
 		<script src="/js/vue.js"></script>
 		<script src="/js/vue-resource.min.js"></script>
+		<script src="/js/datetime.js"></script>
 		<script>
 			var app = new Vue({
 				el: '#app',
 
 				data: {
 					requestID: null,
-
+                    test: true,
 					form: {
 						requestStatus: 'not set',
 						requesterName: 'not set',
@@ -264,52 +284,44 @@
 						paymentAccountCode: 'not set',
 						authorizerID: 'not set',
 						authorizerPhoneNumber: 'not set',
-						invoiceRequested: 'not set'
-					},
+						invoiceRequested: 'not set',
+						eventDates: 'not set',
 
-					dates: [
-						{
-							date: "Aug. 22, 2017",
-							time: "8:00pm - 2:00am",
-							hours: 7
-						},
-						{
-							date: "Aug. 27, 2017",
-							time: "9:00pm - 1:30am",
-							hours: 4.5
-						}
-					],
+						guards: [
+							{
+								guardID: 0,
+								location: '',
+								startDate: '',
+								endDate: '',
+								startTime: '',
+								endTime: '',
+								name: '',
+								telephone: '',
+								regularHours: 0,
+								overtimeHours: 0,
+								regularRate: 0,
+								overtimeRate: 0
+							}
+						],
+					},
+					dates: [],
 
 					regularRate: 0,
 					regularHours: 0,
 					overtimeRate: 0,
 					overtimeHours: 0,
 
-					guards: [
-						{
-							guardID: 0,
-							location: '',
-							startDate: '',
-							endDate: '',
-							startTime: '',
-							endTime: '',
-							name: '',
-							telephone: '',
-							regularHours: null,
-							overtimeHours: null,
-							regularRate: null,
-							overtimeRate: null
-						}
-					],
-
 					emailOptions: [],
 					emails: [],
-					remarks: ""
 				},
 
 				methods: {
+                    exportRequestCSV: function() {
+                        window.location.assign("/api/csv/form/" + this.requestID + ".csv");
+                    },
+
 					addGuard: function() {
-						this.guards.push({
+						this.form.guards.push({
 							guardID: 0,
 							location: '',
 							startDate: '',
@@ -324,20 +336,20 @@
 							overtimeRate: null
 						})
 					},
-					
+
 					deleteGuard: function (guard) {
-						let i = this.guards.indexOf(guard);
-						if (this.guards.length > 1) {
-							this.guards.splice(i, 1);
+						let i = this.form.guards.indexOf(guard);
+						if (this.form.guards.length > 1) {
+							this.form.guards.splice(i, 1);
 						}
 					},
 
 					removeNull: function () {
 						for (let p in this.form) {
-							if (this.form[p] === null) {
+							if (this.form[p] === null || this.form[p] === undefined || this.form[p] === '') {
 								this.form[p] = 'not set';
 							}
-							console.log("form["+p+"] = "+ this.form[p]);
+							//console.log("form["+p+"] = "+ this.form[p]);
 						}
 
 						if (this.form.guards === 'not set') {
@@ -350,6 +362,10 @@
 
 						if (this.form.invoiceRequested === 'not set') {
 							this.form.invoiceRequested = false;
+						}
+
+						if (this.form.isLicensed === 'not set') {
+							this.form.isLicensed = false;
 						}
 					},
 
@@ -368,19 +384,29 @@
 
 					getFormData: function () {
 						this.requestID = this.getURLParam('id');
-
 						if (this.requestID === null) {
-							alert("Invalid URL!");
-							window.location.replace("/requests.html");
+							window.location.replace("/requests");
 						}
 
-						this.$http.get('http://localhost:8080/api/form/getByRequestID/'+this.requestID).then(function (response) {
+						this.$http.get('/api/form/getByRequestID/'+this.requestID).then(function (response) {
 							if (response.data === null || response.data === undefined || response.data === "") {
-								window.location.replace("/requests.html");
+								window.location.replace("/requests");
 							}
 
-							this.form = response.data;
+							if (response.data.guards[0] === null || response.data.guards[0] === undefined) {
+								response.data.guards = JSON.parse(JSON.stringify(this.form.guards));
+							}
+
+							let g = response.data.guards[0];
+							this.regularRate = g.regularRate;
+							this.regularHours = g.regularHours;
+							this.overtimeRate = g.overtimeRate;
+							this.overtimeHours = g.overtimeHours;
+
+							this.form = JSON.parse(JSON.stringify(response.data));
 							this.removeNull();
+							this.dates = updateDateTime(this.form.eventDates);
+
 							this.emailOptions.push(this.form.emailAddress); // TODO: get more emails
 						}, function (error) {
 							console.log(error.statusText);
@@ -389,11 +415,7 @@
 					},
 
 					setSecFields: function () {
-						this.form.recievingSecuritySupervisor = 'not set';
-						this.form.securityRemarks = this.remarks;
 						this.form.distributionList = this.emails;
-						this.form.guards = JSON.parse(JSON.stringify(this.guards));
-						this.form.preparedBy = 'not set';
 
 						let i, len;
 						len = this.form.guards.length;
@@ -408,27 +430,33 @@
 							}
 						}
 					},
-					
+
 					submit: function (action) {
 						this.setSecFields();
 
 						if (action === 'accept') {
 							this.form.requestStatus = "APPROVED";
+							if (!this.canAccept)
+								return;
 						} else if (action === 'reject') {
 							this.form.requestStatus = 'REJECTED';
+						} else {
+							if (!this.canAccept) {
+								return;
+							}
 						}
 
-
-						console.log("---------- Submitting:");
+						//console.log("---------- Submitting:");
 						this.removeNull();
 
-						this.$http.post('http://localhost:8080/api/form/saveSecurity', this.form).then(function (response) {
+						this.$http.post('/api/form/saveSecurity', this.form).then(function (response) {
 							console.log('Successfully sent form');
-							window.location.replace('/requests.html')
+							window.location.replace('/requests')
 						}, function (error) {
 							alert('Failed to send form!');
 						});
-					}
+					},
+
 				},
 
 				created() {
@@ -437,8 +465,30 @@
 				},
 
 				computed: {
+                    canAccept: function () {
+                        let numGuards = this.form.guards.length;
+                        if (numGuards < 1)
+                            return false;
+                        let isValid = true;
+                        this.form.guards.forEach(function (g) {
+							//console.log(g.guardID+"+"+g.location);
+                            if (g.guardID === '0' || g.guardID === '' || g.location === '' || g.location === undefined
+								|| g.startDate === '' || g.startDate === undefined || g.endDate === ''
+								|| g.endDate === undefined || g.startTime === ''  || g.startTime === undefined
+								|| g.endTime === '' || g.endTime === undefined || g.name === '' || g.name === undefined
+								|| g.telephone === '' || g.telephone === undefined) {
+
+                                isValid = false;
+                                return isValid;
+                            }
+                        });
+						//console.log("all guards are good");
+
+                        return isValid;
+                    },
+
 					cost: function () {
-						let guards = this.guards.length;
+						let guards = this.form.guards.length;
 						let cost = (this.regularHours * this.regularRate) + (this.overtimeHours * this.overtimeRate);
 						cost *= guards;
 

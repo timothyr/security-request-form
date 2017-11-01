@@ -9,7 +9,7 @@
 </head>
 <body>
     <header>
-        <a href="/security/requests">
+        <a href="/requests">
             <img class="logo" src="/img/sfu-logo@2x.png" alt="sfu-logo"/>
         </a>
     </header>
@@ -22,10 +22,9 @@
                 <div class="dropdown">
                     <div class="dropdown-toggle" id="dropdownMenuButton" data-toggle="dropdown"><i class="fa fa-cog"></i></div>
                     <ul class="dropdown-menu">
-                        <li class="dropdown-item">Export to CSV</li>
+                        <li class="dropdown-item" v-on:click="exportAllCSV()">Export All to CSV</li>
                     </ul>
                 </div>
-
             </div>
             <div class="row mt-5">
                 <div class="input-group search-group">
@@ -63,7 +62,7 @@
                                 <td class="clickable">{{request.phoneNumber}}</td>
                                 <td class="clickable">{{request.eventName}}</td>
                                 <td class="clickable">{{request.eventLocation}}</td>
-                                <td class="clickable">{{request.eventDates}}</td>
+                                <td class="clickable">{{request.eventDates[0].start}} to {{request.eventDates[0].end}}</td>
                                 <td class="clickable">{{request.status}}</td>
                             </tr>
                         </tbody>
@@ -93,6 +92,7 @@
 <script src="/js/bootstrap.bundle.min.js"></script>
 <script src="/js/vue.js"></script>
 <script src="/js/vue-resource.min.js"></script>
+<script src="/js/datetime.js"></script>
 <script>
     function getKeyByValue(object, value) {
         return Object.keys(object).find(key => object[key] === value);
@@ -109,6 +109,7 @@
         }
         return false;
     }
+
     var app = new Vue({
         el: '#app',
         data: {
@@ -124,6 +125,12 @@
             ]
         },
         methods: {
+            changeDates: function() {
+                this.requests.forEach(function(request) {
+                    request.status = "WAITING";
+                    request.eventDates = updateDateTime(request.eventDates);
+                });
+            },
             isActive: function(status) {
                 return this.activeStatus == status;
             },
@@ -148,10 +155,13 @@
                 return getKeyByValue(mappings, columnName);
             },
             goToRequest(requestID) {
-                window.location.assign("/request/" + requestID);
+                window.location.assign("/securityview.html?id=" + requestID);
             },
             showNoResults: function() {
                 return this.filteredRequests.length == 0 && !this.loading;
+            },
+            exportAllCSV: function() {
+                window.location.assign("/api/csv/form/all.csv");
             }
         },
         computed: {
@@ -180,6 +190,7 @@
                 pageNumber: 1
             }).then(response  => {
                 this.requests = response.data;
+                this.changeDates();
                 this.loading = false;
             });
         }
