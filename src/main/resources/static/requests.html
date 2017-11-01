@@ -62,7 +62,7 @@
                                 <td class="clickable">{{request.phoneNumber}}</td>
                                 <td class="clickable">{{request.eventName}}</td>
                                 <td class="clickable">{{request.eventLocation}}</td>
-                                <td class="clickable">{{request.eventDates}}</td>
+                                <td class="clickable">{{request.eventDates[0].start}} to {{request.eventDates[0].end}}</td>
                                 <td class="clickable">{{request.status}}</td>
                             </tr>
                         </tbody>
@@ -92,6 +92,7 @@
 <script src="/js/bootstrap.bundle.min.js"></script>
 <script src="/js/vue.js"></script>
 <script src="/js/vue-resource.min.js"></script>
+<script src="/js/datetime.js"></script>
 <script>
     function getKeyByValue(object, value) {
         return Object.keys(object).find(key => object[key] === value);
@@ -108,6 +109,7 @@
         }
         return false;
     }
+
     var app = new Vue({
         el: '#app',
         data: {
@@ -123,6 +125,12 @@
             ]
         },
         methods: {
+            changeDates: function() {
+                this.requests.forEach(function(request) {
+                    request.status = "WAITING";
+                    request.eventDates = updateDateTime(request.eventDates);
+                });
+            },
             isActive: function(status) {
                 return this.activeStatus == status;
             },
@@ -182,6 +190,7 @@
                 pageNumber: 1
             }).then(response  => {
                 this.requests = response.data;
+                this.changeDates();
                 this.loading = false;
             });
         }
