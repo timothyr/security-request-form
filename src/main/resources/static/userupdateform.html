@@ -401,7 +401,7 @@
         },
         created: function() {
             let urlParams = getUrlParams(window.location);
-            this.$http.get('/api/form/get/user/' + urlParams.token, {
+            this.$http.get(urlParams.token, {
             }).then(response  => {
                 this.formData = response.data;
                 this.datetimelist = updateDateTime(this.formData.eventDates);
