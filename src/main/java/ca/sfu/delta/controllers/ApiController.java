@@ -9,6 +9,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
 
+import javax.annotation.PostConstruct;
 import java.beans.PropertyEditorSupport;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -24,6 +25,20 @@ public class ApiController {
 	@Autowired DistributionRepository distributionRepository;
 
 	@Autowired AuthController authController;
+
+	@PostConstruct
+	public void init() {
+		SecurityUser lance = new SecurityUser("lhannest");
+		lance.setRole(SecurityUser.Role.ADMIN);
+		userRepository.save(lance);
+		userRepository.save(new SecurityUser("hlotey"));
+		userRepository.save(new SecurityUser("timr"));
+		userRepository.save(new SecurityUser("awessel"));
+		userRepository.save(new SecurityUser("cbinnie"));
+		userRepository.save(new SecurityUser("raymonde"));
+		userRepository.save(new SecurityUser("rcretu"));
+		userRepository.save(new SecurityUser("ska158"));
+	}
 
 	/**
 	 * This method allows us to set up data binders for custom objects, e.g.
