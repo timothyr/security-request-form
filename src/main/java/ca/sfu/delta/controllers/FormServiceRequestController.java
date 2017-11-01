@@ -3,10 +3,7 @@ import javax.mail.MessagingException;
 import javax.validation.Valid;
 
 import ca.sfu.delta.Utilities.GlobalConstants;
-import ca.sfu.delta.models.FormData;
-import ca.sfu.delta.models.RequestID;
-import ca.sfu.delta.models.URLToken;
-import ca.sfu.delta.models.SendEmail;
+import ca.sfu.delta.models.*;
 import ca.sfu.delta.repository.FormRepository;
 import ca.sfu.delta.repository.RequestIDRepository;
 import ca.sfu.delta.repository.URLTokenRepository;
