@@ -147,7 +147,7 @@
                 return getKeyByValue(mappings, columnName);
             },
             goToRequest(requestID) {
-                window.location.assign("/request/" + requestID);
+                window.location.assign("/securityview.html?id=" + requestID);
             },
             showNoResults: function() {
                 return this.filteredRequests.length == 0 && !this.loading;
