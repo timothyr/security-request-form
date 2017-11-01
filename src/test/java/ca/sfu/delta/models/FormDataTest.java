@@ -4,10 +4,6 @@ import org.junit.Before;
 import org.junit.Test;
 import java.util.ArrayList;
 import static org.junit.Assert.*;
-import java.io.File;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.Arrays;
 
 public class FormDataTest {
@@ -40,9 +36,9 @@ public class FormDataTest {
     private String preparedBy = "SFU Security";
     private String securityRemarks = "Security remarks";
 
-    private String csvFilePath = "test.csv";
-    private String correctFile = "src/test/verification/verify.csv";
-
+    //This is gross, sorry
+    private String correctCSVOutput = "Request ID, Department, Requester Name, Phone Number, Fax Number, Email Address, Event Name, Requester ID, Event Location, Licensed?, Number of Attendees, Time(s), Event Dates, Requested On Date, Payment Account Code, Invoice Requested?, Event Details, Service Request Number, Recieving Security Supervisor, Prepared By, Security Remarks, Authorizer Name, Authorizer ID, Authorization Date, Authorizer Phone Number, Authorized?\n" +
+                                      "Not specified, Computer Science, Billy, 778-555-5555, 604-555-5555, Billy@sfu.ca, Networking Night, 301248474, BBY AQ3019, No, 4, 14:30:00, August 19 2017, September 30 2017, ASD12345, No, details of the event., 99999999, Aaron Judge, SFU Security, Security remarks, Not specified, Not specified, Not specified, Not specified, Not specified\n";
     private FormData data;
     private FormData dataNoNumbers;
 
@@ -336,17 +332,8 @@ public class FormDataTest {
 
     @Test
     public void saveAsCSV() throws Exception {
-        data.saveAsCSV(csvFilePath);
-        //Rather than read back the file and compare values individually, just compare to checked in (good) file
-        Path testeePath = Paths.get(csvFilePath);
-        Path testerPath = Paths.get(correctFile);
-
-        byte[] testee = Files.readAllBytes(testeePath);
-        byte[] tester = Files.readAllBytes(testerPath);
-
-        assertEquals(true, Arrays.equals(testee, tester));
-
-        //Clean up
-        Files.delete(testeePath);
+        String testMe = data.getAsCSV(true);
+        System.out.println(testMe);
+        assertEquals(correctCSVOutput, testMe);
     }
 }
