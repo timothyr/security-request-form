@@ -65,8 +65,13 @@ button {
 
 /* ICONS */
 .calendar-icon {
-	font-size: 2em;
+	font-size: 1.5em;
 	color: #A8162B;
+}
+
+.trash-icon {
+    font-size: 1.5em;
+    color: #A8162B;
 }
 
 /* SPACING - add to div*/
@@ -79,6 +84,16 @@ button {
 th {
     font-size: 0.8em;
     color: #686868;
+}
+
+.date-table th {
+	font-family: "HelveticaNeue-Light", "Helvetica Neue Light", "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif;
+	text-transform: uppercase;
+	font-size: 1em;
+	color: #000000;
+	font-weight: 300;
+}{
+
 }
 
 /* SEARCH BAR */
@@ -136,6 +151,16 @@ td {
 
 .clickable {
     cursor: pointer;
+}
+
+.td-delete-button {
+    border: none;
+    background-color: transparent;
+    visibility: hidden;
+}
+
+.tr-delete:hover .td-delete-button {
+    visibility: visible;
 }
 
 /* REQUESTS */
