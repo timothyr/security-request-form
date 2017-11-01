@@ -27,16 +27,16 @@ public class SendEmail {
 
         String greeting;
         if (personName == null || personName.isEmpty()) {
-        	greeting = "Hello!";
+        	greeting = "Hello!\n\n";
         }
         else {
-        	greeting = "Hello, " + personName + "!";
+        	greeting = "Hello " + personName + "!\n\n";
         }
 
         helper.setTo(sendToEmailAddress);
-        helper.setSubject("SFU: Your Request Confirmation");
-        helper.setText(greeting + " Your request has been sent to the authorities." +
-                " You will be contacted shortly by security. Your request ID is: " + trackingID + "." +
+        helper.setSubject("SFU: Your Event Security Request Confirmation");
+        helper.setText(greeting + " Your request has been sent to SFU security.\n" +
+                " You will be contacted shortly! Your request ID is: " + trackingID + ".\n\n" +
                 " You may view your request at " + requestURL);
 
         try{

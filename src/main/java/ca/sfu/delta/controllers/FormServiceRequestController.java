@@ -23,6 +23,9 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Map;
+import java.util.Date;
+import java.text.SimpleDateFormat;
+import java.text.DateFormat;
 
 
 @Controller
@@ -42,6 +45,10 @@ public class FormServiceRequestController extends WebMvcConfigurerAdapter {
     public void addViewControllers(ViewControllerRegistry registry) {
         registry.addViewController("/results").setViewName("results.html");
         registry.addViewController("/requests").setViewName("requests.html");
+
+        registry.addViewController("/admin").setViewName("admin.html");
+        registry.addViewController("/securitylogin").setViewName("securitylogin.html");
+        registry.addViewController("/updateform").setViewName("userupdateform.html");
     }
 
     @RequestMapping(value = "/api/form/get/{id}", method = RequestMethod.GET, produces = "application/json")
@@ -77,7 +84,6 @@ public class FormServiceRequestController extends WebMvcConfigurerAdapter {
 	    }
     }
 
-	@CrossOrigin(origins = "http://localhost:8081")
     @RequestMapping(value = "/api/form/search", method = RequestMethod.GET, produces = "application/json")
     public @ResponseBody
     List<Map<String, Object>> search() {
@@ -162,7 +168,6 @@ public class FormServiceRequestController extends WebMvcConfigurerAdapter {
         form.setDepartment(department);
         form.setRequesterName(requesterName);
         form.setPhoneNumber(phoneNumber);
-        form.setRequestedOnDate(requestedOnDate);
         form.setRequesterID(requesterID);
         form.setAuthorizationDate(authorizationDate);
         form.setPaymentAccountCode(paymentAccountCode);
@@ -180,6 +185,11 @@ public class FormServiceRequestController extends WebMvcConfigurerAdapter {
         form.setEventDetails(eventDetails);
         form.setFaxNumber(faxNumber);
         form.setAuthorizerEmailAddress(authorizerEmailAddress);
+
+        //Set requestedOnDate to current date
+        DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
+        Date date = new Date();
+        form.setRequestedOnDate(dateFormat.format(date));
 
         if (requestID != null && !requestID.isEmpty()) {
 	        form.setRequestID(requestID);
@@ -243,6 +253,38 @@ public class FormServiceRequestController extends WebMvcConfigurerAdapter {
                 return "ERROR: form didn't save";
             }
         }
+    }
+
+    @RequestMapping(value = "/api/form/update/{id}", method = RequestMethod.PUT)
+    public ResponseEntity<FormData> updateForm(@PathVariable("id") long id, @RequestBody FormData data) {
+        FormData form = formRepository.findOne(id);
+        if (form==null) {
+            System.out.println("User with id " + id + " not found");
+            return new ResponseEntity<FormData>(HttpStatus.NOT_FOUND);
+        }
+        form.setDepartment(data.getDepartment());
+        form.setRequesterName(data.getRequesterName());
+        form.setPhoneNumber(data.getPhoneNumber());
+        form.setRequestedOnDate(data.getRequestedOnDate());
+        form.setRequesterID(data.getRequesterID());
+        form.setAuthorizationDate(data.getAuthorizationDate());
+        form.setPaymentAccountCode(data.getPaymentAccountCode());
+        form.setEmailAddress(data.getEmailAddress());
+        form.setTimes(data.getTimes());
+        form.setEventName(data.getEventName());
+        form.setIsLicensed(data.getIsLicensed());
+        form.setNumAttendees(data.getNumAttendees());
+        form.setAuthorizerID(data.getAuthorizerID());
+        form.setAuthorizerPhoneNumber(data.getAuthorizerPhoneNumber());
+        form.setServiceRequestNumber(data.getServiceRequestNumber());
+        form.setEventLocation(data.getEventLocation());
+        form.setAuthorizerName(data.getAuthorizerName());
+        form.setEventDates(data.getEventDates());
+        form.setEventDetails(data.getEventDetails());
+        form.setFaxNumber(data.getFaxNumber());
+
+        formRepository.save(form);
+        return new ResponseEntity<FormData>(form, HttpStatus.OK);
     }
 
     @GetMapping("/")
