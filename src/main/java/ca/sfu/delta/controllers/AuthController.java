@@ -38,6 +38,10 @@ public class AuthController {
         return tokenManager.tokenExists(token);
     }
 
+    public boolean isInvalid(String token) {
+        return ! isValid(token);
+    }
+
     @RequestMapping(value = "/login", method = RequestMethod.GET)
     public String handleLoginRequest(
             @RequestParam(value = "ticket", required = false) String ticket,
