@@ -29,7 +29,6 @@ public class FormData {
     private String eventLocation; //String for now, until we have full list of possible locations.
     private Boolean isLicensed;
     private int numAttendees;
-    private String authorizerEmailAddress;
     private String times; //Unsure of how we want to store times, String for now.
 	//Todo: these will need to be changed back to arrays of dates once the front end supports dates
     private String eventDates;
@@ -81,7 +80,6 @@ public class FormData {
             String paymentAccountCode,
             Boolean invoiceRequested,
             String eventDetails
-
     ){
         this.department = department;
     	this.eventDates = dates;
@@ -98,7 +96,6 @@ public class FormData {
         this.paymentAccountCode = paymentAccountCode;
         this.invoiceRequested = invoiceRequested;
         this.eventDetails = eventDetails;
-
     }
 
     public Long getId() {
@@ -279,23 +276,17 @@ public class FormData {
     	authorizationDate = newAuthorizationDate;
 	}
 
-	public String getAuthorizerEmailAddress() { return authorizerEmailAddress;}
-
-	public void setAuthorizerEmailAddress(String newAuthorizerEmailAddress) {authorizerEmailAddress = newAuthorizerEmailAddress;}
-
     public void setAuthorizationFields(
             String authorizerName,
             String authorizerID,
             String authorizationDate,
-            String authorizerPhoneNumber,
-            String authorizerEmailAddress
+            String authorizerPhoneNumber
     ){
         this.authorizerName = authorizerName;
         this.authorizerID = authorizerID;
         this.authorizationDate = authorizationDate;
         this.authorizerPhoneNumber = authorizerPhoneNumber;
         this.isAuthorized = true;
-        this.authorizerEmailAddress = authorizerEmailAddress;
     }
 
     public Boolean getIsAuthorized(){
