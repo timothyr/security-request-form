@@ -91,7 +91,7 @@
 					</div>
 
 
-					<!--original master-->
+
 					<div class="row mt-4">
 						<table class="table table-hover text-centered date-table">
 							<thead>
@@ -293,8 +293,12 @@
             		this.startdatetime = getDateTime("chooseStartDateTime","startdatetime");
             		this.enddatetime = getDateTime("chooseEndDateTime","enddatetime");
             		if(this.startdatetime!='' && this.enddatetime!=''){
+						if(this.datetimelist.length==0){
+							this.formData.eventDates += this.startdatetime +"-"+ this.enddatetime;
+						}else{
+							this.formData.eventDates += ", "+this.startdatetime +"-"+ this.enddatetime;
+						}
 						this.datetimelist.push( {start: this.startdatetime, end: this.enddatetime} );
-						this.formData.eventDates += this.startdatetime +"-"+ this.enddatetime +", ";
 						this.startdatetime = '';
 						this.enddatetime = '';
             		}

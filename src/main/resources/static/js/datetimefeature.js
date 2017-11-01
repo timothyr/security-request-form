@@ -38,3 +38,18 @@ $(document).ready(function(){
 			newString = list.replace(tobermvd,"");
 			return newString;
 		}
+
+		function updateDateTime(aString){
+		    //aString = "2017/11/11 13:20-2017/11/11 14:30, ";
+		    var array = aString.split(", ");
+		    var dates = [];
+
+            for(i = 0 ; i < array.length ; i++){
+                var dateTime = array[i].split("-");
+                dates.push( {
+                    start:dateTime[0],
+                    end:dateTime[1]
+                } );
+            }
+		    return dates;
+		}
