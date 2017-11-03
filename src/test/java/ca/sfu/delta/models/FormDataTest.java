@@ -334,7 +334,6 @@ public class FormDataTest {
     @Test
     public void saveAsCSV() throws Exception {
         String testMe = data.getAsCSV(true);
-        System.out.println(testMe);
         assertEquals(correctCSVOutput, testMe);
     }
 }
