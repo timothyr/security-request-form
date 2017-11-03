@@ -1,5 +1,6 @@
 package ca.sfu.delta.controllers;
 import javax.mail.MessagingException;
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 
 import ca.sfu.delta.Utilities.GlobalConstants;
@@ -20,11 +21,6 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Map;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.io.IOException;
-import java.io.File;
 import java.util.Date;
 import java.text.SimpleDateFormat;
 import java.text.DateFormat;
@@ -203,9 +199,9 @@ public class FormServiceRequestController extends WebMvcConfigurerAdapter {
             @RequestParam(required=false) String eventDetails,
             @RequestParam(required=false) String faxNumber,
 			@RequestParam(required=false) String requestID,
-            @RequestParam(required=false) String authorizerEmailAddress
+            @RequestParam(required=false) String authorizerEmailAddress,
+            HttpServletRequest request
             ) {
-
         FormData form = new FormData();
         form.setDepartment(department);
         form.setRequesterName(requesterName);
@@ -251,7 +247,7 @@ public class FormServiceRequestController extends WebMvcConfigurerAdapter {
         String userEmailAddress = form.getEmailAddress();
         String authEmailAddress = form.getAuthorizerEmailAddress();
         String trackingID = form.getRequestID();
-        String requestURL = GlobalConstants.SERVER_HOST_ADDRESS + formRequestURL + formFromTokenURL + token;
+        String requestURL = request.getServerName() + ":" + request.getServerPort() + formRequestURL + formFromTokenURL + token;
 
         if (form != null) {
             System.out.println("saved");
@@ -276,8 +272,7 @@ public class FormServiceRequestController extends WebMvcConfigurerAdapter {
             }
             }
 	        System.out.println("Successfully saved Form with requestID = " + form.getId() + " and token = " + token);
-            String returnLink = formFromTokenURL + token;
-	        return returnLink;
+	        return formFromTokenURL + token;
         } else {
             if (authorizerEmailAddress == null || authorizerEmailAddress.isEmpty()) {
 
@@ -289,8 +284,7 @@ public class FormServiceRequestController extends WebMvcConfigurerAdapter {
                 }
 
                 System.out.println("Successfully saved Form with requestID = " + form.getId() + " and token = " + token);
-                String returnLink = formFromTokenURL + token;
-                return returnLink;
+                return formFromTokenURL + token;
 
             }else {
 
