@@ -254,6 +254,8 @@
 				 signedIn: false,
 				 signedInButtonMessage: signInMessage,
 
+				 responsetoken: null,
+
 				 submittedFormHeader:'',
 				 submittedFormMessage: '',
 				 submittedFormLink: '',
@@ -370,10 +372,11 @@
                     let self = this;
                     function successCallback(response) {
                         if(response.ok) {
+                            self.responsetoken = response;
                             if(self.signedIn)
-                                self.displaySubmitSuccessModal(formGetAPI + response.body);
+                                self.displaySubmitSuccessModal(formGetAPI + response.bodyText);
                             else
-                                self.displayRequestSuccessModal(formGetAPI + response.body);
+                                self.displayRequestSuccessModal(formGetAPI + response.bodyText);
                         } else {
                             errorCallback();
                         }
