@@ -87,7 +87,6 @@
 				</div>
 			</div>
 
-			<!-- TODO: get real values when that is ready -->
 			<div class="row my-4">
 				<table class="table table-striped">
 					<thead>
@@ -142,54 +141,54 @@
 				</div>
 			</div>
 
-			<div class="row mt-5">
-				<table class="guardtable table-striped">
-					<thead>
-						<tr>
-							<th class="text-center">Dispatch #</th>
-							<th class="text-center">Location</th>
-							<th class="text-center">Start Date</th>
-							<th class="text-center">End Date</th>
-							<th class="text-center">Start Time</th>
-							<th class="text-center">End Time</th>
-							<th class="text-center">Name</th>
-							<th class="text-center">Telephone</th>
-						</tr>
-					</thead>
-					<tbody id="guards">
-						<tr v-for="g in form.guards">
-							<td>
-								<input class="form-control text-center" type="text" v-model="g.guardID" required="required">
-							</td>
-							<td>
-								<input class="form-control text-center" type="text" v-model="g.location" required="required">
-							</td>
-							<td>
-								<input class="form-control text-center" type="date" v-model="g.startDate" required="required">
-							</td>
-							<td>
-								<input class="form-control text-center" type="date" v-model="g.endDate" required="required">
-							</td>
-							<td>
-								<input class="form-control text-center" type="time" v-model="g.startTime" required="required">
-							</td>
-							<td>
-								<input class="form-control text-center" type="time" v-model="g.endTime" required="required">
-							</td>
-							<td>
-								<input class="form-control text-center" type="text" v-model="g.name" required="required">
-							</td>
-							<td>
-								<input class="form-control text-center" type="text" v-model="g.telephone" required="required">
-							</td>
-							<td>
-								<button type="button" class="btn btn-danger" v-on:click="deleteGuard(g)" v-if="form.guards.length > 1">Remove Guard</button>
-							</td>
-						</tr>
-					</tbody>
-				</table>
+			<h5>Guards</h5>
+			<div v-for="g in form.guards">
+				<div class="row mt-3">
+					<div class="col">
+						<label for="gID">Dispatch #</label>
+						<input class="form-control text-center" id="gID" type="text" v-model="g.guardID">
+					</div>
+					<div class="col">
+						<label for="gLoc">Location</label>
+						<input class="form-control text-center" id="gLoc" type="text" v-model="g.location">
+					</div>
+				</div>
+				<div class="row">
+					<div class="col">
+						<label for="gDateStart">Start Date</label>
+						<input class="form-control text-center" id="gDateStart" type="date" v-model="g.startDate">
+					</div>
+					<div class="col">
+						<label for="gDateEnd">End Date</label>
+						<input class="form-control text-center" id="gDateEnd" type="date" v-model="g.endDate">
+					</div>
+				</div>
+				<div class="row">
+					<div class="col">
+						<label for="gTimeStart">Start Time</label>
+						<input class="form-control text-center" id="gTimeStart" type="time" v-model="g.startTime">
+					</div>
+					<div class="col">
+						<label for="gTimeEnd">End Time</label>
+						<input class="form-control text-center" id="gTimeEnd" type="time" v-model="g.endTime">
+					</div>
+				</div>
+				<div class="row">
+					<div class="col">
+						<label for="gName">Name</label>
+						<input class="form-control text-center" id="gName" type="text" v-model="g.name">
+					</div>
+					<div class="col">
+						<label for="gTel">Telephone</label>
+						<input class="form-control text-center" id="gTel" type="text" v-model="g.telephone">
+					</div>
+				</div>
+				<div class="row m-2">
+					<button type="button" class="btn btn-danger" v-on:click="deleteGuard(g)" v-if="form.guards.length > 1">Remove Guard</button>
+				</div>
 			</div>
-			<div class="row text-right">
+
+			<div class="row m-2">
 				<button type="button" class="btn" v-on:click="addGuard">Add Guard</button>
 			</div>
 
@@ -322,7 +321,7 @@
 
 					addGuard: function() {
 						this.form.guards.push({
-							guardID: 0,
+							guardID: 'id',
 							location: '',
 							startDate: '',
 							endDate: '',
@@ -472,7 +471,7 @@
                         let isValid = true;
                         this.form.guards.forEach(function (g) {
 							//console.log(g.guardID+"+"+g.location);
-                            if (g.guardID === '0' || g.guardID === '' || g.location === '' || g.location === undefined
+                            if (g.guardID === 'id' || g.guardID === '' || g.location === '' || g.location === undefined
 								|| g.startDate === '' || g.startDate === undefined || g.endDate === ''
 								|| g.endDate === undefined || g.startTime === ''  || g.startTime === undefined
 								|| g.endTime === '' || g.endTime === undefined || g.name === '' || g.name === undefined
