@@ -184,7 +184,7 @@
 					</div>
 				</div>
 				<div class="row m-2">
-					<button type="button" class="btn btn-danger" v-on:click="deleteGuard(g)" v-if="form.guards.length > 1">Remove Guard</button>
+					<button type="button" class="btn btn-danger" v-on:click="deleteGuard(g)">Remove Guard</button>
 				</div>
 			</div>
 
@@ -286,22 +286,6 @@
 						invoiceRequested: 'not set',
 						eventDates: 'not set',
 
-						guards: [
-							{
-								guardID: 0,
-								location: '',
-								startDate: '',
-								endDate: '',
-								startTime: '',
-								endTime: '',
-								name: '',
-								telephone: '',
-								regularHours: 0,
-								overtimeHours: 0,
-								regularRate: 0,
-								overtimeRate: 0
-							}
-						],
 					},
 					dates: [],
 
@@ -338,9 +322,7 @@
 
 					deleteGuard: function (guard) {
 						let i = this.form.guards.indexOf(guard);
-						if (this.form.guards.length > 1) {
-							this.form.guards.splice(i, 1);
-						}
+						this.form.guards.splice(i, 1);
 					},
 
 					removeNull: function () {
@@ -365,6 +347,10 @@
 
 						if (this.form.isLicensed === 'not set') {
 							this.form.isLicensed = false;
+						}
+
+						if (this.form.distributionList === 'not set') {
+							this.form.distributionList = null;
 						}
 					},
 
@@ -392,15 +378,13 @@
 								window.location.replace("/requests");
 							}
 
-							if (response.data.guards[0] === null || response.data.guards[0] === undefined) {
-								response.data.guards = JSON.parse(JSON.stringify(this.form.guards));
+							if (response.data.guards[0] !== null && response.data.guards[0] !== undefined) {
+								let g = response.data.guards[0];
+								this.regularRate = g.regularRate;
+								this.regularHours = g.regularHours;
+								this.overtimeRate = g.overtimeRate;
+								this.overtimeHours = g.overtimeHours;
 							}
-
-							let g = response.data.guards[0];
-							this.regularRate = g.regularRate;
-							this.regularHours = g.regularHours;
-							this.overtimeRate = g.overtimeRate;
-							this.overtimeHours = g.overtimeHours;
 
 							this.form = JSON.parse(JSON.stringify(response.data));
 							this.removeNull();
@@ -466,8 +450,9 @@
 				computed: {
                     canAccept: function () {
                         let numGuards = this.form.guards.length;
-                        if (numGuards < 1)
-                            return false;
+                        if (numGuards === 0)
+                            return true;
+
                         let isValid = true;
                         this.form.guards.forEach(function (g) {
 							//console.log(g.guardID+"+"+g.location);
@@ -481,7 +466,6 @@
                                 return isValid;
                             }
                         });
-						//console.log("all guards are good");
 
                         return isValid;
                     },
