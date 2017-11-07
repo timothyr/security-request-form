@@ -265,7 +265,7 @@ public class FormDataTest {
         assertEquals("6666666",data.getAuthorizerID());
         assertEquals(newDate,data.getAuthorizationDate());
         assertEquals("778-777-7777",data.getAuthorizerPhoneNumber());
-        assertEquals("keely@sfu.ca", data.getAuthorizerEmailAddress());
+        assertEquals("kelly@sfu.ca", data.getAuthorizerEmailAddress());
         assertEquals(true,data.getIsAuthorized());
     }
 
@@ -334,7 +334,6 @@ public class FormDataTest {
     @Test
     public void saveAsCSV() throws Exception {
         String testMe = data.getAsCSV(true);
-        System.out.println(testMe);
         assertEquals(correctCSVOutput, testMe);
     }
 }
