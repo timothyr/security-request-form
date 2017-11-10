@@ -25,23 +25,16 @@ public class GuardTest {
 	public void calculateTotalPay() throws Exception {
 		assertEquals(BigDecimal.valueOf((regularHours * regularRate) + (overtimeHours * overtimeRate)),
 				guard.calculateTotalPay());
-
-		System.out.println(guard.calculateRegularPay() + "+" +
-				guard.calculateOvertimePay() + "=" + guard.calculateTotalPay());
-
-		System.out.println(guard.toString());
 	}
 
 	@Test
 	public void calculateRegularPay() throws Exception {
 		assertEquals(BigDecimal.valueOf(regularHours * regularRate), guard.calculateRegularPay());
-		System.out.println(guard.getRegularHours() + "*" + guard.getRegularRate() + "=" + guard.calculateRegularPay());
 	}
 
 	@Test
 	public void calculateOvertimePay() throws Exception {
 		assertEquals(BigDecimal.valueOf(overtimeHours * overtimeRate), guard.calculateOvertimePay());
-		System.out.println(guard.getOvertimeHours() + "*" + guard.getOvertimeRate() + "=" + guard.calculateOvertimePay());
 	}
 
 	@Test

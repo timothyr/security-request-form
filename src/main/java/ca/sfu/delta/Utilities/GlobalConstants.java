@@ -8,7 +8,4 @@ public class GlobalConstants {
 
 	// The length of the tokens used for user request form retrieval URLs
 	public static final int LENGTH_OF_TOKENS = 30;
-
-	// The server's host address
-	public static final String SERVER_HOST_ADDRESS = "http://cmpt373-1177d.cmpt.sfu.ca:8080";
 }
