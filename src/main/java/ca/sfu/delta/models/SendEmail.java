@@ -1,5 +1,7 @@
 package ca.sfu.delta.models;
 
+import org.hibernate.cfg.Environment;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -26,6 +28,19 @@ public class SendEmail {
 
     private JavaMailSender javaMailSender;
 
+    @Value("${spring.mail.host}")
+    private String mailHost;
+    @Value("${spring.mail.username}")
+    private String smtpSenderEmail;
+    @Value("${spring.mail.password}")
+    private String smtpSenderEmailPassword;
+    @Value("${spring.mail.port}")
+    private String smtpPort;
+    @Value("${spring.mail.properties.mail.smtp.auth}")
+    private Boolean IsAuthorized;
+    @Value("{spring.mail.properties.mail.smtp.starttls.enable}")
+    private String IsTtlsEnabled;
+
     @Autowired
     public SendEmail(JavaMailSender javaMailSender){
         this.javaMailSender = javaMailSender;
@@ -34,19 +49,15 @@ public class SendEmail {
     public void sendTo(String sendToEmailAddress, String personName, String trackingID, String requestURL) throws MessagingException {
 
         //Mail Properties
-        Properties properties = System.getProperties();
+        Properties properties = System.getProperties();IsTtlsEnabled
         properties.put("mail.smtp.starttls.enable", "true");
-        properties.put("mail.smtp.host", "smtp.gmail.com");
-        properties.put("mail.smtp.user", "teamdelta373@gmail.com");
-        properties.put("mail.smtp.password", "8teammembers");
-        properties.put("mail.smtp.port", "587");
-        properties.put("mail.smtp.auth", "true");
+        properties.put("mail.smtp.host", mailHost);
+        properties.put("mail.smtp.user", smtpSenderEmail);
+        properties.put("mail.smtp.password", smtpSenderEmailPassword);
+        properties.put("mail.smtp.port", smtpPort);
+        properties.put("mail.smtp.auth", IsAuthorized);
 
         Session session = Session.getDefaultInstance(properties);
-
-
-        //MimeMessage message = javaMailSender.createMimeMessage();
-        //MimeMessageHelper helper = new MimeMessageHelper(message);
 
         MimeMessage message = new MimeMessage(session);
 
@@ -58,7 +69,7 @@ public class SendEmail {
         	greeting = "Hello " + personName + "!\n\n";
         }
 
-        message.setFrom(new InternetAddress("teamdelta373@gmail.com"));
+        message.setFrom(new InternetAddress(smtpSenderEmail));
         message.addRecipient(Message.RecipientType.TO, new InternetAddress(sendToEmailAddress));
         message.setSubject("SFU: Your Event Security Request Confirmation");
         message.setText(greeting + " Your request has been sent to SFU security.\n" +
@@ -80,11 +91,8 @@ public class SendEmail {
 
 
         try{
-//            javaMailSender.send(message);
-            //Connect and Send
-
             Transport transport = session.getTransport("smtp");
-            transport.connect("smtp.gmail.com", "teamdelta373@gmail.com", "8teammembers");
+            transport.connect(mailHost, smtpSenderEmail, smtpSenderEmailPassword);
             transport.sendMessage(message, message.getAllRecipients());
             transport.close();
             System.out.println("Mail Sent!!");
@@ -114,28 +122,28 @@ public class SendEmail {
         }
     }
 
-    ///////////////Helpers///////////////
+    //**      Helper Functions     **//
 
-    protected String readEmailFromHtml(String filePath, Map<String, String> input)
+    private String readEmailFromHtml(String filePath, Map<String, String> input)
     {
-        String msg = readContentFromFile(filePath);
+        String emailMessage = readContentFromFile(filePath);
         try
         {
             Set<Entry<String, String>> entries = input.entrySet();
             for(Map.Entry<String, String> entry : entries) {
-                msg = msg.replace(entry.getKey().trim(), entry.getValue().trim());
+                emailMessage = emailMessage.replace(entry.getKey().trim(), entry.getValue().trim());
             }
         }
         catch(Exception exception)
         {
             exception.printStackTrace();
         }
-        return msg;
+        return emailMessage;
     }
     //Method to read HTML file as a String
     private String readContentFromFile(String fileName)
     {
-        StringBuffer contents = new StringBuffer();
+        StringBuffer htmlContentFile = new StringBuffer();
 
         try {
             //use buffering, reading one line at a time
@@ -143,8 +151,8 @@ public class SendEmail {
             try {
                 String line = null;
                 while (( line = reader.readLine()) != null){
-                    contents.append(line);
-                    contents.append(System.getProperty("line.separator"));
+                    htmlContentFile.append(line);
+                    htmlContentFile.append(System.getProperty("line.separator"));
                 }
             }
             finally {
@@ -154,7 +162,7 @@ public class SendEmail {
         catch (IOException ex){
             ex.printStackTrace();
         }
-        return contents.toString();
+        return htmlContentFile.toString();
     }
 }
 
