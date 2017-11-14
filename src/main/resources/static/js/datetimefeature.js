@@ -43,17 +43,21 @@ $(document).ready(function(){
 
 		function setMinDate(){
             var x=$('#chooseStartDateTime').val();
-            var date = x.split(" ")[0];
-            var time = x.split(" ")[1];
-            var year = date.split("/")[0];
-            var month = date.split("/")[1];
-            var day = date.split("/")[2];
-            var hour = time.split(":")[0];
-            var min = time.split(":")[1];
-            $( '#chooseEndDateTime' ).datetimepicker( {
-                defaultDate: new Date(year,month-1,day,hour,min,00),
-                minDateTime: new Date(year,month-1,day,hour,min,00),
+            if(x!=""){
+                var date = x.split(" ")[0];
+                var time = x.split(" ")[1];
+                var year = date.split("/")[0];
+                var month = date.split("/")[1];
+                var day = date.split("/")[2];
+                var hour = time.split(":")[0];
+                var min = time.split(":")[1];
+                $( '#chooseEndDateTime' ).datetimepicker( {
+                    defaultDate: new Date(year,month-1,day,hour,min,00),
+                    minDateTime: new Date(year,month-1,day,hour,min,00),
                 } );
+            }
+
+
         }
 
 		//This function is temp. when DB supports table {R_id, startDate, startTime, endDate, endTime}, this will be removed.
