@@ -2,6 +2,7 @@ package ca.sfu.delta.models;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
+import java.io.StringWriter;
 
 @Embeddable
 public class Guard{
@@ -14,6 +15,7 @@ public class Guard{
 	private String endTime;
 	private String name;
 	private String telephone;
+	private String type;
 	private int regularHours;
 	private int overtimeHours;
 	private BigDecimal regularRate;
@@ -66,6 +68,14 @@ public class Guard{
 
 	public String getGuardID() {
 		return guardID;
+	}
+
+	public String getType() {
+		return type;
+	}
+
+	public void setType(String type) {
+		this.type = type;
 	}
 
 	public void setGuardID(String guardID) throws IllegalArgumentException {
@@ -190,5 +200,73 @@ public class Guard{
 	public String getTelephone() {
 		return this.telephone;
 	}
+
+	/*
+		private String guardID;
+	private String location;
+	private String startDate;
+	private String endDate;
+	private String startTime;
+	private String endTime;
+	private String name;
+	private String telephone;
+	private String type;
+	private int regularHours;
+	private int overtimeHours;
+	private BigDecimal regularRate;
+	private BigDecimal overtimeRate;
+	*/
+
+	public String getAsCSV(Boolean needHeader) {
+            StringWriter csvWriter = new StringWriter();
+            //Only add first row with field names if we need the header (in case that we are creating a new CSV
+            //with this string)
+            if (needHeader) {
+                String firstRow = "Guard ID" + ", " +
+                                  "Name" + ", " +
+                                  "Location" + ", " +
+                                  "Start Date" + ", " +
+                                  "End Date" + ", " +
+                                  "Start Time" + ", " +
+                                  "End Time" + ", " +
+                                  "Phone Number" + ", " +
+                                  "Type" + ", " +
+                                  "Regular Hours Worked" + ", " +
+                                  "Overtime Hours Worked" + ", " +
+                                  "Regular Pay Rate" + ", " +
+                                  "Overtime Pay Rate" + ", " +
+                                  "Total Amount Due" + "\n";
+                csvWriter.append(firstRow);
+            }
+            //Append fields to csv, strip out commas from places they could be present
+            //Avoid null pointer exceptions if certain fields are blank
+
+            if(location == null){
+                location = new String("null");
+            }
+            if(type == null){
+                type = new String("null");
+            }
+
+            String nextRow = guardID + ", " +
+                             name + ", " +
+                             location.replace(",", "") + ", " +
+                             startDate + ", " +
+                             endDate + ", " +
+                             startTime + ", " +
+                             endTime + ", " +
+                             telephone + ", " +
+                             type.replace(",", "") + ", " +
+                             regularHours + ", " +
+                             overtimeHours + ", " +
+                             regularRate + ", " +
+                             overtimeRate + ", " + 
+                             this.calculateTotalPay() + "\n";
+
+            //Do some prettying up
+            nextRow = nextRow.replace("null", "Not specified");
+            csvWriter.append(nextRow);
+            return csvWriter.toString();
+    }
 
 }
