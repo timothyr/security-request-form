@@ -49,7 +49,7 @@ public class SendEmail {
     public void sendTo(String sendToEmailAddress, String personName, String trackingID, String requestURL) throws MessagingException {
 
         //Mail Properties
-        Properties properties = System.getProperties();IsTtlsEnabled
+        Properties properties = System.getProperties();
         properties.put("mail.smtp.starttls.enable", "true");
         properties.put("mail.smtp.host", mailHost);
         properties.put("mail.smtp.user", smtpSenderEmail);
