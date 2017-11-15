@@ -45,7 +45,7 @@ public class FormServiceRequestController extends WebMvcConfigurerAdapter {
     public void addViewControllers(ViewControllerRegistry registry) {
         registry.addViewController("/results").setViewName("results.html");
         registry.addViewController("/requests").setViewName("requests.html");
-        registry.addViewController("/landing").setViewName("landing.html");
+        registry.addViewController("/servicerequest").setViewName("form.html");
 
         registry.addViewController("/admin").setViewName("admin.html");
         registry.addViewController("/securitylogin").setViewName("securitylogin.html");
@@ -329,14 +329,14 @@ public class FormServiceRequestController extends WebMvcConfigurerAdapter {
 
     @GetMapping("/")
     public String showForm(FormData serviceRequestForm) {
-        return "form.html";
+        return "landing.html";
     }
 
     @PostMapping("/")
     public String checkFormRequest(@Valid FormData serviceRequestForm, BindingResult bindingResult) {
 
         if (bindingResult.hasErrors()) {
-            return "form.html";
+            return "landing.html";
         }
 
         saveFormToDatabase(serviceRequestForm);
