@@ -17,6 +17,15 @@ h3 {
     color: #686868;
 }
 
+h4 {
+    font-weight: 300;
+    color: #686868;
+}
+
+.grey-color {
+    color: #686868;
+}
+
 .red-background {
 	background-color: #A8162B;
 }
