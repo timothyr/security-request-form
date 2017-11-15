@@ -258,9 +258,9 @@ public class Guard{
                              telephone + ", " +
                              type.replace(",", "") + ", " +
                              regularHours + ", " +
-                             overtimeHours + ", " +
-                             regularRate + ", " +
-                             overtimeRate + ", " + 
+                             overtimeHours + ", $" +
+                             regularRate + "/hr, $" +
+                             overtimeRate + "/hr, $" + 
                              this.calculateTotalPay() + "\n";
 
             //Do some prettying up

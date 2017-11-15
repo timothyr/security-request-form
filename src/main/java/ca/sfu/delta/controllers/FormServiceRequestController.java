@@ -123,7 +123,7 @@ public class FormServiceRequestController extends WebMvcConfigurerAdapter {
         return csvString;
     }
 
-    @RequestMapping(value = "/api/csv/guards/{id}.csv", method = RequestMethod.GET, produces = "text/csv")
+    @RequestMapping(value = "/api/csv/guards/{id}-guards.csv", method = RequestMethod.GET, produces = "text/csv")
     @ResponseBody
     public String getGuardCSV(@PathVariable("id") String id) {
         String csvString = new String();
