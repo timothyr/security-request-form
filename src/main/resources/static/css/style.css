@@ -205,3 +205,24 @@ svg path, svg rect {
 .float-right{
 	float:right;
 }
+
+/* loading icon */
+ .loading-icon {
+     background-color: transparent;
+     font-size: 0;
+     width: 30px;
+     height: 30px;
+     border: 3px solid #FFFFFF;
+     border-bottom: 3px solid rgba(255,255,255,0.0);
+     border-left: 3px solid rgba(255,255,255,0.0);
+     border-radius: 50%;
+     padding: 0;
+     animation: rotateAnimation 1s infinite linear;
+     display: inline-block;
+     margin-bottom: -5px;
+ }
+
+ @keyframes rotateAnimation {
+     0% {transform: rotate(0deg);}
+     100% {transform: rotate(360deg);}
+ }
