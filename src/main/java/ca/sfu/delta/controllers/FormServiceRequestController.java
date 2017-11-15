@@ -101,9 +101,6 @@ public class FormServiceRequestController extends WebMvcConfigurerAdapter {
 	@RequestMapping(value = "/api/form/saveSecurity", method = RequestMethod.POST)
 	public @ResponseBody String saveSecurity(@RequestBody FormData form) {
 		formRepository.save(form);
-		for (FormData f : formRepository.findAll()) {
-			System.out.println(f.toString());
-		}
 
 		return null;
 	}
@@ -229,8 +226,7 @@ public class FormServiceRequestController extends WebMvcConfigurerAdapter {
         Date date = new Date();
         form.setRequestedOnDate(dateFormat.format(date));
 
-        //TODO: make this actually useful instead of this bandaid solution
-        form.setRequestStatus("waiting");
+        form.setRequestStatus("WAITING");
 
         if (requestID != null && !requestID.isEmpty()) {
 	        form.setRequestID(requestID);
