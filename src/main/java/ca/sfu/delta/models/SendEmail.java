@@ -1,6 +1,5 @@
 package ca.sfu.delta.models;
 
-import org.hibernate.cfg.Environment;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,6 +14,7 @@ import javax.mail.internet.MimeBodyPart;
 import javax.mail.internet.MimeMessage;
 import javax.mail.internet.MimeMultipart;
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.HashMap;
@@ -46,6 +46,18 @@ public class SendEmail {
         this.javaMailSender = javaMailSender;
     }
 
+    // Sets appropriate greeting for a person based on if the name is known or not
+    private String setGreeting(String personName){
+        String greeting;
+        if (personName == null || personName.isEmpty()) {
+            greeting = "Hi!\n\n";
+        }
+        else {
+            greeting = "Hi " + personName + ",\n\n";
+        }
+        return greeting;
+    }
+
     public void sendTo(String sendToEmailAddress, String personName, String trackingID, String requestURL) throws MessagingException {
 
         //Mail Properties
@@ -57,33 +69,34 @@ public class SendEmail {
         properties.put("mail.smtp.port", smtpPort);
         properties.put("mail.smtp.auth", IsAuthorized);
 
-        Session session = Session.getDefaultInstance(properties);
 
+        Session session = Session.getDefaultInstance(properties);
         MimeMessage message = new MimeMessage(session);
 
-        String greeting;
-        if (personName == null || personName.isEmpty()) {
-        	greeting = "Hello!\n\n";
-        }
-        else {
-        	greeting = "Hello " + personName + "!\n\n";
-        }
+        //Set greeting
+        String greeting = setGreeting(personName);
+
 
         message.setFrom(new InternetAddress(smtpSenderEmail));
         message.addRecipient(Message.RecipientType.TO, new InternetAddress(sendToEmailAddress));
         message.setSubject("SFU: Your Event Security Request Confirmation");
-        message.setText(greeting + " Your request has been sent to SFU security.\n" +
-                " You will be contacted shortly! Your request ID is: " + trackingID + ".\n\n" +
-                " You may view your request at " + requestURL);
 
         MimeMultipart multipart = new MimeMultipart();
         BodyPart messageBodyPart = new MimeBodyPart();
 
         Map<String, String> input = new HashMap<>();
-        input.put("User",personName);
+        input.put("User", greeting);
+        input.put("trackingID", trackingID);
+        input.put("requestURL", requestURL);
 
-        String htmlText = readEmailFromHtml("/home/harjotsingh/Documents/Project373/Project/src/main/resources/static/emailUser.html",input);
+        //Get file path of HTML file to be embedded in the email
+        String filePath;
+        File resourcesDirectory = new File("src/main/resources/static/emailUser.html");
+        filePath = resourcesDirectory.getPath();
 
+        //Read from HTML file
+        String htmlText;
+        htmlText = readEmailFromHtml(filePath,input);
         messageBodyPart.setContent(htmlText, "text/html");
 
         multipart.addBodyPart(messageBodyPart);
@@ -112,7 +125,6 @@ public class SendEmail {
         helper.setSubject("SFU: Request for authorization");
         helper.setText("Hi! You have been requested to authorize request: " + trackingID +
                 " You may view the request at: " + requestURL);
-
 
         try{
             javaMailSender.send(message);

@@ -271,7 +271,7 @@ public class FormServiceRequestController extends WebMvcConfigurerAdapter {
                 //e.printStackTrace();
             }
             }
-	        System.out.println("Successfully saved Form with requestID = " + form.getId() + " and token = " + token);
+	        System.out.println("1. Successfully saved Form with requestID = " + form.getId() + " and token = " + token);
 	        return formFromTokenURL + token;
         } else {
             if (authorizerEmailAddress == null || authorizerEmailAddress.isEmpty()) {
@@ -283,7 +283,7 @@ public class FormServiceRequestController extends WebMvcConfigurerAdapter {
                     System.out.println("Could not send the email to the user. Error message: " + ex.getMessage());
                 }
 
-                System.out.println("Successfully saved Form with requestID = " + form.getId() + " and token = " + token);
+                System.out.println("2. Successfully saved Form with requestID = " + form.getId() + " and token = " + token);
                 return formFromTokenURL + token;
 
             }else {
