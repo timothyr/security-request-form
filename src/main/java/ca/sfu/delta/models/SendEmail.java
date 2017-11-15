@@ -46,6 +46,7 @@ public class SendEmail {
         this.javaMailSender = javaMailSender;
     }
 
+
     // Sets appropriate greeting for a person based on if the name is known or not
     private String setGreeting(String personName){
         String greeting;
@@ -58,10 +59,11 @@ public class SendEmail {
         return greeting;
     }
 
-    public void sendTo(String sendToEmailAddress, String personName, String trackingID, String requestURL) throws MessagingException {
-
+    //Sets SMTP Properties
+    Properties properties;
+    private Properties setSmtpProperties(){
         //Mail Properties
-        Properties properties = System.getProperties();
+        properties = System.getProperties();
         properties.put("mail.smtp.starttls.enable", "true");
         properties.put("mail.smtp.host", mailHost);
         properties.put("mail.smtp.user", smtpSenderEmail);
@@ -69,21 +71,53 @@ public class SendEmail {
         properties.put("mail.smtp.port", smtpPort);
         properties.put("mail.smtp.auth", IsAuthorized);
 
+        return properties;
+    }
 
-        Session session = Session.getDefaultInstance(properties);
-        MimeMessage message = new MimeMessage(session);
+    private void setEmailAttributes(MimeMessage message, String sendToEmailAddress){
+        try {
+            message.setFrom(new InternetAddress(smtpSenderEmail));
+            message.addRecipient(Message.RecipientType.TO, new InternetAddress(sendToEmailAddress));
+            message.setSubject("SFU: Event Security Request ");
+        } catch (MessagingException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void sendMail(Session session, MimeMessage message){
+
+        Transport transport = null;
+        try {
+            transport = session.getTransport("smtp");
+            transport.connect(mailHost, smtpSenderEmail, smtpSenderEmailPassword);
+            transport.sendMessage(message, message.getAllRecipients());
+            transport.close();
+        } catch (NoSuchProviderException e) {
+            e.printStackTrace();
+        } catch (MessagingException e) {
+            e.printStackTrace();
+        }
+    }
+
+
+    public void sendTo(String sendToEmailAddress, String personName, String trackingID, String requestURL) throws MessagingException {
+        //Calls a function that sets SMTP properties
+        setSmtpProperties();
 
         //Set greeting
         String greeting = setGreeting(personName);
 
+        Session session = Session.getDefaultInstance(properties);
 
-        message.setFrom(new InternetAddress(smtpSenderEmail));
-        message.addRecipient(Message.RecipientType.TO, new InternetAddress(sendToEmailAddress));
-        message.setSubject("SFU: Your Event Security Request Confirmation");
+        MimeMessage message = new MimeMessage(session);
+
+        //Calls a function which sets attributes: Sender's Email, Recipient's Email, Email Subject
+        setEmailAttributes(message, sendToEmailAddress);
 
         MimeMultipart multipart = new MimeMultipart();
         BodyPart messageBodyPart = new MimeBodyPart();
 
+        //Swap keys in the HTML file with actual values
         Map<String, String> input = new HashMap<>();
         input.put("User", greeting);
         input.put("trackingID", trackingID);
@@ -102,40 +136,46 @@ public class SendEmail {
         multipart.addBodyPart(messageBodyPart);
         message.setContent(multipart);
 
-
-        try{
-            Transport transport = session.getTransport("smtp");
-            transport.connect(mailHost, smtpSenderEmail, smtpSenderEmailPassword);
-            transport.sendMessage(message, message.getAllRecipients());
-            transport.close();
-            System.out.println("Mail Sent!!");
-
-        }
-        catch (MailException ex){
-            System.err.println(ex.getMessage());
-        }
+        //Sends Email
+        sendMail(session, message);
     }
 
     public void sendTo(String sendToEmailAddress, String trackingID, String requestURL) throws MessagingException {
+        setSmtpProperties();
 
-        MimeMessage message = javaMailSender.createMimeMessage();
-        MimeMessageHelper helper = new MimeMessageHelper(message);
+        Session session = Session.getDefaultInstance(properties);
+        MimeMessage message = new MimeMessage(session);
 
-        helper.setTo(sendToEmailAddress);
-        helper.setSubject("SFU: Request for authorization");
-        helper.setText("Hi! You have been requested to authorize request: " + trackingID +
-                " You may view the request at: " + requestURL);
+        //Calls a function which sets attributes: Sender's Email, Recipient's Email, Email Subject
+        setEmailAttributes(message, sendToEmailAddress);
 
-        try{
-            javaMailSender.send(message);
-        }
-        catch (MailException ex){
-            System.err.println(ex.getMessage());
-        }
+        MimeMultipart multipart = new MimeMultipart();
+        BodyPart messageBodyPart = new MimeBodyPart();
+
+        Map<String, String> input = new HashMap<>();
+
+        input.put("trackingID", trackingID);
+        input.put("requestURL", requestURL);
+
+        //Get file path of HTML file to be embedded in the email
+        String filePath;
+        File resourcesDirectory = new File("src/main/resources/static/emailAuthorizer.html");
+        filePath = resourcesDirectory.getPath();
+
+        //Read from HTML file
+        String htmlText;
+        htmlText = readEmailFromHtml(filePath, input);
+        messageBodyPart.setContent(htmlText, "text/html");
+
+        multipart.addBodyPart(messageBodyPart);
+        message.setContent(multipart);
+
+        //Calls a function to send Email
+        sendMail(session, message);
     }
 
-    //**      Helper Functions     **//
 
+    //**      Helper Functions     **//
     private String readEmailFromHtml(String filePath, Map<String, String> input)
     {
         String emailMessage = readContentFromFile(filePath);
