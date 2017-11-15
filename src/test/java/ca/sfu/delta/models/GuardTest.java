@@ -17,7 +17,7 @@ public class GuardTest {
 	private Guard guard = new Guard(name, regularHours, regularRate, overtimeHours, overtimeRate);
 
 	private String correctCSVOutput = "Guard ID, Name, Location, Start Date, End Date, Start Time, End Time, Phone Number, Type, Regular Hours Worked, Overtime Hours Worked, Regular Pay Rate, Overtime Pay Rate, Total Amount Due\n" +
-                                      "Not specified, Bob, Not specified, Not specified, Not specified, Not specified, Not specified, Not specified, Not specified, 6, 3, $17.5/hr, $22.7/hr5, $173.25\n";
+                                      "Not specified, Bob, Not specified, Not specified, Not specified, Not specified, Not specified, Not specified, Not specified, 6, 3, $17.5/hr, $22.75/hr, $173.25\n";
 
 	@Test(expected = IllegalArgumentException.class)
 	public void constructorException() throws Exception {
