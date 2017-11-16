@@ -121,6 +121,33 @@ public class FormServiceRequestController extends WebMvcConfigurerAdapter {
         return csvString;
     }
 
+    @RequestMapping(value = "/api/csv/guards/{id}-guards.csv", method = RequestMethod.GET, produces = "text/csv")
+    @ResponseBody
+    public String getGuardCSV(@PathVariable("id") String id) {
+        String csvString = new String();
+        FormData correctForm =  new FormData();
+        for (FormData form : formRepository.findAll()) {
+
+            if(form.getRequestID().equals(id))
+            {
+                correctForm = form;
+            }
+        }
+        List<Guard> correctFormGuards = correctForm.getGuards();
+
+        Boolean first = true;
+        StringWriter csvWriter = new StringWriter();
+        for (Guard g : correctFormGuards) {
+            if(first) {
+                csvWriter.append(g.getAsCSV(true));
+                first = false;
+            } else {
+                csvWriter.append(g.getAsCSV(false));
+            }
+        }
+        return csvWriter.toString();
+    }
+
     @RequestMapping(value = "/api/csv/form/all.csv", method = RequestMethod.GET, produces = "text/csv")
     @ResponseBody
     public String getAllCSV() {
