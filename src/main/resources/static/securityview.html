@@ -183,6 +183,13 @@
 						<label for="gTel">Telephone</label>
 						<input class="form-control text-center" id="gTel" type="text" v-model="g.telephone">
 					</div>
+					<div class="col">
+						<label for="gType">Type</label>
+						<select class="form-control text-center" id="gType" v-model="g.type">
+							<option>Guard</option>
+							<option>SCSP</option>
+						</select>
+					</div>
 				</div>
 				<div class="row m-2">
 					<button type="button" class="btn btn-danger" v-on:click="deleteGuard(g)">Remove Guard</button>
@@ -192,9 +199,6 @@
 			<div class="row m-2">
 				<div class="col">
 					<button type="button" class="btn" v-on:click="addGuard">Add Guard</button>
-				</div>
-				<div class="col">
-					<p class="mx-5"></p>
 				</div>
 			</div>
 
@@ -328,6 +332,7 @@
 							endTime: '',
 							name: '',
 							telephone: '',
+							type: 'Guard',
 							regularHours: null,
 							overtimeHours: null,
 							regularRate: null,
@@ -411,7 +416,6 @@
 						});
 
 					},
-
 					setSecFields: function () {
 						this.form.distributionList = this.emails;
 
