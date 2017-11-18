@@ -189,7 +189,12 @@
 			</div>
 
 			<div class="row m-2">
-				<button type="button" class="btn" v-on:click="addGuard">Add Guard</button>
+				<div class="col">
+					<button type="button" class="btn" v-on:click="addGuard">Add Guard</button>
+				</div>
+				<div class="col">
+					<p class="mx-5"></p>
+				</div>
 			</div>
 
 			<div class="row my-3">
@@ -211,9 +216,15 @@
 				</div>
 			</div>
 
-			<div class="row my-3">
-				<div class="col">
+			<div class="row my-3 text-center">
+				<div class="col mx-0" >
 					<p>Estimated Personnel Cost: {{cost}}</p>
+				</div>
+				<div class="col mx-0">
+					<p>Total Hours: {{totalHours}}</p>
+				</div>
+				<div class="col mx-0">
+					<p>Hours per Guard: {{avgHours}}</p>
 				</div>
 			</div>
 
@@ -476,6 +487,21 @@
 						cost *= guards;
 
 						return cost;
+					},
+
+					totalHours: function () {
+                    	let total = 0;
+						total += Number.parseFloat(this.regularHours) + Number.parseFloat(this.overtimeHours);
+						total *= this.form.guards.length;
+
+						return total;
+					},
+
+					avgHours: function () {
+						let avg = 0;
+						avg += Number.parseFloat(this.regularHours) + Number.parseFloat(this.overtimeHours);
+
+						return avg;
 					}
 				}
 			});
