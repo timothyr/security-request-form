@@ -36,6 +36,7 @@
                     <div class="dropdown-toggle" id="dropdownMenuButton" data-toggle="dropdown"><i class="fa fa-cog"></i></div>
                     <ul class="dropdown-menu">
                         <li class="dropdown-item" v-on:click="exportRequestCSV()">Export Request to CSV</li>
+                        <li class="dropdown-item" v-on:click="exportRequestGuardsCSV()">Export Guard list to CSV</li>
                     </ul>
                 </div>
             </div>
@@ -312,6 +313,9 @@
 				methods: {
                     exportRequestCSV: function() {
                         window.location.assign("/api/csv/form/" + this.requestID + ".csv");
+                    },
+                    exportRequestGuardsCSV: function() {
+                        window.location.assign("/api/csv/guards/" + this.requestID + "-guards.csv");
                     },
 
 					addGuard: function() {
