@@ -48,7 +48,10 @@
                     <table class="table table-striped">
                         <thead>
                             <tr>
-                                <th v-for="column in columns" v-on:click="sortBy(column)" class="clickable" v-cloak>{{column}}</th>
+                                <th v-for="column in columns" v-on:click="sortBy(column)" class="clickable" v-cloak>{{column}}
+                                    <i v-if="reversed" class="fa fa-sort-desc ml-2"></i>
+                                    <i v-if="!reversed" class="fa fa-sort-asc ml-2"></i>
+                                </th>
                             </tr>
                         </thead>
                         <tbody>
@@ -63,7 +66,7 @@
                                 <td class="clickable">{{request.eventName}}</td>
                                 <td class="clickable">{{request.eventLocation}}</td>
                                 <td class="clickable">{{request.eventDates[0].start}} to {{request.eventDates[0].end}}</td>
-                                <td class="clickable">{{request.status}}</td>
+                                <td class="clickable">{{request.requestStatus}}</td>
                             </tr>
                         </tbody>
                     </table>
@@ -127,7 +130,7 @@
         methods: {
             changeDates: function() {
                 this.requests.forEach(function(request) {
-                    request.status = "WAITING";
+                    request.requestStatus = "WAITING";
                     request.eventDates = updateDateTime(request.eventDates);
                 });
             },
@@ -168,11 +171,17 @@
             filteredRequests: {
                 cache: false,
                 get: function() {
+                    console.log(this.reversed + " " + this.sortKey + " helloo this is reversed/sortKey");
                     return this.requests.filter(request => {
                         return isTermInObject(request, this.searchTerm);
                     }).sort((requestA, requestB) => {
-                        return this.reversed ? requestA[this.getColumnValue(this.sortKey)] > requestB[this.getColumnValue(this.sortKey)] :
-                            requestA[this.getColumnValue(this.sortKey)] < requestB[this.getColumnValue(this.sortKey)];
+                        if (this.reversed) {
+                            console.log("=greater than than");
+                            return requestA[this.getColumnValue(this.sortKey)] > requestB[this.getColumnValue(this.sortKey)]
+                        } else {
+                            console.log("=less than");
+                            return requestA[this.getColumnValue(this.sortKey)] < requestB[this.getColumnValue(this.sortKey)]
+                        }
                     }).filter(request => {
                         if(this.activeStatus == "ALL") {
                             return true;
@@ -190,7 +199,7 @@
                 pageNumber: 1
             }).then(response  => {
                 this.requests = response.data;
-                this.changeDates();
+                //this.changeDates();
                 this.loading = false;
             });
         }

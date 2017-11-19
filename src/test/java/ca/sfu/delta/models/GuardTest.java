@@ -9,12 +9,16 @@ import static org.junit.Assert.*;
 public class GuardTest {
 
 	private String name = "Bob";
-	private int regularHours = 6;
-	private int overtimeHours = 3;
-	private double regularRate = 17.5;
-	private double overtimeRate = 22.75;
+	private BigDecimal regularHours = BigDecimal.valueOf(6.0);
+	private BigDecimal overtimeHours = BigDecimal.valueOf(3.5);
+	private BigDecimal regularRate = BigDecimal.valueOf(17.50);
+	private BigDecimal overtimeRate = BigDecimal.valueOf(22.75);
 
-	private Guard guard = new Guard(name, regularHours, regularRate, overtimeHours, overtimeRate);
+	private Guard guard = new Guard(name, regularHours.doubleValue(), regularRate.doubleValue(),
+			overtimeHours.doubleValue(), overtimeRate.doubleValue());
+
+	private String correctCSVOutput = "Guard ID, Name, Location, Start Date, End Date, Start Time, End Time, Phone Number, Type, Regular Hours Worked, Overtime Hours Worked, Regular Pay Rate, Overtime Pay Rate, Total Amount Due\n" +
+                                      "Not specified, Bob, Not specified, Not specified, Not specified, Not specified, Not specified, Not specified, Not specified, 6.0, 3.5, $17.5/hr, $22.75/hr, $184.625\n";
 
 	@Test(expected = IllegalArgumentException.class)
 	public void constructorException() throws Exception {
@@ -23,18 +27,18 @@ public class GuardTest {
 
 	@Test
 	public void calculateTotalPay() throws Exception {
-		assertEquals(BigDecimal.valueOf((regularHours * regularRate) + (overtimeHours * overtimeRate)),
+		assertEquals((regularHours.multiply(regularRate).add((overtimeHours.multiply(overtimeRate)))),
 				guard.calculateTotalPay());
 	}
 
 	@Test
 	public void calculateRegularPay() throws Exception {
-		assertEquals(BigDecimal.valueOf(regularHours * regularRate), guard.calculateRegularPay());
+		assertEquals(regularHours.multiply(regularRate), guard.calculateRegularPay());
 	}
 
 	@Test
 	public void calculateOvertimePay() throws Exception {
-		assertEquals(BigDecimal.valueOf(overtimeHours * overtimeRate), guard.calculateOvertimePay());
+		assertEquals(overtimeHours.multiply(overtimeRate), guard.calculateOvertimePay());
 	}
 
 	@Test
@@ -59,28 +63,6 @@ public class GuardTest {
 		guard.setName(null);
 	}
 
-//	@Test
-//	public void getId() throws Exception {
-//		assertEquals(id, guard.getId());
-//	}
-//
-//	@Test
-//	public void setId() throws Exception {
-//		String newId = "789xyz";
-//		guard.setId(newId);
-//		assertEquals(newId, guard.getId());
-//	}
-//
-//	@Test(expected = IllegalArgumentException.class)
-//	public void setIdEmptyException() throws Exception {
-//		guard.setId("");
-//	}
-//
-//	@Test(expected = IllegalArgumentException.class)
-//	public void setIdNullException() throws Exception {
-//		guard.setId(null);
-//	}
-
 	@Test
 	public void getRegularHours() throws Exception {
 		assertEquals(regularHours, guard.getRegularHours());
@@ -88,14 +70,14 @@ public class GuardTest {
 
 	@Test
 	public void setRegularHours() throws Exception {
-		int newRegularHours = 10;
+		double newRegularHours = 10;
 		guard.setRegularHours(newRegularHours);
-		assertEquals(newRegularHours, guard.getRegularHours());
+		assertEquals(BigDecimal.valueOf(newRegularHours), guard.getRegularHours());
 	}
 
 	@Test(expected = IllegalArgumentException.class)
 	public void setRegularHoursException() throws Exception {
-		int newRegularHours = -10;
+		double newRegularHours = -10;
 		guard.setRegularHours(newRegularHours);
 	}
 
@@ -106,20 +88,20 @@ public class GuardTest {
 
 	@Test
 	public void setOvertimeHours() throws Exception {
-		int newOvertimeHours = 10;
+		double newOvertimeHours = 10;
 		guard.setOvertimeHours(newOvertimeHours);
-		assertEquals(newOvertimeHours, guard.getOvertimeHours());
+		assertEquals(BigDecimal.valueOf(newOvertimeHours), guard.getOvertimeHours());
 	}
 
 	@Test(expected = IllegalArgumentException.class)
 	public void setOvertimeHoursException() throws Exception {
-		int newOvertimeHours = -10;
+		double newOvertimeHours = -10;
 		guard.setRegularHours(newOvertimeHours);
 	}
 
 	@Test
 	public void getRegularRate() throws Exception {
-		assertEquals(BigDecimal.valueOf(regularRate), guard.getRegularRate());
+		assertEquals(regularRate, guard.getRegularRate());
 	}
 
 	@Test
@@ -137,7 +119,7 @@ public class GuardTest {
 
 	@Test
 	public void getOvertimeRate() throws Exception {
-		assertEquals(BigDecimal.valueOf(overtimeRate), guard.getOvertimeRate());
+		assertEquals(overtimeRate, guard.getOvertimeRate());
 	}
 
 	@Test
@@ -154,14 +136,15 @@ public class GuardTest {
 	}
 
 	@Test
-	public void testZeroValues() throws Exception {
-		guard.setRegularRate(0);
-		assertEquals(BigDecimal.valueOf(0.0), guard.calculateRegularPay());
-
-		guard.setOvertimeRate(0);
-		assertEquals(BigDecimal.valueOf(0.0), guard.calculateOvertimePay());
-
-		assertEquals(BigDecimal.valueOf(0.0), guard.calculateTotalPay());
+	public void toStringTest() throws Exception {
+		System.out.println(guard.toString());
+		assert true;
 	}
+
+	@Test
+    public void saveAsCSV() throws Exception {
+        String testMe = guard.getAsCSV(true);
+        assertEquals(correctCSVOutput, testMe);
+    }
 
 }

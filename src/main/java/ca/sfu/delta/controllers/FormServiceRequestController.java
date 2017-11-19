@@ -45,6 +45,7 @@ public class FormServiceRequestController extends WebMvcConfigurerAdapter {
     public void addViewControllers(ViewControllerRegistry registry) {
         registry.addViewController("/results").setViewName("results.html");
         registry.addViewController("/requests").setViewName("requests.html");
+        registry.addViewController("/servicerequest").setViewName("form.html");
 
         registry.addViewController("/admin").setViewName("admin.html");
         registry.addViewController("/securitylogin").setViewName("securitylogin.html");
@@ -64,8 +65,8 @@ public class FormServiceRequestController extends WebMvcConfigurerAdapter {
     public @ResponseBody FormData getForm(@PathVariable("id") String id) {
         for (FormData f : formRepository.findAll()) {
         	if (f.getRequestID().equals(id)) {
-        		System.out.println("found form with requestID = "+f.getRequestID());
-        		System.out.println(f.jsonify());
+        		//System.out.println("found form with requestID = "+f.getRequestID());
+        		//System.out.println(f.getGuards());
         		return f;
 			}
 		}
@@ -101,9 +102,9 @@ public class FormServiceRequestController extends WebMvcConfigurerAdapter {
 	@RequestMapping(value = "/api/form/saveSecurity", method = RequestMethod.POST)
 	public @ResponseBody String saveSecurity(@RequestBody FormData form) {
 		formRepository.save(form);
-		for (FormData f : formRepository.findAll()) {
-			System.out.println(f.toString());
-		}
+		//for (FormData f : formRepository.findAll()) {
+		//	System.out.println(f.toString());
+		//}
 
 		return null;
 	}
@@ -121,6 +122,33 @@ public class FormServiceRequestController extends WebMvcConfigurerAdapter {
         }
         System.out.println(csvString);
         return csvString;
+    }
+
+    @RequestMapping(value = "/api/csv/guards/{id}-guards.csv", method = RequestMethod.GET, produces = "text/csv")
+    @ResponseBody
+    public String getGuardCSV(@PathVariable("id") String id) {
+        String csvString = new String();
+        FormData correctForm =  new FormData();
+        for (FormData form : formRepository.findAll()) {
+
+            if(form.getRequestID().equals(id))
+            {
+                correctForm = form;
+            }
+        }
+        List<Guard> correctFormGuards = correctForm.getGuards();
+
+        Boolean first = true;
+        StringWriter csvWriter = new StringWriter();
+        for (Guard g : correctFormGuards) {
+            if(first) {
+                csvWriter.append(g.getAsCSV(true));
+                first = false;
+            } else {
+                csvWriter.append(g.getAsCSV(false));
+            }
+        }
+        return csvWriter.toString();
     }
 
     @RequestMapping(value = "/api/csv/form/all.csv", method = RequestMethod.GET, produces = "text/csv")
@@ -229,14 +257,13 @@ public class FormServiceRequestController extends WebMvcConfigurerAdapter {
         Date date = new Date();
         form.setRequestedOnDate(dateFormat.format(date));
 
-        //TODO: make this actually useful instead of this bandaid solution
-        form.setRequestStatus("waiting");
+        form.setRequestStatus("WAITING");
 
         if (requestID != null && !requestID.isEmpty()) {
-	        form.setRequestID(requestID);
+            form.setRequestID(requestID);
         } else {
-        	// Need to reserve a request id for this form
-	        form.setRequestID(reserveNextRequestID());
+            // Need to reserve a request id for this form
+            form.setRequestID(reserveNextRequestID());
         }
 
         form = formRepository.save(form);
@@ -254,45 +281,41 @@ public class FormServiceRequestController extends WebMvcConfigurerAdapter {
 
             //Probably don't need to check here if email Address is null
             if (trackingID != null) {
-                try {
-                if (userEmailAddress != null && authEmailAddress != null) {
+                //if auhorizer email address is null or is blank
+                if (authorizerEmailAddress == null || authorizerEmailAddress.isEmpty()) {
+                    try {
+                        //Send email to User
+                        sendEmail.sendTo(userEmailAddress, userName, trackingID, requestURL);
+                    } catch (Exception e) {
+                        System.out.print("Error sending the email: " + e.getMessage());
+                    }
+                    System.out.println("Successfully saved Form with requestID = " + form.getId() + " and token = " + token);
+                    return formFromTokenURL + token;
+                }
 
-                        //send mail to User
+                // Else if authorizer and user email exists
+                if (userEmailAddress != null && authEmailAddress != null) {
+                    try {
+                        //Send email to User
                         sendEmail.sendTo(userEmailAddress, userName, trackingID, requestURL);
 
                         //send email to Authorizer
                         sendEmail.sendTo(authEmailAddress, trackingID, requestURL);
-
-                    } else {
-                    System.out.println("Error sending Email. Please ensure all the parameters are valid.");
+                    } catch (Exception e) {
+                        System.out.print("Error sending the emails: " + e.getMessage());
+                    }
+                    System.out.println("Successfully saved Form with requestID = " + form.getId() + " and token = " + token);
+                    return formFromTokenURL + token;
                 }
-                } catch (MessagingException ex) {
-                System.out.println("Could not send the email. Error message: " + ex.getMessage());
-                //e.printStackTrace();
+            } else {
+                System.out.print("Could not find RequestID/TrackingID");
             }
-            }
-	        System.out.println("Successfully saved Form with requestID = " + form.getId() + " and token = " + token);
-	        return formFromTokenURL + token;
         } else {
-            if (authorizerEmailAddress == null || authorizerEmailAddress.isEmpty()) {
-
-                try {
-                    sendEmail.sendTo(userEmailAddress, userName, trackingID, requestURL);
-
-                } catch (MessagingException ex) {
-                    System.out.println("Could not send the email to the user. Error message: " + ex.getMessage());
-                }
-
-                System.out.println("Successfully saved Form with requestID = " + form.getId() + " and token = " + token);
-                return formFromTokenURL + token;
-
-            }else {
-
-                System.out.println("Failed to save Form");
-                return "ERROR: form didn't save";
-            }
+            System.out.println("Failed to save Form");
         }
+        return "ERROR: form didn't save";
     }
+
 
     @RequestMapping(value = "/api/form/update/{id}", method = RequestMethod.PUT)
     public ResponseEntity<FormData> updateForm(@PathVariable("id") long id, @RequestBody FormData data) {
@@ -328,14 +351,14 @@ public class FormServiceRequestController extends WebMvcConfigurerAdapter {
 
     @GetMapping("/")
     public String showForm(FormData serviceRequestForm) {
-        return "form.html";
+        return "landing.html";
     }
 
     @PostMapping("/")
     public String checkFormRequest(@Valid FormData serviceRequestForm, BindingResult bindingResult) {
 
         if (bindingResult.hasErrors()) {
-            return "form.html";
+            return "landing.html";
         }
 
         saveFormToDatabase(serviceRequestForm);
