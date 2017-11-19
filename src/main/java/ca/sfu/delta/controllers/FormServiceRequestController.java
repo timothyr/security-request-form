@@ -65,8 +65,8 @@ public class FormServiceRequestController extends WebMvcConfigurerAdapter {
     public @ResponseBody FormData getForm(@PathVariable("id") String id) {
         for (FormData f : formRepository.findAll()) {
         	if (f.getRequestID().equals(id)) {
-        		System.out.println("found form with requestID = "+f.getRequestID());
-        		System.out.println(f.jsonify());
+        		//System.out.println("found form with requestID = "+f.getRequestID());
+        		//System.out.println(f.getGuards());
         		return f;
 			}
 		}
@@ -102,6 +102,9 @@ public class FormServiceRequestController extends WebMvcConfigurerAdapter {
 	@RequestMapping(value = "/api/form/saveSecurity", method = RequestMethod.POST)
 	public @ResponseBody String saveSecurity(@RequestBody FormData form) {
 		formRepository.save(form);
+		//for (FormData f : formRepository.findAll()) {
+		//	System.out.println(f.toString());
+		//}
 
 		return null;
 	}
