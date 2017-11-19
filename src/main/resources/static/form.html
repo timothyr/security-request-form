@@ -167,7 +167,7 @@
 					</div>
 					<div class="row mt-5">
 						<div class="col-md-12 text-center">
-							<button id="submit" class="btn btn-danger btn-lg col-md-8" v-bind:class="{disabled: loading}">
+							<button id="submit" class="btn btn-danger btn-lg col-md-8" v-bind:class="{disabled: !isValid | loading}">
                                 <div class="loading-icon mr-3" v-if="loading"></div>
                                 {{this.submitText}}
                             </button>
