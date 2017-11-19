@@ -51,18 +51,26 @@ public class AuthController {
 
     @RequestMapping(value = "/login", method = RequestMethod.GET)
     public String handleLoginRequest(
+            @RequestParam(value = "redirect", required = false) String redirectUrl,
             @RequestParam(value = "ticket", required = false) String ticket,
             HttpServletRequest req
     ) {
         String baseUrl = getBaseUrl(req);
 
+        if(redirectUrl == null) {
+            redirectUrl = "";
+        }
+
         if (ticket == null) {
-            return "redirect://cas.sfu.ca/cas/login?service=" + baseUrl + "/requests";
+            System.out.println("Ticket null. Redirecting...");
+            return "redirect://cas.sfu.ca/cas/login?service=" + baseUrl + "/" + redirectUrl;
         } else {
-            String url = "https://cas.sfu.ca/cas/serviceValidate?service=" + baseUrl + "/requests&ticket=" + ticket;
+            String url = "https://cas.sfu.ca/cas/serviceValidate?service=" + baseUrl + "/" + redirectUrl + "&ticket=" + ticket;
             String response = httpRequest(url);
 
             username = getStringBetween(response, "<cas:user>", "</cas:user>");
+
+            System.out.println("Username = " + username);
 
             return baseUrl;
         }
