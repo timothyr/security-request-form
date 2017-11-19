@@ -9,19 +9,6 @@
 	<link rel="stylesheet" href="/css/style.css">
 </head>
 
-<!-- fixes guard table display -->
-<style>
-	@media all and (max-width:768px) {
-		.guardtable tr {
-			display: table;
-			width: 100%;
-		}
-		.guardtable td {
-			display: table-row;
-		}
-	}
-</style>
-
 <body>
 	<header>
 		<img class="logo" src="/img/sfu-logo@2x.png" alt="sfu-logo"/>
@@ -36,6 +23,7 @@
                     <div class="dropdown-toggle" id="dropdownMenuButton" data-toggle="dropdown"><i class="fa fa-cog"></i></div>
                     <ul class="dropdown-menu">
                         <li class="dropdown-item" v-on:click="exportRequestCSV()">Export Request to CSV</li>
+                        <li class="dropdown-item" v-on:click="exportRequestGuardsCSV()">Export Guard list to CSV</li>
                     </ul>
                 </div>
             </div>
@@ -141,7 +129,7 @@
 				</div>
 			</div>
 
-			<h5>Guards</h5>
+			<h5 class="mt-5">Guards</h5>
 			<div v-for="g in form.guards">
 				<div class="row mt-3">
 					<div class="col">
@@ -153,7 +141,7 @@
 						<input class="form-control text-center" id="gLoc" type="text" v-model="g.location">
 					</div>
 				</div>
-				<div class="row">
+				<div class="row mt-3">
 					<div class="col">
 						<label for="gDateStart">Start Date</label>
 						<input class="form-control text-center" id="gDateStart" type="date" v-model="g.startDate">
@@ -163,7 +151,7 @@
 						<input class="form-control text-center" id="gDateEnd" type="date" v-model="g.endDate">
 					</div>
 				</div>
-				<div class="row">
+				<div class="row mt-3">
 					<div class="col">
 						<label for="gTimeStart">Start Time</label>
 						<input class="form-control text-center" id="gTimeStart" type="time" v-model="g.startTime">
@@ -173,7 +161,7 @@
 						<input class="form-control text-center" id="gTimeEnd" type="time" v-model="g.endTime">
 					</div>
 				</div>
-				<div class="row">
+				<div class="row mt-3">
 					<div class="col">
 						<label for="gName">Name</label>
 						<input class="form-control text-center" id="gName" type="text" v-model="g.name">
@@ -182,17 +170,33 @@
 						<label for="gTel">Telephone</label>
 						<input class="form-control text-center" id="gTel" type="text" v-model="g.telephone">
 					</div>
+					<div class="col">
+						<label for="gType">Type</label>
+						<select class="form-control text-center" id="gType" v-model="g.type">
+							<option>Guard</option>
+							<option>SCSP</option>
+						</select>
+					</div>
 				</div>
-				<div class="row m-2">
-					<button type="button" class="btn btn-danger" v-on:click="deleteGuard(g)">Remove Guard</button>
+				<div class="row my-2 text-center">
+					<div class="col col-md-3"></div>
+					<div class="col">
+						<button type="button" class="btn btn-danger mx-2" v-on:click="deleteGuard(g)">Remove Guard</button>
+						<button type="button" class="btn" v-on:click="addGuard">Add Guard</button>
+					</div>
+					<div class="col col-md-3"></div>
 				</div>
 			</div>
 
-			<div class="row m-2">
-				<button type="button" class="btn" v-on:click="addGuard">Add Guard</button>
+			<div class="row my-2 text-center" v-if="form.guards.length == 0">
+				<div class="col col-md-3"></div>
+				<div class="col">
+					<button type="button" class="btn" v-on:click="addGuard">Add Guard</button>
+				</div>
+				<div class="col col-md-3"></div>
 			</div>
 
-			<div class="row my-3">
+			<div class="row my-5">
 				<div class="col">
 					<label for="regRate">Regular Rate</label>
 					<input class="form-control text-center" id="regRate" type="number" step="0.01" min="0" v-model="regularRate" required="required">
@@ -211,9 +215,15 @@
 				</div>
 			</div>
 
-			<div class="row my-3">
-				<div class="col">
+			<div class="row my-3 text-center">
+				<div class="col mx-0" >
 					<p>Estimated Personnel Cost: {{cost}}</p>
+				</div>
+				<div class="col mx-0">
+					<p>Total Hours: {{totalHours}}</p>
+				</div>
+				<div class="col mx-0">
+					<p>Hours per Guard: {{avgHours}}</p>
 				</div>
 			</div>
 
@@ -302,6 +312,9 @@
                     exportRequestCSV: function() {
                         window.location.assign("/api/csv/form/" + this.requestID + ".csv");
                     },
+                    exportRequestGuardsCSV: function() {
+                        window.location.assign("/api/csv/guards/" + this.requestID + "-guards.csv");
+                    },
 
 					addGuard: function() {
 						this.form.guards.push({
@@ -313,6 +326,7 @@
 							endTime: '',
 							name: '',
 							telephone: '',
+							type: 'Guard',
 							regularHours: null,
 							overtimeHours: null,
 							regularRate: null,
@@ -396,7 +410,6 @@
 						});
 
 					},
-
 					setSecFields: function () {
 						this.form.distributionList = this.emails;
 
@@ -476,6 +489,21 @@
 						cost *= guards;
 
 						return cost;
+					},
+
+					totalHours: function () {
+                    	let total = 0;
+						total += Number.parseFloat(this.regularHours) + Number.parseFloat(this.overtimeHours);
+						total *= this.form.guards.length;
+
+						return total;
+					},
+
+					avgHours: function () {
+						let avg = 0;
+						avg += Number.parseFloat(this.regularHours) + Number.parseFloat(this.overtimeHours);
+
+						return avg;
 					}
 				}
 			});
