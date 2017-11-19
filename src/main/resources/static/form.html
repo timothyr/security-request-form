@@ -33,7 +33,9 @@
 						</div>
 						<div class="form-group col-md-4">
 							<label for="department-input">Department</label>
-							<input type="text" id="department-input" v-model="formData.department" class="form-control" required="required"/>
+                            <select required class="form-control" id="department-input" v-model="formData.department">
+                                <option :value="department" v-for="department in departments">{{department}}</option>
+                            </select>
 						</div>
 						<div class="form-group col-md-4">
 							<label for="sfu-id-input">SFU ID</label>
@@ -241,6 +243,18 @@
             NOT_LOGGED_IN_LOAD: 'Requesting Authorization'
         }
 
+        // TODO more specific? https://www.sfu.ca/dean-gradstudies/blog/departments.html
+        const departments = [
+            "Faculty of Applied Sciences",
+            "Faculty of Arts and Social Sciences",
+            "Beedie School of Business",
+            "Faculty of Communication, Art and Technology",
+            "Faculty of Education",
+            "Faculty of Environment",
+            "Faculty of Health Sciences",
+            "Faculty of Science"
+        ];
+
         var Modal = Vue.component('modal', {
             template: '#modal-template',
 
@@ -300,6 +314,7 @@
                 startdatetime: '',
 				enddatetime: '',
 				datetimelist: [],
+                departments: departments,
                 loading: false,
             }),
 
