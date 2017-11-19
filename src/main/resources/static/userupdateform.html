@@ -175,7 +175,7 @@
                 </div>
                 <div class="row mt-5">
                     <div class="col-md-12 text-center">
-                        <button class="btn btn-danger btn-lg col-md-8" v-on:click="updateForm()">Update</button>
+                        <button class="btn btn-danger btn-lg col-md-8" v-bind:class="{disabled: !isValid}" v-on:click="updateForm()">Update</button>
                     </div>
                 </div>
                 <div class="bottom-space"></div>
