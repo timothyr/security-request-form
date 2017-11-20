@@ -1,4 +1,9 @@
 $(document).ready(function(){
+
+			$("#startdatetime").keyup(function () {
+                this.setCustomValidity('You should add at least one event dates.');
+            });
+
 			$("#chooseStartDateTime").datetimepicker({
 				dayOfWeekStart:0,
 				allowTimes:[
@@ -8,10 +13,10 @@ $(document).ready(function(){
                   '20:00','20:30','21:00','21:30','22:00','22:30','23:00','23:30',
                 ],
                 formatTime: 'g:i a',
+                defaultDate: new Date(),
                 minDateTime: new Date(),
                 onClose: setMinDate,
 			});
-
 			$("#chooseEndDateTime").datetimepicker({
 				dayOfWeekStart:0,
 				lang: 'en',
@@ -21,6 +26,8 @@ $(document).ready(function(){
                     '13:00','13:30','14:00','14:30','15:00','15:30','16:00','16:30','17:00','17:30','18:00','18:30','19:00','19:30',
                     '20:00','20:30','21:00','21:30','22:00','22:30','23:00','23:30',
                 ],
+                defaultDate: new Date(),
+                minDateTime: new Date(),
 				formatTime: 'g:i a',
             });
 
@@ -40,6 +47,12 @@ $(document).ready(function(){
 			document.getElementById(inputId).value = '';
 			return x;
 		}
+
+		function disableDateInput(val){
+		    document.getElementById("startdatetime").disabled = val;
+		    document.getElementById("enddatetime").disabled = val;
+		}
+
 
 		function setMinDate(){
             var x=$('#chooseStartDateTime').val();

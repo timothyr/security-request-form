@@ -49,7 +49,7 @@
 						</div>
 						<div class="form-group col-md-4">
 							<label for="email-input">Email</label>
-							<input type="email" id="email-input" class="form-control" v-model="formData.emailAddress" placeholder="example@sfu.ca" required="required"/>
+							<input type="email" id="email-input" class="form-control" v-model="formData.emailAddress" placeholder="example@sfu.ca"/>
 						</div>
 						<div class="form-group col-md-4">
 							<label for="fax-input">Fax (optional)</label>
@@ -59,7 +59,7 @@
 					<div class="row">
 						<div class="form-group col-md-4">
 							<label for="type-name-of-event-input">Type/Name of Event</label>
-							<input type="text" id="type-name-of-event-input" v-model="formData.eventName" class="form-control" required="required"/>
+							<input type="text" id="type-name-of-event-input" v-model="formData.eventName" class="form-control"/>
 						</div>
 						<div class="form-group col-md-4">
 							<label for="location-input">Location</label>
@@ -110,7 +110,7 @@
 									<span class="input-group-addon">
 										<i class="fa fa-calendar calendar-icon"></i>
 									</span>
-										<input type="text" id="startdatetime" class="form-control" disabled="disabled"/>
+										<input type="text" id="startdatetime" class="form-control" required="required"/>
 									</div>
 								</th>
 
@@ -119,7 +119,7 @@
 									<span class="input-group-addon">
 										<i class="fa fa-calendar calendar-icon"></i>
 									</span>
-										<input type="text" id="enddatetime" class="form-control" disabled="disabled"/>
+										<input type="text" id="enddatetime" class="form-control diabled" required="required"/>
 									</div>
 								</th>
 
@@ -143,6 +143,8 @@
 							</tr>
 							</tbody>
 						</table>
+
+
 					</div>
 					<div>
 						<h3 class="auth-heading mt-4">Authorization</h3>
@@ -302,6 +304,7 @@
                 startdatetime: '',
 				enddatetime: '',
 				datetimelist: [],
+				datetimelistsize: '0',
                 loading: false,
             }),
 
@@ -458,6 +461,8 @@
 							this.formData.eventDates += ", "+this.startdatetime +"-"+ this.enddatetime;
 						}
 						this.datetimelist.push( {start: this.startdatetime, end: this.enddatetime} );
+						disableDateInput(true);
+						this.datetimelistsize++;
 						this.startdatetime = '';
 						this.enddatetime = '';
             		}
@@ -466,6 +471,9 @@
             		var index = this.datetimelist.indexOf(dt);
             		this.formData.eventDates = deleteEventDate(dt.start,dt.end,this.formData.eventDates, index,this.datetimelist.length);
             		this.datetimelist.splice(index,1);
+            		if(this.datetimelist.length==0){
+            			disableDateInput(false);
+            		}
             	},
             },
 

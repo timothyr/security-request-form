@@ -88,6 +88,10 @@ button {
 	height: 100px;
 }
 
+input[type=text]:disabled {
+    background: #ffffff;
+}
+
 
 /* TABLE */
 th {
