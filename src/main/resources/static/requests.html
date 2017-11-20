@@ -153,7 +153,7 @@
                     eventName: "Event Name",
                     Location: "Location",
                     eventDates: "Date",
-                    status: "Status"
+                    requestStatus: "Status"
                 }
                 return getKeyByValue(mappings, columnName);
             },
@@ -176,17 +176,18 @@
                         return isTermInObject(request, this.searchTerm);
                     }).sort((requestA, requestB) => {
                         if (this.reversed) {
-                            console.log("=greater than than");
                             return requestA[this.getColumnValue(this.sortKey)] > requestB[this.getColumnValue(this.sortKey)]
                         } else {
-                            console.log("=less than");
                             return requestA[this.getColumnValue(this.sortKey)] < requestB[this.getColumnValue(this.sortKey)]
                         }
                     }).filter(request => {
                         if(this.activeStatus == "ALL") {
                             return true;
                         } else {
-                            return request.status.toLowerCase() == this.activeStatus.toLowerCase();
+                            if (!request.requestStatus || this.activeStatus) {
+                                return false;
+                            }
+                            return request.requestStatus.toLowerCase() == this.activeStatus.toLowerCase();
                         }
                     });
 
