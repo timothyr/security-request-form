@@ -46,138 +46,141 @@ public class SendEmail {
         this.javaMailSender = javaMailSender;
     }
 
+	public void sendEventRequestConfirmation(String sendToEmailAddress, String personName, String trackingID, String requestURL) throws MessagingException {
+		String subject = "SFU: Your Event Security Request Confirmation";
 
-    // Sets appropriate greeting for a person based on if the name is known or not
-    private String setGreeting(String personName){
-        String greeting;
-        if (personName == null || personName.isEmpty()) {
-            greeting = "Hi!\n\n";
-        }
-        else {
-            greeting = "Hi " + personName + ",\n\n";
-        }
-        return greeting;
-    }
+		//Swap keys in the HTML file with actual values
+		Map<String, String> input = new HashMap<>();
+		input.put("Greeting", getGreeting(personName));
+		input.put("trackingID", trackingID);
+		input.put("requestURL", requestURL);
 
-    //Sets SMTP Properties
-    Properties properties;
-    private Properties setSmtpProperties(){
-        //Mail Properties
-        properties = System.getProperties();
-        properties.put("mail.smtp.starttls.enable", "true");
-        properties.put("mail.smtp.host", mailHost);
-        properties.put("mail.smtp.user", smtpSenderEmail);
-        properties.put("mail.smtp.password", smtpSenderEmailPassword);
-        properties.put("mail.smtp.port", smtpPort);
-        properties.put("mail.smtp.auth", IsAuthorized);
+		String htmlEmailBody = makeEmailFromHtml("src/main/resources/static/emailUserRequestConfirmation.html", input);
 
-        return properties;
-    }
+		sendMail(sendToEmailAddress, subject, htmlEmailBody);
+	}
 
-    private void setEmailAttributes(MimeMessage message, String sendToEmailAddress){
-        try {
-            message.setFrom(new InternetAddress(smtpSenderEmail));
-            message.addRecipient(Message.RecipientType.TO, new InternetAddress(sendToEmailAddress));
-            message.setSubject("SFU: Event Security Request ");
-        } catch (MessagingException e) {
-            e.printStackTrace();
-        }
-    }
+	public void sendRequestAuthorizationEmail(String sendToEmailAddress, String trackingID, String requestURL) throws MessagingException {
+		String subject = "SFU: Request for authorization";
 
-    public void sendMail(Session session, MimeMessage message){
+		//Swap keys in the HTML file with actual values
+		Map<String, String> input = new HashMap<>();
+		input.put("Greeting", getGreeting(null));
+		input.put("trackingID", trackingID);
+		input.put("requestURL", requestURL);
 
-        Transport transport = null;
-        try {
-            transport = session.getTransport("smtp");
-            transport.connect(mailHost, smtpSenderEmail, smtpSenderEmailPassword);
-            transport.sendMessage(message, message.getAllRecipients());
-            transport.close();
-        } catch (NoSuchProviderException e) {
-            e.printStackTrace();
-        } catch (MessagingException e) {
-            e.printStackTrace();
-        }
-    }
+		String htmlEmailBody = makeEmailFromHtml("src/main/resources/static/emailAuthorizerRequestConfirmation.html", input);
 
+		sendMail(sendToEmailAddress, subject, htmlEmailBody);
+	}
 
-    public void sendTo(String sendToEmailAddress, String personName, String trackingID, String requestURL) throws MessagingException {
-        //Calls a function that sets SMTP properties
-        setSmtpProperties();
+	public void sendEventRequestRejection(String sendToEmailAddress, String personName,
+	                                      String trackingID, String rejectionMessage) throws MessagingException {
+		String subject = "SFU: Event Security Rejected";
 
-        //Set greeting
-        String greeting = setGreeting(personName);
+		Map<String, String> input = new HashMap<>();
+		input.put("Greeting", getGreeting(personName));
+		input.put("trackingID", trackingID);
+		input.put("rejectionMessage", rejectionMessage);
 
-        Session session = Session.getDefaultInstance(properties);
+		String htmlEmailBody = makeEmailFromHtml("src/main/resources/static/emailRequestRejected.html", input);
 
-        MimeMessage message = new MimeMessage(session);
+		sendMail(sendToEmailAddress, subject, htmlEmailBody);
+	}
 
-        //Calls a function which sets attributes: Sender's Email, Recipient's Email, Email Subject
-        setEmailAttributes(message, sendToEmailAddress);
+	public void sendEventRequestApproved(String sendToEmailAddress, String personName,
+	                                     String trackingID) throws MessagingException {
+		String subject = "SFU: Event Security Approved";
 
-        MimeMultipart multipart = new MimeMultipart();
-        BodyPart messageBodyPart = new MimeBodyPart();
+		Map<String, String> input = new HashMap<>();
+		input.put("Greeting", getGreeting(personName));
+		input.put("trackingID", trackingID);
 
-        //Swap keys in the HTML file with actual values
-        Map<String, String> input = new HashMap<>();
-        input.put("User", greeting);
-        input.put("trackingID", trackingID);
-        input.put("requestURL", requestURL);
+		String htmlEmailBody = makeEmailFromHtml("src/main/resources/static/emailRequestApproved.html", input);
 
-        //Get file path of HTML file to be embedded in the email
-        String filePath;
-        File resourcesDirectory = new File("src/main/resources/static/emailUser.html");
-        filePath = resourcesDirectory.getPath();
+		sendMail(sendToEmailAddress, subject, htmlEmailBody);
+	}
 
-        //Read from HTML file
-        String htmlText;
-        htmlText = readEmailFromHtml(filePath,input);
-        messageBodyPart.setContent(htmlText, "text/html");
+	private void sendMail(String sendToEmailAddress, String subject, String htmlEmailBody) throws MessagingException {
+		//Calls a function that sets SMTP properties
+		setSmtpProperties();
+		Session session = Session.getDefaultInstance(properties);
+		MimeMessage message = new MimeMessage(session);
 
-        multipart.addBodyPart(messageBodyPart);
-        message.setContent(multipart);
+		//Calls a function which sets attributes: Sender's Email, Recipient's Email, Email Subject
+		setEmailAttributes(message, sendToEmailAddress, subject);
 
-        //Sends Email
-        sendMail(session, message);
-    }
+		MimeMultipart multipart = new MimeMultipart();
+		BodyPart messageBodyPart = new MimeBodyPart();
 
-    public void sendTo(String sendToEmailAddress, String trackingID, String requestURL) throws MessagingException {
-        setSmtpProperties();
+		messageBodyPart.setContent(htmlEmailBody, "text/html");
 
-        Session session = Session.getDefaultInstance(properties);
-        MimeMessage message = new MimeMessage(session);
+		multipart.addBodyPart(messageBodyPart);
+		message.setContent(multipart);
 
-        //Calls a function which sets attributes: Sender's Email, Recipient's Email, Email Subject
-        setEmailAttributes(message, sendToEmailAddress);
+		//Sends Email
+		sendMail(session, message);
+	}
 
-        MimeMultipart multipart = new MimeMultipart();
-        BodyPart messageBodyPart = new MimeBodyPart();
+	// Sets appropriate greeting for a person based on if the name is known or not
+	private String getGreeting(String personName){
+		String greeting;
+		if (personName == null || personName.isEmpty()) {
+			greeting = "Hello!\n\n";
+		}
+		else {
+			greeting = "Hello " + personName + ",\n\n";
+		}
+		return greeting;
+	}
 
-        Map<String, String> input = new HashMap<>();
+	//Sets SMTP Properties
+	Properties properties;
+	private Properties setSmtpProperties(){
+		//Mail Properties
+		properties = System.getProperties();
+		properties.put("mail.smtp.starttls.enable", "true");
+		properties.put("mail.smtp.host", mailHost);
+		properties.put("mail.smtp.user", smtpSenderEmail);
+		properties.put("mail.smtp.password", smtpSenderEmailPassword);
+		properties.put("mail.smtp.port", smtpPort);
+		properties.put("mail.smtp.auth", IsAuthorized);
 
-        input.put("trackingID", trackingID);
-        input.put("requestURL", requestURL);
+		return properties;
+	}
 
-        //Get file path of HTML file to be embedded in the email
-        String filePath;
-        File resourcesDirectory = new File("src/main/resources/static/emailAuthorizer.html");
-        filePath = resourcesDirectory.getPath();
+	private void setEmailAttributes(MimeMessage message, String sendToEmailAddress, String subject){
+		try {
+			message.setFrom(new InternetAddress(smtpSenderEmail));
+			message.addRecipient(Message.RecipientType.TO, new InternetAddress(sendToEmailAddress));
+			message.setSubject(subject);
+		} catch (MessagingException e) {
+			e.printStackTrace();
+		}
+	}
 
-        //Read from HTML file
-        String htmlText;
-        htmlText = readEmailFromHtml(filePath, input);
-        messageBodyPart.setContent(htmlText, "text/html");
-
-        multipart.addBodyPart(messageBodyPart);
-        message.setContent(multipart);
-
-        //Calls a function to send Email
-        sendMail(session, message);
-    }
-
+	private void sendMail(Session session, MimeMessage message){
+		Transport transport = null;
+		try {
+			transport = session.getTransport("smtp");
+			transport.connect(mailHost, smtpSenderEmail, smtpSenderEmailPassword);
+			transport.sendMessage(message, message.getAllRecipients());
+			transport.close();
+		} catch (NoSuchProviderException e) {
+			e.printStackTrace();
+		} catch (MessagingException e) {
+			e.printStackTrace();
+		}
+	}
 
     //**      Helper Functions     **//
-    private String readEmailFromHtml(String filePath, Map<String, String> input)
+    private String makeEmailFromHtml(String filePathName, Map<String, String> input)
     {
+	    //Get file path of HTML file to be embedded in the email
+	    String filePath;
+	    File resourcesDirectory = new File(filePathName);
+	    filePath = resourcesDirectory.getPath();
+
         String emailMessage = readContentFromFile(filePath);
         try
         {
@@ -192,6 +195,7 @@ public class SendEmail {
         }
         return emailMessage;
     }
+
     //Method to read HTML file as a String
     private String readContentFromFile(String fileName)
     {
