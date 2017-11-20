@@ -238,3 +238,20 @@ svg path, svg rect {
     color: #686868;
     border: 1px solid #CED4DA;
 }
+
+/* SECURITYVIEW LIST GROUP */
+.list-group {
+    color: #686868;
+}
+
+.dark-text {
+    color: #2e2e2e;
+}
+
+.grey-text {
+    color: #686868;
+}
+
+.badge-med {
+    font-size: 1.0em
+}

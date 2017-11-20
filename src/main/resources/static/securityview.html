@@ -15,10 +15,15 @@
 	</header>
 	<div class="container col-md-10 offset-md-1 wrapper mb-5 col-lg-10" id="app">
         <div class="row mt-5"></div>
-		<div class="container" v-cloak>
-			<div class="row">
-				<h3 class="mt-5 mx-5">Request #{{requestID}}</h3>
+		<div class="container col-md-10" v-cloak>
+			<div class="row mt-4">
+				<h3 class="mt-5">Request #{{requestID}}</h3>
 			</div>
+            <div class="row">
+                <div class="" v-if="form.requestStatus !== null">
+                    <span class="badge white-text badge-med" v-bind:class="getBadgeClassName(form.requestStatus)">{{form.requestStatus}}</span>
+                </div>
+            </div>
             <div class="row pull-right">
                 <div class="dropdown">
                     <div class="dropdown-toggle" id="dropdownMenuButton" data-toggle="dropdown"><i class="fa fa-cog"></i></div>
@@ -28,53 +33,34 @@
                     </ul>
                 </div>
             </div>
-			<div class="row mt-3">
-				<div class="col" v-if="form.requestStatus !== null">
-                    <span class="badge white-text" v-bind:class="getBadgeClassName(form.requestStatus)">{{form.requestStatus}}</span>
-				</div>
-			</div>
-			<div class="row">
-				<div class="col" v-if="form.requesterName !== null">
-					<p class="mx-5">Requested By: {{form.requesterName}}</p>
-				</div>
-				<div class="col" v-if="form.requesterID !== null">
-					<p class="mx-5">SFU ID: {{form.requesterID}}</p>
-				</div>
-			</div>
-			<div class="row">
-				<div class="col" v-if="form.phoneNumber !== null">
-					<p class="mx-5">Phone: {{form.phoneNumber}}</p>
-				</div>
-				<div class="col" v-if="form.faxNumber !== null">
-					<p class="mx-5">Fax: {{form.faxNumber}}</p>
-				</div>
-			</div>
-			<div class="row">
-				<div class="col" v-if="form.emailAddress !== null">
-					<p class="mx-5">Email: {{form.emailAddress}}</p>
-				</div>
-				<div class="col">
-					<p class="mx-5">Location: {{form.eventLocation}}</p>
-				</div>
-			</div>
-			<div class="row">
-				<div class="col" v-if="form.eventName !== null">
-					<p class="mx-5">Type/Name of Event: {{form.eventName}}</p>
-				</div>
-				<div class="col" v-if="form.numAttendees !== null">
-					<p class="mx-5"># of Attendees: {{form.numAttendees}}</p>
-				</div>
-			</div>
-			<div class="row">
-				<div class="col" v-if="form.eventDetails !== null">
-					<p class="mx-5">Details: {{form.eventDetails}}</p>
-				</div>
-			</div>
-			<div class="row">
-				<div class="col" v-if="form.isLicensed !== null">
-					<h5 class="mt-2 text-center">Licensed: {{form.isLicensed}}</h5>
-				</div>
-			</div>
+            <div class="row mt-5">
+                <div class="col-lg-6">
+                    <ul class="list-group">
+                        <li class="list-group-item d-flex justify-content-between align-items-center">Requested By: <span class="dark-text">{{form.requesterName}}</span></li>
+                        <li class="list-group-item d-flex justify-content-between align-items-center">Phone: <span class="dark-text">{{form.phoneNumber}}</span></li>
+                        <li class="list-group-item d-flex justify-content-between align-items-center">Email: <span class="dark-text">{{form.emailAddress}}</span></li>
+                        <li class="list-group-item d-flex justify-content-between align-items-center">Type/Name of Event: <span class="dark-text">{{form.eventName}}</span></li>
+                        <li class="list-group-item d-flex justify-content-between align-items-center">Location: <span class="dark-text">{{form.eventLocation}}</span></li>
+
+                    </ul>
+                </div>
+                <div class="col-lg-6">
+                    <ul class="list-group">
+                        <li class="list-group-item d-flex justify-content-between align-items-center">SFU ID: <span class="dark-text">{{form.requesterID}}</span></li>
+                        <li class="list-group-item d-flex justify-content-between align-items-center">Fax: <span class="dark-text">{{form.faxNumber}}</span></li>
+                        <li class="list-group-item d-flex justify-content-between align-items-center"># of Attendees: <span class="dark-text">{{form.numAttendees}}</span></li>
+                        <li class="list-group-item d-flex justify-content-between align-items-center">Licensed: <span class="dark-text">{{form.isLicensed}}</span></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="row mt-4">
+                <span class="ml-3 grey-text">Details:</span>
+                <ul class="list-group col-md-12 mt-1" style="margin-left: 15px">
+                    <li class="list-group-item">
+                        <span class="dark-text">{{form.eventDetails}}</span>
+                    </li>
+                </ul>
+            </div>
 
 			<div class="row my-4">
 				<table class="table table-striped">
