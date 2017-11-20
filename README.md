@@ -23,7 +23,7 @@ mysql> grant all on db_example.* to 'springuser'@'localhost';
 ## Running Web Application
 
 First, we need to set up the `src/main/resources/application.properties` file to reflect database properties. Copy 
-and paste the following into it, if it doesn't already exist. Notice the username and password and databaase name is 
+and paste the following into it, if it doesn't already exist. Notice the username and password and database name is 
 the same from the previous section.
 
 ```shell
