@@ -9,19 +9,6 @@
 	<link rel="stylesheet" href="/css/style.css">
 </head>
 
-<!-- fixes guard table display -->
-<style>
-	@media all and (max-width:768px) {
-		.guardtable tr {
-			display: table;
-			width: 100%;
-		}
-		.guardtable td {
-			display: table-row;
-		}
-	}
-</style>
-
 <body>
 	<header>
 		<img class="logo" src="/img/sfu-logo@2x.png" alt="sfu-logo"/>
@@ -36,6 +23,7 @@
                     <div class="dropdown-toggle" id="dropdownMenuButton" data-toggle="dropdown"><i class="fa fa-cog"></i></div>
                     <ul class="dropdown-menu">
                         <li class="dropdown-item" v-on:click="exportRequestCSV()">Export Request to CSV</li>
+                        <li class="dropdown-item" v-on:click="exportRequestGuardsCSV()">Export Guard list to CSV</li>
                     </ul>
                 </div>
             </div>
@@ -87,7 +75,6 @@
 				</div>
 			</div>
 
-			<!-- TODO: get real values when that is ready -->
 			<div class="row my-4">
 				<table class="table table-striped">
 					<thead>
@@ -142,58 +129,74 @@
 				</div>
 			</div>
 
-			<div class="row mt-5">
-				<table class="guardtable table-striped">
-					<thead>
-						<tr>
-							<th class="text-center">Dispatch #</th>
-							<th class="text-center">Location</th>
-							<th class="text-center">Start Date</th>
-							<th class="text-center">End Date</th>
-							<th class="text-center">Start Time</th>
-							<th class="text-center">End Time</th>
-							<th class="text-center">Name</th>
-							<th class="text-center">Telephone</th>
-						</tr>
-					</thead>
-					<tbody id="guards">
-						<tr v-for="g in form.guards">
-							<td>
-								<input class="form-control text-center" type="text" v-model="g.guardID" required="required">
-							</td>
-							<td>
-								<input class="form-control text-center" type="text" v-model="g.location" required="required">
-							</td>
-							<td>
-								<input class="form-control text-center" type="date" v-model="g.startDate" required="required">
-							</td>
-							<td>
-								<input class="form-control text-center" type="date" v-model="g.endDate" required="required">
-							</td>
-							<td>
-								<input class="form-control text-center" type="time" v-model="g.startTime" required="required">
-							</td>
-							<td>
-								<input class="form-control text-center" type="time" v-model="g.endTime" required="required">
-							</td>
-							<td>
-								<input class="form-control text-center" type="text" v-model="g.name" required="required">
-							</td>
-							<td>
-								<input class="form-control text-center" type="text" v-model="g.telephone" required="required">
-							</td>
-							<td>
-								<button type="button" class="btn btn-danger" v-on:click="deleteGuard(g)" v-if="form.guards.length > 1">Remove Guard</button>
-							</td>
-						</tr>
-					</tbody>
-				</table>
-			</div>
-			<div class="row text-right">
-				<button type="button" class="btn" v-on:click="addGuard">Add Guard</button>
+			<h5 class="mt-5">Guards</h5>
+			<div v-for="g in form.guards">
+				<div class="row mt-3">
+					<div class="col">
+						<label for="gID">Dispatch #</label>
+						<input class="form-control text-center" id="gID" type="text" v-model="g.guardID">
+					</div>
+					<div class="col">
+						<label for="gLoc">Location</label>
+						<input class="form-control text-center" id="gLoc" type="text" v-model="g.location">
+					</div>
+				</div>
+				<div class="row mt-3">
+					<div class="col">
+						<label for="gDateStart">Start Date</label>
+						<input class="form-control text-center" id="gDateStart" type="date" v-model="g.startDate">
+					</div>
+					<div class="col">
+						<label for="gDateEnd">End Date</label>
+						<input class="form-control text-center" id="gDateEnd" type="date" v-model="g.endDate">
+					</div>
+				</div>
+				<div class="row mt-3">
+					<div class="col">
+						<label for="gTimeStart">Start Time</label>
+						<input class="form-control text-center" id="gTimeStart" type="time" v-model="g.startTime">
+					</div>
+					<div class="col">
+						<label for="gTimeEnd">End Time</label>
+						<input class="form-control text-center" id="gTimeEnd" type="time" v-model="g.endTime">
+					</div>
+				</div>
+				<div class="row mt-3">
+					<div class="col">
+						<label for="gName">Name</label>
+						<input class="form-control text-center" id="gName" type="text" v-model="g.name">
+					</div>
+					<div class="col">
+						<label for="gTel">Telephone</label>
+						<input class="form-control text-center" id="gTel" type="text" v-model="g.telephone">
+					</div>
+					<div class="col">
+						<label for="gType">Type</label>
+						<select class="form-control text-center" id="gType" v-model="g.type">
+							<option>Guard</option>
+							<option>SCSP</option>
+						</select>
+					</div>
+				</div>
+				<div class="row my-2 text-center">
+					<div class="col col-md-3"></div>
+					<div class="col">
+						<button type="button" class="btn btn-danger mx-2" v-on:click="deleteGuard(g)">Remove Guard</button>
+						<button type="button" class="btn" v-on:click="addGuard">Add Guard</button>
+					</div>
+					<div class="col col-md-3"></div>
+				</div>
 			</div>
 
-			<div class="row my-3">
+			<div class="row my-2 text-center" v-if="form.guards.length == 0">
+				<div class="col col-md-3"></div>
+				<div class="col">
+					<button type="button" class="btn" v-on:click="addGuard">Add Guard</button>
+				</div>
+				<div class="col col-md-3"></div>
+			</div>
+
+			<div class="row my-5">
 				<div class="col">
 					<label for="regRate">Regular Rate</label>
 					<input class="form-control text-center" id="regRate" type="number" step="0.01" min="0" v-model="regularRate" required="required">
@@ -212,9 +215,15 @@
 				</div>
 			</div>
 
-			<div class="row my-3">
-				<div class="col">
+			<div class="row my-3 text-center">
+				<div class="col mx-0" >
 					<p>Estimated Personnel Cost: {{cost}}</p>
+				</div>
+				<div class="col mx-0">
+					<p>Total Hours: {{totalHours}}</p>
+				</div>
+				<div class="col mx-0">
+					<p>Hours per Guard: {{avgHours}}</p>
 				</div>
 			</div>
 
@@ -226,30 +235,45 @@
 			<div class="row my-5">
 				<div class="col col-md-3"></div>
 				<div class="col text-center">
-						<button class="btn btn-danger" v-on:click="submit('reject')">Reject</button>
+					<button type="button" class="btn btn-danger mx-2" data-toggle="modal" data-target="#rejectRequest">Reject</button>
+					<div id="rejectRequest" class="modal fade" role="dialog">
+						<div class="modal-dialog">
+							<div class="modal-content">
+								<div class="modal-header">
+									<p class="modal-title">Please enter a reason for rejection this request</p>
+								</div>
+								<textarea class="mx-5 text-left" v-model="additionalMessage"></textarea>
+								<div class="modal-footer">
+									<button type="button" class="btn" data-dismiss="modal">Cancel</button>
+									<button type="button" class="btn btn-success mx-2" data-dismiss="model" v-on:click="submit('reject')">Reject</button>
+								</div>
+							</div>
 
-						<button type="button" class="btn btn-success mx-2" data-toggle="modal" data-target="#emailModal" v-if="canAccept">Accept</button>
-						<div id="emailModal" class="modal fade" role="dialog">
-							<div class="modal-dialog">
-								<div class="modal-content">
-									<div class="modal-header">
-										<p class="modal-title">Select who should be notified of this accepted service request</p>
-									</div>
-									<div class="modal-body mx-5 text-left" id="emailList" v-for="e in emailOptions">
-										<div class="checkbox">
-											<label><input type="checkbox" v-model="emails" :value="e"> {{e}}</label>
-										</div>
-									</div>
-									<div class="modal-footer">
-										<button type="button" class="btn" data-dismiss="modal">Cancel</button>
-										<button type="button" class="btn btn-success mx-2" data-dismiss="model" v-on:click="submit('accept')" v-if="canAccept">Accept</button>
+						</div>
+					</div>
+
+					<button type="button" class="btn btn-success mx-2" data-toggle="modal" data-target="#emailModal" v-if="canAccept">Accept</button>
+					<div id="emailModal" class="modal fade" role="dialog">
+						<div class="modal-dialog">
+							<div class="modal-content">
+								<div class="modal-header">
+									<p class="modal-title">Select who should be notified of this accepted service request</p>
+								</div>
+								<div class="modal-body mx-5 text-left" id="emailList" v-for="e in emailOptions">
+									<div class="checkbox">
+										<label><input type="checkbox" v-model="emails" :value="e"> {{e}}</label>
 									</div>
 								</div>
-
+								<div class="modal-footer">
+									<button type="button" class="btn" data-dismiss="modal">Cancel</button>
+									<button type="button" class="btn btn-success mx-2" data-dismiss="model" v-on:click="submit('accept')" v-if="canAccept">Accept</button>
+								</div>
 							</div>
-						</div>
-						<button class="btn btn-success" v-on:click="submit('update')" v-if="canAccept">Update</button>
 
+						</div>
+					</div>
+
+					<button class="btn btn-success" v-on:click="submit('update')" v-if="canAccept">Update</button>
 				</div>
 				<div class="col col-md-3"></div>
 				<div class="bottom-space"></div>
@@ -285,24 +309,7 @@
 						authorizerID: 'not set',
 						authorizerPhoneNumber: 'not set',
 						invoiceRequested: 'not set',
-						eventDates: 'not set',
-
-						guards: [
-							{
-								guardID: 0,
-								location: '',
-								startDate: '',
-								endDate: '',
-								startTime: '',
-								endTime: '',
-								name: '',
-								telephone: '',
-								regularHours: 0,
-								overtimeHours: 0,
-								regularRate: 0,
-								overtimeRate: 0
-							}
-						],
+						eventDates: 'not set'
 					},
 					dates: [],
 
@@ -313,16 +320,20 @@
 
 					emailOptions: [],
 					emails: [],
+					additionalMessage: ''
 				},
 
 				methods: {
                     exportRequestCSV: function() {
                         window.location.assign("/api/csv/form/" + this.requestID + ".csv");
                     },
+                    exportRequestGuardsCSV: function() {
+                        window.location.assign("/api/csv/guards/" + this.requestID + "-guards.csv");
+                    },
 
 					addGuard: function() {
 						this.form.guards.push({
-							guardID: 0,
+							guardID: 'id',
 							location: '',
 							startDate: '',
 							endDate: '',
@@ -330,6 +341,7 @@
 							endTime: '',
 							name: '',
 							telephone: '',
+							type: 'Guard',
 							regularHours: null,
 							overtimeHours: null,
 							regularRate: null,
@@ -339,9 +351,7 @@
 
 					deleteGuard: function (guard) {
 						let i = this.form.guards.indexOf(guard);
-						if (this.form.guards.length > 1) {
-							this.form.guards.splice(i, 1);
-						}
+						this.form.guards.splice(i, 1);
 					},
 
 					removeNull: function () {
@@ -366,6 +376,10 @@
 
 						if (this.form.isLicensed === 'not set') {
 							this.form.isLicensed = false;
+						}
+
+						if (this.form.distributionList === 'not set') {
+							this.form.distributionList = null;
 						}
 					},
 
@@ -393,15 +407,13 @@
 								window.location.replace("/requests");
 							}
 
-							if (response.data.guards[0] === null || response.data.guards[0] === undefined) {
-								response.data.guards = JSON.parse(JSON.stringify(this.form.guards));
+							if (response.data.guards[0] !== null && response.data.guards[0] !== undefined) {
+								let g = response.data.guards[0];
+								this.regularRate = g.regularRate;
+								this.regularHours = g.regularHours;
+								this.overtimeRate = g.overtimeRate;
+								this.overtimeHours = g.overtimeHours;
 							}
-
-							let g = response.data.guards[0];
-							this.regularRate = g.regularRate;
-							this.regularHours = g.regularHours;
-							this.overtimeRate = g.overtimeRate;
-							this.overtimeHours = g.overtimeHours;
 
 							this.form = JSON.parse(JSON.stringify(response.data));
 							this.removeNull();
@@ -413,7 +425,6 @@
 						});
 
 					},
-
 					setSecFields: function () {
 						this.form.distributionList = this.emails;
 
@@ -436,8 +447,9 @@
 
 						if (action === 'accept') {
 							this.form.requestStatus = "APPROVED";
-							if (!this.canAccept)
+							if (!this.canAccept) {
 								return;
+							}
 						} else if (action === 'reject') {
 							this.form.requestStatus = 'REJECTED';
 						} else {
@@ -449,17 +461,17 @@
 						//console.log("---------- Submitting:");
 						this.removeNull();
 
-						this.$http.post('/api/form/saveSecurity', this.form).then(function (response) {
+						this.$http.post('/api/form/saveSecurity', this.form,
+										{params: {additionalMessage: this.additionalMessage}}).then(function (response) {
 							console.log('Successfully sent form');
 							window.location.replace('/requests')
 						}, function (error) {
 							alert('Failed to send form!');
 						});
-					},
-
+					}
 				},
 
-				created() {
+				created: function () {
 					// TODO: redirect if user doesn't have security authorization
 					this.getFormData();
 				},
@@ -467,12 +479,13 @@
 				computed: {
                     canAccept: function () {
                         let numGuards = this.form.guards.length;
-                        if (numGuards < 1)
-                            return false;
+                        if (numGuards === 0)
+                            return true;
+
                         let isValid = true;
                         this.form.guards.forEach(function (g) {
 							//console.log(g.guardID+"+"+g.location);
-                            if (g.guardID === '0' || g.guardID === '' || g.location === '' || g.location === undefined
+                            if (g.guardID === 'id' || g.guardID === '' || g.location === '' || g.location === undefined
 								|| g.startDate === '' || g.startDate === undefined || g.endDate === ''
 								|| g.endDate === undefined || g.startTime === ''  || g.startTime === undefined
 								|| g.endTime === '' || g.endTime === undefined || g.name === '' || g.name === undefined
@@ -482,7 +495,6 @@
                                 return isValid;
                             }
                         });
-						//console.log("all guards are good");
 
                         return isValid;
                     },
@@ -493,6 +505,21 @@
 						cost *= guards;
 
 						return cost;
+					},
+
+					totalHours: function () {
+                    	let total = 0;
+						total += Number.parseFloat(this.regularHours) + Number.parseFloat(this.overtimeHours);
+						total *= this.form.guards.length;
+
+						return total;
+					},
+
+					avgHours: function () {
+						let avg = 0;
+						avg += Number.parseFloat(this.regularHours) + Number.parseFloat(this.overtimeHours);
+
+						return avg;
 					}
 				}
 			});
