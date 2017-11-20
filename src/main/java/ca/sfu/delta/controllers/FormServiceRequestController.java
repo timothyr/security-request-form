@@ -355,27 +355,27 @@ public class FormServiceRequestController extends WebMvcConfigurerAdapter {
             @RequestParam(value = "gateway", required = false) String gateway,
             HttpServletRequest request) {
 
-        AuthController authController = new AuthController();
-        String baseUrl = authController.getBaseUrl(request);
-
-        if(ticket != null) {
-
-            System.out.println("Ticket = " + ticket);
-
-            /*
-            String username = authController.getUsernameFromTicket(baseUrl + "/servicerequest", ticket);
-            if(username == null) {
-                System.out.println("FormServiceRequestController - Username is null.");
-            } else {
-                System.out.println("FormServiceRequestController - Username = " + username);
-            }
-            */
-
-        }else {
-            System.out.println("FormServiceRequestController - Ticket was null.");
-        }
+        getUsernameFromTicket(request, ticket);
 
         return "form.html";
+    }
+
+    /* This CONSUMES the ticket because they are only single use */
+    private String getUsernameFromTicket(HttpServletRequest request, String ticket) {
+        if(ticket != null) {
+            AuthController authController = new AuthController();
+            String baseUrl = authController.getBaseUrl(request);
+            String username = authController.getUsernameFromTicket(baseUrl +  request.getServletPath(), ticket);
+            if(username == null) {
+                System.out.println(request.getServletPath() + " - Invalid ticket - User is not logged in.");
+                return null;
+            } else {
+                System.out.println(request.getServletPath() + " - User is logged in - Username = " + username);
+                return username;
+            }
+        }
+        System.out.println(request.getServletPath() + " - User is not logged in.");
+        return null;
     }
 
     @GetMapping("/")
