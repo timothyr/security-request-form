@@ -225,30 +225,45 @@
 			<div class="row my-5">
 				<div class="col col-md-3"></div>
 				<div class="col text-center">
-						<button class="btn btn-danger" v-on:click="submit('reject')">Reject</button>
+					<button type="button" class="btn btn-danger mx-2" data-toggle="modal" data-target="#rejectRequest">Reject</button>
+					<div id="rejectRequest" class="modal fade" role="dialog">
+						<div class="modal-dialog">
+							<div class="modal-content">
+								<div class="modal-header">
+									<p class="modal-title">Please enter a reason for rejection this request</p>
+								</div>
+								<textarea class="mx-5 text-left" v-model="additionalMessage"></textarea>
+								<div class="modal-footer">
+									<button type="button" class="btn" data-dismiss="modal">Cancel</button>
+									<button type="button" class="btn btn-success mx-2" data-dismiss="model" v-on:click="submit('reject')">Reject</button>
+								</div>
+							</div>
 
-						<button type="button" class="btn btn-success mx-2" data-toggle="modal" data-target="#emailModal" v-if="canAccept">Accept</button>
-						<div id="emailModal" class="modal fade" role="dialog">
-							<div class="modal-dialog">
-								<div class="modal-content">
-									<div class="modal-header">
-										<p class="modal-title">Select who should be notified of this accepted service request</p>
-									</div>
-									<div class="modal-body mx-5 text-left" id="emailList" v-for="e in emailOptions">
-										<div class="checkbox">
-											<label><input type="checkbox" v-model="emails" :value="e"> {{e}}</label>
-										</div>
-									</div>
-									<div class="modal-footer">
-										<button type="button" class="btn" data-dismiss="modal">Cancel</button>
-										<button type="button" class="btn btn-success mx-2" data-dismiss="model" v-on:click="submit('accept')" v-if="canAccept">Accept</button>
+						</div>
+					</div>
+
+					<button type="button" class="btn btn-success mx-2" data-toggle="modal" data-target="#emailModal" v-if="canAccept">Accept</button>
+					<div id="emailModal" class="modal fade" role="dialog">
+						<div class="modal-dialog">
+							<div class="modal-content">
+								<div class="modal-header">
+									<p class="modal-title">Select who should be notified of this accepted service request</p>
+								</div>
+								<div class="modal-body mx-5 text-left" id="emailList" v-for="e in emailOptions">
+									<div class="checkbox">
+										<label><input type="checkbox" v-model="emails" :value="e"> {{e}}</label>
 									</div>
 								</div>
-
+								<div class="modal-footer">
+									<button type="button" class="btn" data-dismiss="modal">Cancel</button>
+									<button type="button" class="btn btn-success mx-2" data-dismiss="model" v-on:click="submit('accept')" v-if="canAccept">Accept</button>
+								</div>
 							</div>
-						</div>
-						<button class="btn btn-success" v-on:click="submit('update')" v-if="canAccept">Update</button>
 
+						</div>
+					</div>
+
+					<button class="btn btn-success" v-on:click="submit('update')" v-if="canAccept">Update</button>
 				</div>
 				<div class="col col-md-3"></div>
 				<div class="bottom-space"></div>
@@ -284,8 +299,7 @@
 						authorizerID: 'not set',
 						authorizerPhoneNumber: 'not set',
 						invoiceRequested: 'not set',
-						eventDates: 'not set',
-
+						eventDates: 'not set'
 					},
 					dates: [],
 
@@ -296,6 +310,7 @@
 
 					emailOptions: [],
 					emails: [],
+					additionalMessage: ''
 				},
 
 				methods: {
@@ -419,8 +434,9 @@
 
 						if (action === 'accept') {
 							this.form.requestStatus = "APPROVED";
-							if (!this.canAccept)
+							if (!this.canAccept) {
 								return;
+							}
 						} else if (action === 'reject') {
 							this.form.requestStatus = 'REJECTED';
 						} else {
@@ -432,17 +448,17 @@
 						//console.log("---------- Submitting:");
 						this.removeNull();
 
-						this.$http.post('/api/form/saveSecurity', this.form).then(function (response) {
+						this.$http.post('/api/form/saveSecurity', this.form,
+										{params: {additionalMessage: this.additionalMessage}}).then(function (response) {
 							console.log('Successfully sent form');
 							window.location.replace('/requests')
 						}, function (error) {
 							alert('Failed to send form!');
 						});
-					},
-
+					}
 				},
 
-				created() {
+				created: function () {
 					// TODO: redirect if user doesn't have security authorization
 					this.getFormData();
 				},

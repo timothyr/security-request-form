@@ -100,13 +100,38 @@ public class FormServiceRequestController extends WebMvcConfigurerAdapter {
     }
 
 	@RequestMapping(value = "/api/form/saveSecurity", method = RequestMethod.POST)
-	public @ResponseBody String saveSecurity(@RequestBody FormData form) {
+	public @ResponseBody String saveSecurity(@RequestBody FormData form,
+	                                         @RequestParam(required = false) String additionalMessage)
+								throws MessagingException {
+		String userName = form.getRequesterName();
+		String userEmailAddress = form.getEmailAddress();
+		String authEmailAddress = form.getAuthorizerEmailAddress();
+		String trackingID = form.getRequestID();
+
+		//send email to User
+		if (userEmailAddress != null && form.getRequestStatus().compareTo("REJECTED") == 0) {
+			sendEmail.sendEventRequestRejection(userEmailAddress, userName,
+					trackingID, additionalMessage);
+		}
+		else if (userEmailAddress != null && form.getRequestStatus().compareTo("ACCEPTED") == 0) {
+			sendEmail.sendEventRequestApproved(userEmailAddress, userName, trackingID);
+		}
+
+		//send email to Authorizer
+		if (authEmailAddress != null && form.getRequestStatus().compareTo("REJECTED") == 0) {
+			sendEmail.sendEventRequestRejection(authEmailAddress, null,
+					trackingID, additionalMessage);
+		}
+		else if (authEmailAddress != null && form.getRequestStatus().compareTo("ACCEPTED") == 0) {
+			sendEmail.sendEventRequestApproved(authEmailAddress, null, trackingID);
+		}
+
 		formRepository.save(form);
 		for (FormData f : formRepository.findAll()) {
 			System.out.println(f.toString());
 		}
 
-		return null;
+		return "";
 	}
 
     @RequestMapping(value = "/api/csv/form/{id}.csv", method = RequestMethod.GET, produces = "text/csv")
@@ -259,10 +284,10 @@ public class FormServiceRequestController extends WebMvcConfigurerAdapter {
                 if (userEmailAddress != null && authEmailAddress != null) {
 
                         //send mail to User
-                        sendEmail.sendTo(userEmailAddress, userName, trackingID, requestURL);
+                        sendEmail.sendEventRequestConfirmation(userEmailAddress, userName, trackingID, requestURL);
 
                         //send email to Authorizer
-                        sendEmail.sendTo(authEmailAddress, trackingID, requestURL);
+                        sendEmail.sendRequestAuthorizationEmail(authEmailAddress, trackingID, requestURL);
 
                     } else {
                     System.out.println("Error sending Email. Please ensure all the parameters are valid.");
@@ -278,7 +303,7 @@ public class FormServiceRequestController extends WebMvcConfigurerAdapter {
             if (authorizerEmailAddress == null || authorizerEmailAddress.isEmpty()) {
 
                 try {
-                    sendEmail.sendTo(userEmailAddress, userName, trackingID, requestURL);
+                    sendEmail.sendEventRequestConfirmation(userEmailAddress, userName, trackingID, requestURL);
 
                 } catch (MessagingException ex) {
                     System.out.println("Could not send the email to the user. Error message: " + ex.getMessage());
