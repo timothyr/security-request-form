@@ -226,3 +226,14 @@ svg path, svg rect {
      0% {transform: rotate(0deg);}
      100% {transform: rotate(360deg);}
  }
+
+ /* REQUEST FORM TOGGLE BUTTON */
+.active_toggle {
+    background-color: #DA3849 !important;
+    color: white;
+}
+
+.toggle-button {
+    background-color: transparent;
+    border: 1px solid #DA3849;
+}
