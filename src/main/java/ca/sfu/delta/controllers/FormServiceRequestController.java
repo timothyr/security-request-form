@@ -45,7 +45,7 @@ public class FormServiceRequestController extends WebMvcConfigurerAdapter {
     public void addViewControllers(ViewControllerRegistry registry) {
         registry.addViewController("/results").setViewName("results.html");
         registry.addViewController("/requests").setViewName("requests.html");
-        registry.addViewController("/servicerequest").setViewName("form.html");
+        //registry.addViewController("/servicerequest").setViewName("form.html");
 
         registry.addViewController("/admin").setViewName("admin.html");
         registry.addViewController("/securitylogin").setViewName("securitylogin.html");
@@ -349,10 +349,39 @@ public class FormServiceRequestController extends WebMvcConfigurerAdapter {
         return new ResponseEntity<FormData>(form, HttpStatus.OK);
     }
 
+    @RequestMapping(value = "/servicerequest", method = RequestMethod.GET)
+    public String showForm(
+            @RequestParam(value = "ticket", required = false) String ticket,
+            @RequestParam(value = "gateway", required = false) String gateway,
+            HttpServletRequest request) {
+
+        AuthController authController = new AuthController();
+        String baseUrl = authController.getBaseUrl(request);
+
+        if(ticket != null) {
+
+            System.out.println("Ticket = " + ticket);
+
+
+            String username = authController.getUsernameFromTicket(baseUrl + "/servicerequest", ticket);
+            if(username == null) {
+                System.out.println("FormServiceRequestController - Username is null.");
+            } else {
+                System.out.println("FormServiceRequestController - Username = " + username);
+            }
+
+        }else {
+            System.out.println("FormServiceRequestController - Ticket was null.");
+        }
+
+        return "form.html";
+    }
+
     @GetMapping("/")
-    public String showForm(FormData serviceRequestForm) {
+    public String landingRequest() {
         return "landing.html";
     }
+
 
     @PostMapping("/")
     public String checkFormRequest(@Valid FormData serviceRequestForm, BindingResult bindingResult) {
