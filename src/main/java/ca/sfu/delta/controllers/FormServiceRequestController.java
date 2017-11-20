@@ -108,22 +108,26 @@ public class FormServiceRequestController extends WebMvcConfigurerAdapter {
 		String authEmailAddress = form.getAuthorizerEmailAddress();
 		String trackingID = form.getRequestID();
 
-		//send email to User
-		if (userEmailAddress != null && form.getRequestStatus().compareTo("REJECTED") == 0) {
-			sendEmail.sendEventRequestRejection(userEmailAddress, userName,
-					trackingID, additionalMessage);
-		}
-		else if (userEmailAddress != null && form.getRequestStatus().compareTo("ACCEPTED") == 0) {
-			sendEmail.sendEventRequestApproved(userEmailAddress, userName, trackingID);
-		}
+		try {
+			//send email to User
+			if (userEmailAddress != null && form.getRequestStatus().compareTo("REJECTED") == 0) {
+				sendEmail.sendEventRequestRejection(userEmailAddress, userName,
+						trackingID, additionalMessage);
+			}
+			else if (userEmailAddress != null && form.getRequestStatus().compareTo("ACCEPTED") == 0) {
+				sendEmail.sendEventRequestApproved(userEmailAddress, userName, trackingID);
+			}
 
-		//send email to Authorizer
-		if (authEmailAddress != null && form.getRequestStatus().compareTo("REJECTED") == 0) {
-			sendEmail.sendEventRequestRejection(authEmailAddress, null,
-					trackingID, additionalMessage);
-		}
-		else if (authEmailAddress != null && form.getRequestStatus().compareTo("ACCEPTED") == 0) {
-			sendEmail.sendEventRequestApproved(authEmailAddress, null, trackingID);
+			//send email to Authorizer
+			if (authEmailAddress != null && form.getRequestStatus().compareTo("REJECTED") == 0) {
+				sendEmail.sendEventRequestRejection(authEmailAddress, null,
+						trackingID, additionalMessage);
+			}
+			else if (authEmailAddress != null && form.getRequestStatus().compareTo("ACCEPTED") == 0) {
+				sendEmail.sendEventRequestApproved(authEmailAddress, null, trackingID);
+			}
+		} catch (Exception e) {
+			System.out.print("Error sending the emails: " + e.getMessage());
 		}
 
 		formRepository.save(form);
@@ -310,7 +314,7 @@ public class FormServiceRequestController extends WebMvcConfigurerAdapter {
                 if (authorizerEmailAddress == null || authorizerEmailAddress.isEmpty()) {
                     try {
                         //Send email to User
-                        sendEmail.sendTo(userEmailAddress, userName, trackingID, requestURL);
+                        sendEmail.sendEventRequestConfirmation(userEmailAddress, userName, trackingID, requestURL);
                     } catch (Exception e) {
                         System.out.print("Error sending the email: " + e.getMessage());
                     }
@@ -325,7 +329,7 @@ public class FormServiceRequestController extends WebMvcConfigurerAdapter {
                         sendEmail.sendEventRequestConfirmation(userEmailAddress, userName, trackingID, requestURL);
 
                         //send email to Authorizer
-                        sendEmail.sendTo(authEmailAddress, trackingID, requestURL);
+                        sendEmail.sendRequestAuthorizationEmail(authEmailAddress, trackingID, requestURL);
                     } catch (Exception e) {
                         System.out.print("Error sending the emails: " + e.getMessage());
                     }
