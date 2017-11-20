@@ -2,6 +2,7 @@ package ca.sfu.delta.models;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
+import java.io.StringWriter;
 
 @Embeddable
 public class Guard{
@@ -14,8 +15,9 @@ public class Guard{
 	private String endTime;
 	private String name;
 	private String telephone;
-	private int regularHours;
-	private int overtimeHours;
+	private String type;
+	private BigDecimal regularHours;
+	private BigDecimal overtimeHours;
 	private BigDecimal regularRate;
 	private BigDecimal overtimeRate;
 
@@ -27,9 +29,9 @@ public class Guard{
 	// doubles shouldn't be used for currency due to inaccuracy
 	public Guard(
 			String name,
-			int regularHours,
+			double regularHours,
 			double regularRate,
-			int overtimeHours,
+			double overtimeHours,
 			double overtimeRate
 	) throws IllegalArgumentException {
 		setName(name);
@@ -44,11 +46,11 @@ public class Guard{
 	}
 
 	public BigDecimal calculateRegularPay() {
-		return (regularRate.multiply(new BigDecimal(regularHours)));
+		return (regularRate.multiply(regularHours));
 	}
 
 	public BigDecimal calculateOvertimePay() {
-		return (overtimeRate.multiply(new BigDecimal(overtimeHours)));
+		return (overtimeRate.multiply(overtimeHours));
 	}
 
 	// Getters and setters -------------------------------------------------------------------------------
@@ -68,6 +70,14 @@ public class Guard{
 		return guardID;
 	}
 
+	public String getType() {
+		return type;
+	}
+
+	public void setType(String type) {
+		this.type = type;
+	}
+
 	public void setGuardID(String guardID) throws IllegalArgumentException {
 		if (guardID != null) {
 			this.guardID = guardID;
@@ -76,25 +86,27 @@ public class Guard{
 		}
 	}
 
-	public int getRegularHours() {
+	public BigDecimal getRegularHours() {
 		return regularHours;
 	}
 
-	public void setRegularHours(int regularHours) throws IllegalArgumentException {
-		if (regularHours >= 0) {
-			this.regularHours = regularHours;
+	public void setRegularHours(double regularHours) throws IllegalArgumentException {
+		BigDecimal newHours = BigDecimal.valueOf(regularHours);
+		if (newHours.compareTo(BigDecimal.ZERO) >= 0) {
+			this.regularHours = newHours;
 		} else {
 			throw new IllegalArgumentException("Only non-negative values are permitted");
 		}
 	}
 
-	public int getOvertimeHours() {
+	public BigDecimal getOvertimeHours() {
 		return overtimeHours;
 	}
 
-	public void setOvertimeHours(int overtimeHours) throws IllegalArgumentException {
-		if (overtimeHours >= 0) {
-			this.overtimeHours = overtimeHours;
+	public void setOvertimeHours(double overtimeHours) throws IllegalArgumentException {
+		BigDecimal newHours = BigDecimal.valueOf(overtimeHours);
+		if (newHours.compareTo(BigDecimal.ZERO) >= 0) {
+			this.overtimeHours = newHours;
 		} else {
 			throw new IllegalArgumentException("Only non-negative values are permitted");
 		}
@@ -190,5 +202,73 @@ public class Guard{
 	public String getTelephone() {
 		return this.telephone;
 	}
+
+	/*
+		private String guardID;
+	private String location;
+	private String startDate;
+	private String endDate;
+	private String startTime;
+	private String endTime;
+	private String name;
+	private String telephone;
+	private String type;
+	private int regularHours;
+	private int overtimeHours;
+	private BigDecimal regularRate;
+	private BigDecimal overtimeRate;
+	*/
+
+	public String getAsCSV(Boolean needHeader) {
+            StringWriter csvWriter = new StringWriter();
+            //Only add first row with field names if we need the header (in case that we are creating a new CSV
+            //with this string)
+            if (needHeader) {
+                String firstRow = "Guard ID" + ", " +
+                                  "Name" + ", " +
+                                  "Location" + ", " +
+                                  "Start Date" + ", " +
+                                  "End Date" + ", " +
+                                  "Start Time" + ", " +
+                                  "End Time" + ", " +
+                                  "Phone Number" + ", " +
+                                  "Type" + ", " +
+                                  "Regular Hours Worked" + ", " +
+                                  "Overtime Hours Worked" + ", " +
+                                  "Regular Pay Rate" + ", " +
+                                  "Overtime Pay Rate" + ", " +
+                                  "Total Amount Due" + "\n";
+                csvWriter.append(firstRow);
+            }
+            //Append fields to csv, strip out commas from places they could be present
+            //Avoid null pointer exceptions if certain fields are blank
+
+            if(location == null){
+                location = new String("null");
+            }
+            if(type == null){
+                type = new String("null");
+            }
+
+            String nextRow = guardID + ", " +
+                             name + ", " +
+                             location.replace(",", "") + ", " +
+                             startDate + ", " +
+                             endDate + ", " +
+                             startTime + ", " +
+                             endTime + ", " +
+                             telephone + ", " +
+                             type.replace(",", "") + ", " +
+                             regularHours + ", " +
+                             overtimeHours + ", $" +
+                             regularRate + "/hr, $" +
+                             overtimeRate + "/hr, $" +
+                             this.calculateTotalPay() + "\n";
+
+            //Do some prettying up
+            nextRow = nextRow.replace("null", "Not specified");
+            csvWriter.append(nextRow);
+            return csvWriter.toString();
+    }
 
 }
