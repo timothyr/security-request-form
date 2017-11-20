@@ -362,13 +362,14 @@ public class FormServiceRequestController extends WebMvcConfigurerAdapter {
 
             System.out.println("Ticket = " + ticket);
 
-
+            /*
             String username = authController.getUsernameFromTicket(baseUrl + "/servicerequest", ticket);
             if(username == null) {
                 System.out.println("FormServiceRequestController - Username is null.");
             } else {
                 System.out.println("FormServiceRequestController - Username = " + username);
             }
+            */
 
         }else {
             System.out.println("FormServiceRequestController - Ticket was null.");

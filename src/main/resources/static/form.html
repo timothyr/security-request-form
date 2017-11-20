@@ -194,6 +194,7 @@
 	<script src="/js/jquery.datetimepicker.js"></script>
 	<script src="/js/datetimefeature.js"></script>
     <script src="/js/datetime.js"></script>
+    <script src="https://unpkg.com/vue-router"></script>
 	<script type="text/x-template" id="modal-template">
 		<transition name="modal">
 			<div class="modal-mask">
@@ -255,7 +256,14 @@
             }
         });
 
+        var router = new VueRouter({
+            mode: 'history',
+            routes: []
+        });
+
         const FormApp = Vue.extend({
+
+            router,
 
             http: {
                 root: '/',
@@ -265,6 +273,9 @@
             },
 
 			data: () => ({
+                 service: '',
+                 ticket: '',
+
 				 signedIn: false,
 				 signedInButtonMessage: signInMessage,
 
@@ -333,6 +344,32 @@
                     }
                 }
 			},
+
+            mounted: function() {
+                this.ticket = this.$route.query.ticket;
+
+                var baseUrl = window.location.href;
+                baseUrl = baseUrl.replace(this.$route.fullPath, "");
+
+                var servicePath = baseUrl + this.$route.path;
+
+                this.service = servicePath;
+
+                console.log(servicePath);
+
+                console.log(this.$route);
+
+                console.log(this.ticket);
+
+                this.$http.get("https://cas.sfu.ca/cas/serviceValidate", {
+                    params: {
+                        service: this.formData.service,
+                        requesterName: this.formData.ticket
+                    }
+                });
+
+
+            },
 
             methods: {
                 signInOut : function() {
