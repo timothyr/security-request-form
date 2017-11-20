@@ -18,7 +18,9 @@
 		<form method="post" v-on:submit.prevent="submitForm()">
 			<div class="container col-md-10 offset-md-1 wrapper mb-5 col-lg-10">
 				<div class="form-group col-md-4 add-space-top float-right">
-					<button type="button" v-on:click="signInOut" id="sign-in" class="btn btn-danger btn-lg col-md-8 float-right">{{signedInButtonMessage}}</button>
+					<a href="/login?redirect=servicerequest">
+						<button type="button" v-on:click="signInOut" id="sign-in" class="btn btn-danger btn-lg col-md-8 float-right">{{signedInButtonMessage}}</button>
+					</a>
 				</div>
 				<div class="row mt-5">
 				</div>
