@@ -67,7 +67,7 @@
                                 <td class="clickable">{{request.eventLocation}}</td>
                                 <td class="clickable">{{request.eventDates[0].start}} to {{request.eventDates[0].end}}</td>
                                 <td class="clickable">
-                                    <span class="badge badge-warning white-text">{{request.requestStatus}}</span>
+                                    <span class="badge white-text" v-bind:class="getBadgeClassName(request.requestStatus)">{{request.requestStatus}}</span>
                                 </td>
                             </tr>
                         </tbody>
@@ -113,6 +113,11 @@
 
         }
         return false;
+    }
+    const status = {
+        WAITING: 'WAITING',
+        APPROVED: 'APPROVED',
+        REJECTED: 'REJECTED'
     }
 
     var app = new Vue({
@@ -167,6 +172,22 @@
             },
             exportAllCSV: function() {
                 window.location.assign("/api/csv/form/all.csv");
+            },
+            getBadgeClassName: function(status) {
+                switch (status) {
+                    case 'WAITING':
+                        return 'badge-warning';
+                        break;
+                    case 'APPROVED':
+                        return 'badge-success';
+                        break;
+                    case 'REJECTED':
+                        return 'badge-danger';
+                        break;
+                    default:
+                        return 'badge-default';
+                        break;
+                }
             }
         },
         computed: {
@@ -202,7 +223,7 @@
                 pageNumber: 1
             }).then(response  => {
                 this.requests = response.data;
-                //this.changeDates();
+                this.changeDates();
                 this.loading = false;
             });
         }
