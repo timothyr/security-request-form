@@ -220,7 +220,7 @@
 				<div class="text-center col-md-12 mx-auto">
 						<button class="btn btn-danger col-sm-12 col-md-2 mt-3" v-on:click="submit('reject')">Reject</button>
 
-						<button type="button" class="btn btn-success col-sm-12 col-md-2" data-toggle="modal" data-target="#emailModal" v-if="canAccept">Accept</button>
+						<button type="button" class="btn btn-success col-sm-12 col-md-2 mt-3" data-toggle="modal" data-target="#emailModal" v-if="canAccept">Accept</button>
 						<div id="emailModal" class="modal fade" role="dialog">
 							<div class="modal-dialog">
 								<div class="modal-content">
@@ -240,7 +240,7 @@
 
 							</div>
 						</div>
-						<button class="btn btn-primary col-sm-12 col-md-2" v-on:click="submit('update')" v-if="canAccept">Update</button>
+						<button class="btn btn-primary col-sm-12 col-md-2 mt-3" v-on:click="submit('update')" v-if="canAccept">Update</button>
 
 				</div>
 				<div class="col col-md-3"></div>
