@@ -5,6 +5,8 @@ import org.junit.Test;
 import java.util.ArrayList;
 import static org.junit.Assert.*;
 import java.util.Arrays;
+import java.io.File; 
+import java.nio.file.Files; 
 
 public class FormDataTest {
 	//Todo: re-enable once dates are implemented in the front and back end
@@ -335,5 +337,25 @@ public class FormDataTest {
     public void saveAsCSV() throws Exception {
         String testMe = data.getAsCSV(true);
         assertEquals(correctCSVOutput, testMe);
+    }
+
+    @Test
+    public void generateInvoicePDF() throws Exception {
+        ArrayList<Guard> newGuardList = new ArrayList<Guard>();
+        Guard guardOne = new Guard("Jimbo", 8, 10.5, 2, 14.0);
+        Guard guardTwo = new Guard("William", 8, 12, 0, 97.0);
+        newGuardList.add(guardOne);
+        newGuardList.add(guardTwo);
+        data.setRequestID("17-0001");
+        ArrayList<String> newDistributionList = new ArrayList<String>();
+        data.setSecurityFields("Justin Turner",newGuardList,newDistributionList,"Parladin","security remark");
+        data.generateInvoicePDF();
+
+        try {
+            Files.delete(new File("Invoice.pdf").toPath());
+        } catch (Exception e)
+        {
+            //If this fails we have bigger problems than catching this exception.
+        }
     }
 }

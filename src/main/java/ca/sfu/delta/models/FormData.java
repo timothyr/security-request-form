@@ -8,7 +8,16 @@ import java.util.List;
 import java.util.Map;
 import java.io.BufferedWriter;
 import java.io.StringWriter;
-
+import java.io.File; 
+import java.nio.file.Files; 
+import java.io.IOException;
+import java.util.Date;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import org.apache.pdfbox.pdmodel.PDDocument;
+import org.apache.pdfbox.pdmodel.PDPage;
+import org.apache.pdfbox.pdmodel.PDPageContentStream; 
+import org.apache.pdfbox.pdmodel.font.PDType1Font;
 
 @Entity
 public class FormData {
@@ -495,5 +504,91 @@ public class FormData {
             nextRow = nextRow.replace("true", "Yes");
             csvWriter.append(nextRow);
             return csvWriter.toString();
+    }
+
+
+    private void addLineToPDF(PDPageContentStream contentStream, int xPosition, int yPosition, String lineText) throws IOException {
+            contentStream.beginText(); 
+            contentStream.setFont(PDType1Font.HELVETICA, 10.5f);
+            contentStream.newLineAtOffset(xPosition, yPosition);
+            contentStream.showText(lineText);  
+            contentStream.endText();
+    }
+
+        private void addLineToPDFBold(PDPageContentStream contentStream, int xPosition, int yPosition, String lineText) throws IOException {
+            contentStream.beginText(); 
+            contentStream.setFont(PDType1Font.HELVETICA_BOLD, 10.5f);
+            contentStream.newLineAtOffset(xPosition, yPosition);
+            contentStream.showText(lineText);  
+            contentStream.endText();
+    }
+
+
+    public byte[] generateInvoicePDF() {
+        PDDocument document;
+        File file;
+        try {
+            //First load the PDF template to fill it
+            file = new File("src/main/resources/static/img/Invoice_Template.pdf");
+            document = PDDocument.load(file);
+            System.out.println("Document loaded \n");
+
+        } catch (IOException e)
+        {
+            System.out.println("Error: cannot open PDF template.\n");
+            return null;
+        }
+
+        try {
+            //Retrieving the pages of the document 
+            PDPage page = document.getPage(0);
+            //Append to new template rather than wiping old data
+            PDPageContentStream contentStream = new PDPageContentStream(document, page, PDPageContentStream.AppendMode.APPEND, true);
+
+            //Add revelant information
+            addLineToPDF(contentStream, 145, 635, this.getRequesterName());
+            addLineToPDF(contentStream, 145, 620, "This is where we'd put the rest of the information from the");
+            addLineToPDF(contentStream, 145, 610, "template, if we had it.");
+            addLineToPDF(contentStream, 145, 600, "What do you think, Jason? Is just the name okay,");
+            addLineToPDF(contentStream, 145, 590, "or should the app ask you for this info when you press generate?");
+
+            //Generate Invoice number and date
+            DateFormat workOrderNumberDateFormat = new SimpleDateFormat("yyyy");
+            DateFormat invoiceDateFormat = new SimpleDateFormat("MMMM dd, yyyy");
+            Date rightNow = new Date();
+
+            String invoiceNumber = this.getRequestID() + workOrderNumberDateFormat.format(rightNow) + "_019X";
+            addLineToPDF(contentStream, 444, 624, invoiceNumber);
+            addLineToPDF(contentStream, 454, 610, invoiceDateFormat.format(rightNow));
+
+            //Middle three fields (Type of Service, Requested by, Contact Number)
+            addLineToPDF(contentStream, 255, 504, "Event Security");
+            addLineToPDF(contentStream, 255, 490, this.getRequesterName());
+            addLineToPDF(contentStream, 255, 475, this.getPhoneNumber());
+
+            //Details and total invoice amount
+            double totalGuardCost = 0.0;
+            for(Guard g : this.getGuards()) {
+                totalGuardCost += g.calculateTotalPay().doubleValue();
+            }
+
+            addLineToPDF(contentStream, 145, 400, "Total cost of guard services");
+            addLineToPDF(contentStream, 500, 400, "$" + totalGuardCost);
+            addLineToPDFBold(contentStream, 500, 371, "$" + totalGuardCost);
+
+            //Close the content stream
+            contentStream.close();
+
+            //Turns out there isn't a nice way to convert a PDDocument to something usable, so save as PDF and read back.
+            document.save(new File("Invoice.pdf"));
+            document.close();
+            byte[] fileAsBytes = Files.readAllBytes(new File("Invoice.pdf").toPath());
+
+            return fileAsBytes;
+
+        } catch (IOException e) {
+            System.out.println("Error creating pdf file.\n");
+            return null;
+        }
     }
 }
