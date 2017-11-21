@@ -226,7 +226,7 @@
             </div>
             <div class="col-md-4">
                 <p class="d-block">Total Hours:</p>
-                <span class="money-style d-block">{{totalHours}}</span>
+                <span class="money-style d-block">{{totalHours}} Hours</span>
             </div>
             <div class="col-md-4">
                 <p class="d-block">Hours per Guard:</p>
@@ -242,26 +242,6 @@
         <div class="row">
             <div class="text-center col-md-12 mx-auto">
                 <button class="btn btn-danger col-sm-12 col-md-2 mt-3" v-on:click="submit('reject')">Reject</button>
-			<div class="row my-5">
-				<div class="col col-md-3"></div>
-				<div class="col text-center">
-					<button type="button" class="btn btn-danger mx-2" data-toggle="modal" data-target="#rejectRequest">Reject</button>
-					<div id="rejectRequest" class="modal fade" role="dialog">
-						<div class="modal-dialog">
-							<div class="modal-content">
-								<div class="modal-header">
-									<p class="modal-title">Please enter a reason for rejection this request</p>
-								</div>
-								<textarea class="mx-5 text-left" v-model="additionalMessage"></textarea>
-								<div class="modal-footer">
-									<button type="button" class="btn" data-dismiss="modal">Cancel</button>
-									<button type="button" class="btn btn-success mx-2" data-dismiss="model" v-on:click="submit('reject')">Reject</button>
-								</div>
-							</div>
-
-						</div>
-					</div>
-
                 <button type="button" class="btn btn-success col-sm-12 col-md-2 mt-3" data-toggle="modal"
                         data-target="#emailModal" v-if="canAccept">Accept
                 </button>
@@ -295,33 +275,6 @@
         </div>
     </div>
 </div>
-					<button type="button" class="btn btn-success mx-2" data-toggle="modal" data-target="#emailModal" v-if="canAccept">Accept</button>
-					<div id="emailModal" class="modal fade" role="dialog">
-						<div class="modal-dialog">
-							<div class="modal-content">
-								<div class="modal-header">
-									<p class="modal-title">Select who should be notified of this accepted service request</p>
-								</div>
-								<div class="modal-body mx-5 text-left" id="emailList" v-for="e in emailOptions">
-									<div class="checkbox">
-										<label><input type="checkbox" v-model="emails" :value="e"> {{e}}</label>
-									</div>
-								</div>
-								<div class="modal-footer">
-									<button type="button" class="btn" data-dismiss="modal">Cancel</button>
-									<button type="button" class="btn btn-success mx-2" data-dismiss="model" v-on:click="submit('accept')" v-if="canAccept">Accept</button>
-								</div>
-							</div>
-
-						</div>
-					</div>
-
-					<button class="btn btn-success" v-on:click="submit('update')" v-if="canAccept">Update</button>
-				</div>
-				<div class="col col-md-3"></div>
-				<div class="bottom-space"></div>
-			</div>
-		</div>
 
 <script src="/js/jquery-3.2.1.min.js"></script>
 <script src="/js/bootstrap.bundle.min.js"></script>
@@ -364,11 +317,8 @@
 
             emailOptions: [],
             emails: [],
+            additionalMessage: ''
         },
-					emailOptions: [],
-					emails: [],
-					additionalMessage: ''
-				},
 
         methods: {
             exportRequestCSV: function () {
@@ -454,7 +404,7 @@
                         window.location.replace("/requests");
                     }
 
-                    if (response.data.guards[0] !== null && response.data.guards[0] !== undefined) {
+                    if (response.data.guards && response.data.guards[0] && response.data.guards.length > 0) {
                         let g = response.data.guards[0];
                         this.regularRate = g.regularRate;
                         this.regularHours = g.regularHours;
