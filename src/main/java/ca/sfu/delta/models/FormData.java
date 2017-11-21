@@ -572,6 +572,7 @@ public class FormData {
                 totalGuardCost += g.calculateTotalPay().doubleValue();
             }
 
+            addLineToPDF(contentStream, 184, 431, invoiceNumber + " - " + this.getEventName());
             addLineToPDF(contentStream, 145, 400, "Total cost of guard services");
             addLineToPDF(contentStream, 500, 400, "$" + totalGuardCost);
             addLineToPDFBold(contentStream, 500, 371, "$" + totalGuardCost);
