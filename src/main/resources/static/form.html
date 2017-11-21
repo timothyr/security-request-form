@@ -160,7 +160,7 @@
                         <!--OPTION 1 -- AUTH OWN-->
                         <div v-if="authOption == 'authOwn'">
                             <div class="form-group add-space-top">
-                                <button type="button" id="sign-in" class="btn btn-danger">Login SFU CAS</button>
+                                <button type="button" id="sign-in" class="btn btn-danger" v-on:click="signedIn = true">Login SFU CAS</button>
                             </div>
                             <div class="form-group">
                                 <label for="account-code-input">Account code</label>

@@ -203,7 +203,7 @@
 				</div>
 				<div class="col-md-4">
                     <p class="d-block">Total Hours:</p>
-                    <span class="money-style d-block">${{totalHours}}</span>
+                    <span class="money-style d-block">{{totalHours}}</span>
 				</div>
 				<div class="col-md-4">
                     <p class="d-block">Hours per Guard:</p>
@@ -218,9 +218,9 @@
 
 			<div class="row">
 				<div class="text-center col-md-12 mx-auto">
-						<button class="btn btn-danger" v-on:click="submit('reject')">Reject</button>
+						<button class="btn btn-danger col-sm-12 col-md-2 mt-3" v-on:click="submit('reject')">Reject</button>
 
-						<button type="button" class="btn btn-success mx-2" data-toggle="modal" data-target="#emailModal" v-if="canAccept">Accept</button>
+						<button type="button" class="btn btn-success col-sm-12 col-md-2" data-toggle="modal" data-target="#emailModal" v-if="canAccept">Accept</button>
 						<div id="emailModal" class="modal fade" role="dialog">
 							<div class="modal-dialog">
 								<div class="modal-content">
@@ -240,7 +240,7 @@
 
 							</div>
 						</div>
-						<button class="btn btn-success" v-on:click="submit('update')" v-if="canAccept">Update</button>
+						<button class="btn btn-primary col-sm-12 col-md-2" v-on:click="submit('update')" v-if="canAccept">Update</button>
 
 				</div>
 				<div class="col col-md-3"></div>

@@ -178,6 +178,9 @@ td {
 	color: #c6c6c6;
 }
 
+.dropdown {
+    cursor: pointer;
+}
 
 /* LOADING ICON - edit if interferes with other svg */
 svg path, svg rect {
@@ -250,6 +253,10 @@ svg path, svg rect {
 
 .grey-text {
     color: #686868;
+}
+
+.blue-text {
+    color: #007bff;
 }
 
 .badge-med {
