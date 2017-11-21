@@ -23,6 +23,11 @@ import java.util.regex.Pattern;
  */
 @Controller
 public class AuthController {
+
+    private static final String CAS_URL = "https://cas.sfu.ca/cas/serviceValidate";
+    private static final String CAS_SERVICE_PARAM = "?service=";
+    private static final String CAS_TICKET_PARAM = "&ticket=";
+
     private String username;
 
     /**
@@ -51,21 +56,47 @@ public class AuthController {
 
     @RequestMapping(value = "/login", method = RequestMethod.GET)
     public String handleLoginRequest(
+            @RequestParam(value = "redirect", required = false) String redirectUrl,
             @RequestParam(value = "ticket", required = false) String ticket,
+            @RequestParam(value = "gateway", required = false) String gateway,
             HttpServletRequest req
     ) {
         String baseUrl = getBaseUrl(req);
 
-        if (ticket == null) {
-            return "redirect://cas.sfu.ca/cas/login?service=" + baseUrl + "/requests";
-        } else {
-            String url = "https://cas.sfu.ca/cas/serviceValidate?service=" + baseUrl + "/requests&ticket=" + ticket;
-            String response = httpRequest(url);
+        if(redirectUrl == null) {
+            redirectUrl = "";
+        }
 
-            username = getStringBetween(response, "<cas:user>", "</cas:user>");
+        if (ticket == null) {
+            System.out.println("Ticket null. Redirecting...");
+            String gatewayParam = "";
+            if(gateway != null) {
+                gatewayParam = "&gateway=" + gateway;
+            }
+            return "redirect://cas.sfu.ca/cas/login?service=" + baseUrl + "/" + redirectUrl + gatewayParam;
+        } else {
+            String url = CAS_URL + CAS_SERVICE_PARAM + baseUrl + "/" + redirectUrl + CAS_TICKET_PARAM + ticket;
+
+            username = getUsernameFromUrl(url);
+
+            System.out.println("Username = " + username);
 
             return baseUrl;
         }
+    }
+
+    public String getUsernameFromTicket(String service, String ticket) {
+        String response = httpRequest(CAS_URL + CAS_SERVICE_PARAM + service + CAS_TICKET_PARAM + ticket);
+        return  getUsernameFromResponse(response);
+    }
+
+    public String getUsernameFromUrl(String url){
+        String response = httpRequest(url);
+        return getUsernameFromResponse(response);
+    }
+
+    private String getUsernameFromResponse(String response) {
+        return getStringBetween(response, "<cas:user>", "</cas:user>");
     }
 
     /**
@@ -73,7 +104,7 @@ public class AuthController {
      * @param req an HTTP request
      * @return the base URL of the server issuing this request
      */
-    private String getBaseUrl(HttpServletRequest req) {
+    public String getBaseUrl(HttpServletRequest req) {
         return req.getScheme() + "://" + req.getServerName() + ":" + req.getServerPort() + req.getContextPath();
     }
 
