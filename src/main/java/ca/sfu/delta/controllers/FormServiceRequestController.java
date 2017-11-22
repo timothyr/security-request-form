@@ -201,6 +201,20 @@ public class FormServiceRequestController extends WebMvcConfigurerAdapter {
         return csvWriter.toString();
     }
 
+    @RequestMapping(value = "/api/invoice/{id}-invoice.pdf", method = RequestMethod.GET, produces =  "application/pdf")
+    @ResponseBody
+    public byte[] getDocument(@PathVariable("id") String id) {
+        //Arbitrary number for initialization
+        byte[] pdfBytes = new byte[8];
+        for (FormData form : formRepository.findAll()) {
+            if(form.getRequestID().equals(id))
+            {
+                pdfBytes = form.generateInvoicePDF();
+            }
+        }
+        return pdfBytes;
+    }
+
     // Reserve the next request ID in the sequence to ensure each form has a unique request ID
 	private String reserveNextRequestID() {
 		int year = Calendar.getInstance().get(Calendar.YEAR) % 100;
