@@ -529,7 +529,7 @@ public class FormData {
         File file;
         try {
             //First load the PDF template to fill it
-            file = new File("src/main/resources/static/img/Invoice_Template.pdf");
+            file = new File("Invoice_Template.pdf");
             document = PDDocument.load(file);
             System.out.println("Document loaded \n");
 
