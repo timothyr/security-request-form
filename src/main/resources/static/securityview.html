@@ -242,13 +242,13 @@
         <div class="row">
             <div class="col-md-12">
                 <div class="text-center">
-                    <button class="btn btn-danger col-sm-12 col-md-2 mt-3" v-on:click="submit('reject')">Reject</button>
                     <button type="button" class="btn btn-success col-sm-12 col-md-2 mt-3" data-toggle="modal"
                             data-target="#emailModal" v-if="canAccept">Accept
                     </button>
                     <button class="btn btn-primary col-sm-12 col-md-2 mt-3" v-on:click="submit('update')" v-if="canAccept">
                         Update
                     </button>
+                    <button class="btn btn-danger col-sm-12 col-md-2 mt-3" v-on:click="submit('reject')">Reject</button>
                 </div>
                 <div id="emailModal" class="modal fade" role="dialog">
                     <div class="modal-dialog">
@@ -258,9 +258,8 @@
                                     <div class="row">
                                         <h3>Distribution</h3>
                                     </div>
-                                    <div class="row mb-2">
-                                        <p class="modal-title grey-text">Select who should be notified of this accepted service
-                                            request</p>
+                                    <div class="row mb-4">
+                                        <p class="modal-title grey-text">Those selected will be notified of this approval.</p>
                                     </div>
                                 </div>
                                 <div class="row">
