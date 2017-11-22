@@ -2,534 +2,543 @@
 
 <html lang="en" xmlns:v-on="http://www.w3.org/1999/xhtml">
 <head>
-	<meta charset="UTF-8">
-	<title>Request Details</title>
-	<link rel="stylesheet" href="/css/bootstrap.min.css">
-	<link rel="stylesheet" href="/css/font-awesome.min.css">
-	<link rel="stylesheet" href="/css/style.css">
+    <meta charset="UTF-8">
+    <title>Request Details</title>
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/css/font-awesome.min.css">
+    <link rel="stylesheet" href="/css/style.css">
 </head>
 
 <body>
-	<header>
-		<img class="logo" src="/img/sfu-logo@2x.png" alt="sfu-logo"/>
-	</header>
-	<div class="container col-md-10 offset-md-1 wrapper mb-5 col-lg-10" id="app">
-		<div class="container">
-			<div class="row mt-5">
-				<h3 class="mt-5 mx-5">Request #{{requestID}}</h3>
-			</div>
-            <div class="row pull-right">
-                <div class="dropdown">
-                    <div class="dropdown-toggle" id="dropdownMenuButton" data-toggle="dropdown"><i class="fa fa-cog"></i></div>
-                    <ul class="dropdown-menu">
-                        <li class="dropdown-item" v-on:click="exportRequestCSV()">Export Request to CSV</li>
-                        <li class="dropdown-item" v-on:click="exportRequestGuardsCSV()">Export Guard list to CSV</li>
-                        <li class="dropdown-item" v-on:click="exportRequestInvoicePDF()">Generate Invoice PDF</li>
-                    </ul>
+<header>
+    <a href="/requests"><img class="logo" src="/img/sfu-logo@2x.png" alt="sfu-logo"/></a>
+</header>
+<div class="container col-md-10 offset-md-1 wrapper mb-5 col-lg-10" id="app">
+    <div class="row mt-5"></div>
+    <div class="container col-md-10" v-cloak>
+        <div class="row mt-4">
+            <h3 class="mt-5">Request #{{requestID}}</h3>
+        </div>
+        <div class="row">
+            <div class="" v-if="form.requestStatus !== null">
+                <span class="badge white-text badge-med" v-bind:class="getBadgeClassName(form.requestStatus)">{{form.requestStatus}}</span>
+            </div>
+        </div>
+        <div class="row pull-right">
+            <div class="dropdown">
+                <div class="dropdown-toggle" id="dropdownMenuButton" data-toggle="dropdown"><i class="fa fa-cog"></i>
+                </div>
+                <ul class="dropdown-menu">
+                    <li class="dropdown-item" v-on:click="exportRequestCSV()">Export Request to CSV</li>
+                    <li class="dropdown-item" v-on:click="exportRequestGuardsCSV()">Export Guard list to CSV</li>
+                </ul>
+            </div>
+        </div>
+        <div class="row mt-5">
+            <div class="col-lg-6">
+                <ul class="list-group">
+                    <li class="list-group-item d-flex justify-content-between align-items-center">Requested By: <span
+                            class="dark-text">{{form.requesterName}}</span></li>
+                    <li class="list-group-item d-flex justify-content-between align-items-center">Phone: <span
+                            class="dark-text">{{form.phoneNumber}}</span></li>
+                    <li class="list-group-item d-flex justify-content-between align-items-center">Email: <span
+                            class="dark-text">{{form.emailAddress}}</span></li>
+                    <li class="list-group-item d-flex justify-content-between align-items-center">Type/Name of Event:
+                        <span class="dark-text">{{form.eventName}}</span></li>
+                    <li class="list-group-item d-flex justify-content-between align-items-center">Location: <span
+                            class="dark-text">{{form.eventLocation}}</span></li>
+
+                </ul>
+            </div>
+            <div class="col-lg-6">
+                <ul class="list-group">
+                    <li class="list-group-item d-flex justify-content-between align-items-center">SFU ID: <span
+                            class="dark-text">{{form.requesterID}}</span></li>
+                    <li class="list-group-item d-flex justify-content-between align-items-center">Fax: <span
+                            class="dark-text">{{form.faxNumber}}</span></li>
+                    <li class="list-group-item d-flex justify-content-between align-items-center"># of Attendees: <span
+                            class="dark-text">{{form.numAttendees}}</span></li>
+                    <li class="list-group-item d-flex justify-content-between align-items-center">Licensed: <span
+                            class="dark-text">{{form.isLicensed}}</span></li>
+                </ul>
+            </div>
+        </div>
+        <div class="row mt-4">
+            <span class="ml-3 mb-1 grey-text">Details:</span>
+            <ul class="list-group col-md-12 mt-1" style="margin-left: 15px">
+                <li class="list-group-item">
+                    <span class="dark-text">{{form.eventDetails}}</span>
+                </li>
+            </ul>
+        </div>
+
+        <div class="row my-4">
+            <table class="table table-striped">
+                <thead>
+                <tr>
+                    <th class="text-center">Start Time</th>
+                    <th class="text-center">End Time</th>
+                    <th class="text-center">Hours</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr v-for="d in dates">
+                    <td class="text-center">{{d.start}}</td>
+                    <td class="text-center">{{d.end}}</td>
+                    <td class="text-center">{{d.hours}}</td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="row">
+            <div class="col-lg-6">
+                <ul class="list-group">
+                    <li class="list-group-item d-flex justify-content-between align-items-center">Authorized By: <span
+                            class="dark-text">{{form.authorizerName}}</span></li>
+                    <li class="list-group-item d-flex justify-content-between align-items-center">Account Code: <span
+                            class="dark-text">{{form.paymentAccountCode}}</span></li>
+                    <li class="list-group-item d-flex justify-content-between align-items-center">Authorizer ID: <span
+                            class="dark-text">{{form.authorizerID}}</span></li>
+                </ul>
+            </div>
+            <div class="col-lg-6">
+                <ul class="list-group">
+                    <li class="list-group-item d-flex justify-content-between align-items-center">Authorizer Phone:
+                        <span class="dark-text">{{form.authorizerPhoneNumber}}</span></li>
+                    <li class="list-group-item d-flex justify-content-between align-items-center">Invoice: <span
+                            class="dark-text">{{form.invoiceRequested}}</span></li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-12 line-break mt-4"></div>
+        </div>
+        <div class="row mt-5 form-heading mb-3"><h3>Security Fill Out</h3></div>
+        <div class="row mt-3">
+            <div class="col-lg-6">
+                <label for="regRate">Receiving Security Supervisor: </label>
+                <input class="form-control text-center" type="text" v-model="form.recievingSecuritySupervisor"
+                       required="required">
+            </div>
+            <div class="col-lg-6">
+                <label for="regHours">Prepared By: </label>
+                <input class="form-control text-center" type="text" v-model="form.preparedBy" required="required">
+            </div>
+        </div>
+        <div class="row">
+            <h3 class="mt-5">Guards</h3>
+        </div>
+        <div v-for="g in form.guards">
+            <div class="row mt-3">
+                <div class="col">
+                    <label for="gID">Dispatch #</label>
+                    <input class="form-control text-center" id="gID" type="text" v-model="g.guardID">
+                </div>
+                <div class="col">
+                    <label for="gLoc">Location</label>
+                    <input class="form-control text-center" id="gLoc" type="text" v-model="g.location">
                 </div>
             </div>
-			<div class="row mt-3">
-				<div class="col" v-if="form.requestStatus !== null">
-					<p class="mx-5">Status: {{form.requestStatus}}</p>
-				</div>
-			</div>
-			<div class="row">
-				<div class="col" v-if="form.requesterName !== null">
-					<p class="mx-5">Requested By: {{form.requesterName}}</p>
-				</div>
-				<div class="col" v-if="form.requesterID !== null">
-					<p class="mx-5">SFU ID: {{form.requesterID}}</p>
-				</div>
-			</div>
-			<div class="row">
-				<div class="col" v-if="form.phoneNumber !== null">
-					<p class="mx-5">Phone: {{form.phoneNumber}}</p>
-				</div>
-				<div class="col" v-if="form.faxNumber !== null">
-					<p class="mx-5">Fax: {{form.faxNumber}}</p>
-				</div>
-			</div>
-			<div class="row">
-				<div class="col" v-if="form.emailAddress !== null">
-					<p class="mx-5">Email: {{form.emailAddress}}</p>
-				</div>
-				<div class="col">
-					<p class="mx-5">Location: {{form.eventLocation}}</p>
-				</div>
-			</div>
-			<div class="row">
-				<div class="col" v-if="form.eventName !== null">
-					<p class="mx-5">Type/Name of Event: {{form.eventName}}</p>
-				</div>
-				<div class="col" v-if="form.numAttendees !== null">
-					<p class="mx-5"># of Attendees: {{form.numAttendees}}</p>
-				</div>
-			</div>
-			<div class="row">
-				<div class="col" v-if="form.eventDetails !== null">
-					<p class="mx-5">Details: {{form.eventDetails}}</p>
-				</div>
-			</div>
-			<div class="row">
-				<div class="col" v-if="form.isLicensed !== null">
-					<h5 class="mt-2 text-center">Licensed: {{form.isLicensed}}</h5>
-				</div>
-			</div>
+            <div class="row mt-3">
+                <div class="col">
+                    <label for="gDateStart">Start Date</label>
+                    <input class="form-control text-center" id="gDateStart" type="date" v-model="g.startDate">
+                </div>
+                <div class="col">
+                    <label for="gDateEnd">End Date</label>
+                    <input class="form-control text-center" id="gDateEnd" type="date" v-model="g.endDate">
+                </div>
+            </div>
+            <div class="row mt-3">
+                <div class="col">
+                    <label for="gTimeStart">Start Time</label>
+                    <input class="form-control text-center" id="gTimeStart" type="time" v-model="g.startTime">
+                </div>
+                <div class="col">
+                    <label for="gTimeEnd">End Time</label>
+                    <input class="form-control text-center" id="gTimeEnd" type="time" v-model="g.endTime">
+                </div>
+            </div>
+            <div class="row mt-3">
+                <div class="col">
+                    <label for="gName">Name</label>
+                    <input class="form-control text-center" id="gName" type="text" v-model="g.name">
+                </div>
+                <div class="col">
+                    <label for="gTel">Telephone</label>
+                    <input class="form-control text-center" id="gTel" type="text" v-model="g.telephone">
+                </div>
+                <div class="col">
+                    <label for="gType">Type</label>
+                    <select class="form-control text-center" id="gType" v-model="g.type">
+                        <option>Guard</option>
+                        <option>SCSP</option>
+                    </select>
+                </div>
+            </div>
+            <div class="row my-2 text-center">
+                <div class="col col-md-3"></div>
+                <div class="col">
+                    <button type="button" class="btn btn-danger mx-2" v-on:click="deleteGuard(g)">Remove Guard</button>
+                    <button type="button" class="btn btn-primary" v-on:click="addGuard">Add Guard</button>
+                </div>
+                <div class="col col-md-3"></div>
+            </div>
+        </div>
 
-			<div class="row my-4">
-				<table class="table table-striped">
-					<thead>
-						<tr>
-							<th class="text-center">Start Time</th>
-							<th class="text-center">End Time</th>
-							<th class="text-center">Hours</th>
-						</tr>
-					</thead>
-					<tbody>
-						<tr v-for="d in dates">
-							<td class="text-center">{{d.start}}</td>
-							<td class="text-center">{{d.end}}</td>
-							<td class="text-center">{{d.hours}}</td>
-						</tr>
-					</tbody>
-				</table>
-			</div>
+        <div class="row my-2 text-center" v-if="form.guards && form.guards.length == 0">
+            <div class="col col-md-3"></div>
+            <div class="col">
+                <button type="button" class="btn btn-primary" v-on:click="addGuard">Add Guard</button>
+            </div>
+            <div class="col col-md-3"></div>
+        </div>
 
-			<div class="row">
-				<div class="col" v-if="form.authorizerName !== null">
-					<p class="mx-5">Authorized by: {{form.authorizerName}}</p>
-				</div>
-			</div>
-			<div class="row">
-				<div class="col" v-if="form.paymentAccountCode !== null">
-					<p class="mx-5">Account Code: {{form.paymentAccountCode}}</p>
-				</div>
-			</div>
-			<div class="row">
-				<div class="col" v-if="form.authorizerID !== null">
-					<p class="mx-5">Authorizer ID: {{form.authorizerID}}</p>
-				</div>
-			</div>
-			<div class="row">
-				<div class="col" v-if="form.authorizerPhoneNumber !== null">
-					<p class="mx-5">Phone: {{form.authorizerPhoneNumber}}</p>
-				</div>
-				<div class="col" v-if="form.invoiceRequested !== null">
-					<p class="mx-5">Invoice: {{form.invoiceRequested}}</p>
-				</div>
-			</div>
+        <div class="row my-5">
+            <div class="col-md-3">
+                <label for="regRate">Regular Rate</label>
+                <input class="form-control text-center" id="regRate" type="number" step="0.01" min="0"
+                       v-model="regularRate" required="required">
+            </div>
+            <div class="col-md-3">
+                <label for="regHours">Regular Hours</label>
+                <input class="form-control text-center" id="regHours" type="number" step="0.01" min="0"
+                       v-model="regularHours" required="required">
+            </div>
+            <div class="col-md-3">
+                <label for="overRate">Overtime Rate</label>
+                <input class="form-control text-center" id="overRate" type="number" step="0.01" min="0"
+                       v-model="overtimeRate" required="required">
+            </div>
+            <div class="col-md-3">
+                <label for="overHours">Overtime Hours</label>
+                <input class="form-control text-center" id="overHours" type="number" step="0.01" min="0"
+                       v-model="overtimeHours" required="required">
+            </div>
+        </div>
 
-			<div class="row my-3">
-				<div class="col">
-					<label for="regRate">Receiving Security Supervisor: </label>
-					<input class="form-control text-center" type="text" v-model="form.recievingSecuritySupervisor" required="required">
-				</div>
-				<div class="col">
-					<label for="regHours">Prepared By: </label>
-					<input class="form-control text-center" type="text" v-model="form.preparedBy" required="required">
-				</div>
-			</div>
+        <div class="row text-center">
+            <div class="col-md-4">
+                <p class="d-block">Estimated Personnel Cost:</p>
+                <span class="money-style d-block">${{cost}}</span>
+            </div>
+            <div class="col-md-4">
+                <p class="d-block">Total Hours:</p>
+                <span class="money-style d-block">{{totalHours}} Hours</span>
+            </div>
+            <div class="col-md-4">
+                <p class="d-block">Hours per Guard:</p>
+                <span class="money-style d-block">{{avgHours}} Hours</span>
+            </div>
+        </div>
 
-			<h5 class="mt-5">Guards</h5>
-			<div v-for="g in form.guards">
-				<div class="row mt-3">
-					<div class="col">
-						<label for="gID">Dispatch #</label>
-						<input class="form-control text-center" id="gID" type="text" v-model="g.guardID">
-					</div>
-					<div class="col">
-						<label for="gLoc">Location</label>
-						<input class="form-control text-center" id="gLoc" type="text" v-model="g.location">
-					</div>
-				</div>
-				<div class="row mt-3">
-					<div class="col">
-						<label for="gDateStart">Start Date</label>
-						<input class="form-control text-center" id="gDateStart" type="date" v-model="g.startDate">
-					</div>
-					<div class="col">
-						<label for="gDateEnd">End Date</label>
-						<input class="form-control text-center" id="gDateEnd" type="date" v-model="g.endDate">
-					</div>
-				</div>
-				<div class="row mt-3">
-					<div class="col">
-						<label for="gTimeStart">Start Time</label>
-						<input class="form-control text-center" id="gTimeStart" type="time" v-model="g.startTime">
-					</div>
-					<div class="col">
-						<label for="gTimeEnd">End Time</label>
-						<input class="form-control text-center" id="gTimeEnd" type="time" v-model="g.endTime">
-					</div>
-				</div>
-				<div class="row mt-3">
-					<div class="col">
-						<label for="gName">Name</label>
-						<input class="form-control text-center" id="gName" type="text" v-model="g.name">
-					</div>
-					<div class="col">
-						<label for="gTel">Telephone</label>
-						<input class="form-control text-center" id="gTel" type="text" v-model="g.telephone">
-					</div>
-					<div class="col">
-						<label for="gType">Type</label>
-						<select class="form-control text-center" id="gType" v-model="g.type">
-							<option>Guard</option>
-							<option>SCSP</option>
-						</select>
-					</div>
-				</div>
-				<div class="row my-2 text-center">
-					<div class="col col-md-3"></div>
-					<div class="col">
-						<button type="button" class="btn btn-danger mx-2" v-on:click="deleteGuard(g)">Remove Guard</button>
-						<button type="button" class="btn" v-on:click="addGuard">Add Guard</button>
-					</div>
-					<div class="col col-md-3"></div>
-				</div>
-			</div>
+        <div class="form-group my-5">
+            <label for="remarksField">Remarks</label>
+            <textarea class="form-control" rows="4" v-model="form.securityRemarks" id="remarksField"></textarea>
+        </div>
 
-			<div class="row my-2 text-center" v-if="form.guards.length == 0">
-				<div class="col col-md-3"></div>
-				<div class="col">
-					<button type="button" class="btn" v-on:click="addGuard">Add Guard</button>
-				</div>
-				<div class="col col-md-3"></div>
-			</div>
+        <div class="row">
+            <div class="text-center col-md-12 mx-auto">
+                <button class="btn btn-danger col-sm-12 col-md-2 mt-3" v-on:click="submit('reject')">Reject</button>
+                <button type="button" class="btn btn-success col-sm-12 col-md-2 mt-3" data-toggle="modal"
+                        data-target="#emailModal" v-if="canAccept">Accept
+                </button>
+                <div id="emailModal" class="modal fade" role="dialog">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <p class="modal-title">Select who should be notified of this accepted service
+                                    request</p>
+                            </div>
+                            <div class="modal-body mx-5 text-left" id="emailList" v-for="e in emailOptions">
+                                <div class="checkbox">
+                                    <label><input type="checkbox" v-model="emails" :value="e"> {{e}}</label>
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn" data-dismiss="modal">Cancel</button>
+                                <button type="button" class="btn btn-success mx-2" data-dismiss="model"
+                                        v-on:click="submit('accept')" v-if="canAccept">Accept
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <button class="btn btn-primary col-sm-12 col-md-2 mt-3" v-on:click="submit('update')" v-if="canAccept">
+                    Update
+                </button>
+            </div>
+            <div class="col col-md-3"></div>
+            <div class="bottom-space"></div>
+        </div>
+    </div>
+</div>
 
-			<div class="row my-5">
-				<div class="col">
-					<label for="regRate">Regular Rate</label>
-					<input class="form-control text-center" id="regRate" type="number" step="0.01" min="0" v-model="regularRate" required="required">
-				</div>
-				<div class="col">
-					<label for="regHours">Regular Hours</label>
-					<input class="form-control text-center" id="regHours" type="number" step="0.01" min="0" v-model="regularHours" required="required">
-				</div>
-				<div class="col">
-					<label for="overRate">Overtime Rate</label>
-					<input class="form-control text-center" id="overRate" type="number" step="0.01" min="0" v-model="overtimeRate" required="required">
-				</div>
-				<div class="col">
-					<label for="overHours">Overtime Hours</label>
-					<input class="form-control text-center" id="overHours" type="number" step="0.01" min="0" v-model="overtimeHours" required="required">
-				</div>
-			</div>
+<script src="/js/jquery-3.2.1.min.js"></script>
+<script src="/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/tether/1.4.0/js/tether.min.js"></script>
+<script src="/js/vue.js"></script>
+<script src="/js/vue-resource.min.js"></script>
+<script src="/js/datetime.js"></script>
+<script>
+    var app = new Vue({
+        el: '#app',
 
-			<div class="row my-3 text-center">
-				<div class="col mx-0" >
-					<p>Estimated Personnel Cost: {{cost}}</p>
-				</div>
-				<div class="col mx-0">
-					<p>Total Hours: {{totalHours}}</p>
-				</div>
-				<div class="col mx-0">
-					<p>Hours per Guard: {{avgHours}}</p>
-				</div>
-			</div>
+        data: {
+            requestID: null,
+            test: true,
+            form: {
+                requestStatus: 'not set',
+                requesterName: 'not set',
+                requesterID: 'not set',
+                phoneNumber: 'not set',
+                faxNumber: 'not set',
+                emailAddress: 'not set',
+                eventLocation: 'not set',
+                eventName: 'not set',
+                eventDetails: 'not set',
+                isLicensed: 'not set',
+                authorizerName: 'not set',
+                paymentAccountCode: 'not set',
+                authorizerID: 'not set',
+                authorizerPhoneNumber: 'not set',
+                invoiceRequested: 'not set',
+                eventDates: 'not set',
 
-			<div class="form-group my-5">
-				<label for="remarksField">Remarks</label>
-				<textarea class="form-control" rows="4" v-model="form.securityRemarks" id="remarksField"></textarea>
-			</div>
+            },
+            dates: [],
 
-			<div class="row my-5">
-				<div class="col col-md-3"></div>
-				<div class="col text-center">
-					<button type="button" class="btn btn-danger mx-2" data-toggle="modal" data-target="#rejectRequest">Reject</button>
-					<div id="rejectRequest" class="modal fade" role="dialog">
-						<div class="modal-dialog">
-							<div class="modal-content">
-								<div class="modal-header">
-									<p class="modal-title">Please enter a reason for rejection this request</p>
-								</div>
-								<textarea class="mx-5 text-left" v-model="additionalMessage"></textarea>
-								<div class="modal-footer">
-									<button type="button" class="btn" data-dismiss="modal">Cancel</button>
-									<button type="button" class="btn btn-success mx-2" data-dismiss="model" v-on:click="submit('reject')">Reject</button>
-								</div>
-							</div>
+            regularRate: 0,
+            regularHours: 0,
+            overtimeRate: 0,
+            overtimeHours: 0,
 
-						</div>
-					</div>
+            emailOptions: [],
+            emails: [],
+            additionalMessage: ''
+        },
 
-					<button type="button" class="btn btn-success mx-2" data-toggle="modal" data-target="#emailModal" v-if="canAccept">Accept</button>
-					<div id="emailModal" class="modal fade" role="dialog">
-						<div class="modal-dialog">
-							<div class="modal-content">
-								<div class="modal-header">
-									<p class="modal-title">Select who should be notified of this accepted service request</p>
-								</div>
-								<div class="modal-body mx-5 text-left" id="emailList" v-for="e in emailOptions">
-									<div class="checkbox">
-										<label><input type="checkbox" v-model="emails" :value="e"> {{e}}</label>
-									</div>
-								</div>
-								<div class="modal-footer">
-									<button type="button" class="btn" data-dismiss="modal">Cancel</button>
-									<button type="button" class="btn btn-success mx-2" data-dismiss="model" v-on:click="submit('accept')" v-if="canAccept">Accept</button>
-								</div>
-							</div>
+        methods: {
+            exportRequestCSV: function () {
+                window.location.assign("/api/csv/form/" + this.requestID + ".csv");
+            },
+            exportRequestGuardsCSV: function () {
+                window.location.assign("/api/csv/guards/" + this.requestID + "-guards.csv");
+            },
 
-						</div>
-					</div>
+            addGuard: function () {
+                this.form.guards.push({
+                    guardID: 'id',
+                    location: '',
+                    startDate: '',
+                    endDate: '',
+                    startTime: '',
+                    endTime: '',
+                    name: '',
+                    telephone: '',
+                    type: 'Guard',
+                    regularHours: null,
+                    overtimeHours: null,
+                    regularRate: null,
+                    overtimeRate: null
+                })
+            },
 
-					<button class="btn btn-success" v-on:click="submit('update')" v-if="canAccept">Update</button>
-				</div>
-				<div class="col col-md-3"></div>
-				<div class="bottom-space"></div>
-			</div>
-		</div>
+            deleteGuard: function (guard) {
+                let i = this.form.guards.indexOf(guard);
+                this.form.guards.splice(i, 1);
+            },
 
-		<script src="/js/jquery-3.2.1.min.js"></script>
-        <script src="/js/bootstrap.bundle.min.js"></script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/tether/1.4.0/js/tether.min.js"></script>
-		<script src="/js/vue.js"></script>
-		<script src="/js/vue-resource.min.js"></script>
-		<script src="/js/datetime.js"></script>
-		<script>
-			var app = new Vue({
-				el: '#app',
+            removeNull: function () {
+                for (let p in this.form) {
+                    if (this.form[p] === null || this.form[p] === undefined || this.form[p] === '') {
+                        this.form[p] = 'not set';
+                    }
+                    //console.log("form["+p+"] = "+ this.form[p]);
+                }
 
-				data: {
-					requestID: null,
-                    test: true,
-					form: {
-						requestStatus: 'not set',
-						requesterName: 'not set',
-						requesterID: 'not set',
-						phoneNumber: 'not set',
-						faxNumber: 'not set',
-						emailAddress: 'not set',
-						eventLocation: 'not set',
-						eventName: 'not set',
-						eventDetails: 'not set',
-						isLicensed: 'not set',
-						authorizerName: 'not set',
-						paymentAccountCode: 'not set',
-						authorizerID: 'not set',
-						authorizerPhoneNumber: 'not set',
-						invoiceRequested: 'not set',
-						eventDates: 'not set'
-					},
-					dates: [],
+                if (this.form.guards === 'not set') {
+                    this.form.guards = null;
+                }
 
-					regularRate: 0,
-					regularHours: 0,
-					overtimeRate: 0,
-					overtimeHours: 0,
+                if (this.form.isAuthorized === 'not set') {
+                    this.form.isAuthorized = false;
+                }
 
-					emailOptions: [],
-					emails: [],
-					additionalMessage: ''
-				},
+                if (this.form.invoiceRequested === 'not set') {
+                    this.form.invoiceRequested = false;
+                }
 
-				methods: {
-                    exportRequestCSV: function() {
-                        window.location.assign("/api/csv/form/" + this.requestID + ".csv");
-                    },
-                    exportRequestGuardsCSV: function() {
-                        window.location.assign("/api/csv/guards/" + this.requestID + "-guards.csv");
-                    },
-                    exportRequestInvoicePDF: function() {
-                        window.location.assign("/api/invoice/" + this.requestID + "-invoice.pdf");
-                    },
+                if (this.form.isLicensed === 'not set') {
+                    this.form.isLicensed = false;
+                }
 
+                if (this.form.distributionList === 'not set') {
+                    this.form.distributionList = null;
+                }
+            },
 
-					addGuard: function() {
-						this.form.guards.push({
-							guardID: 'id',
-							location: '',
-							startDate: '',
-							endDate: '',
-							startTime: '',
-							endTime: '',
-							name: '',
-							telephone: '',
-							type: 'Guard',
-							regularHours: null,
-							overtimeHours: null,
-							regularRate: null,
-							overtimeRate: null
-						})
-					},
+            getURLParam: function (param) {
+                let url = window.location.search.substring(1);
+                let urlVars = url.split('&');
+                let paramName;
+                for (let i = 0; i < urlVars.length; ++i) {
+                    paramName = urlVars[i].split('=');
+                    if (paramName[0] === param) {
+                        return paramName[1];
+                    }
+                }
+                return null;
+            },
 
-					deleteGuard: function (guard) {
-						let i = this.form.guards.indexOf(guard);
-						this.form.guards.splice(i, 1);
-					},
+            getFormData: function () {
+                this.requestID = this.getURLParam('id');
+                if (this.requestID === null) {
+                    window.location.replace("/requests");
+                }
 
-					removeNull: function () {
-						for (let p in this.form) {
-							if (this.form[p] === null || this.form[p] === undefined || this.form[p] === '') {
-								this.form[p] = 'not set';
-							}
-							//console.log("form["+p+"] = "+ this.form[p]);
-						}
+                this.$http.get('/api/form/getByRequestID/' + this.requestID).then(function (response) {
+                    if (response.data === null || response.data === undefined || response.data === "") {
+                        window.location.replace("/requests");
+                    }
 
-						if (this.form.guards === 'not set') {
-							this.form.guards = null;
-						}
+                    if (response.data.guards && response.data.guards[0] && response.data.guards.length > 0) {
+                        let g = response.data.guards[0];
+                        this.regularRate = g.regularRate;
+                        this.regularHours = g.regularHours;
+                        this.overtimeRate = g.overtimeRate;
+                        this.overtimeHours = g.overtimeHours;
+                    }
 
-						if (this.form.isAuthorized === 'not set') {
-							this.form.isAuthorized = false;
-						}
+                    this.form = JSON.parse(JSON.stringify(response.data));
+                    this.removeNull();
+                    this.dates = updateDateTime(this.form.eventDates);
 
-						if (this.form.invoiceRequested === 'not set') {
-							this.form.invoiceRequested = false;
-						}
+                    this.emailOptions.push(this.form.emailAddress); // TODO: get more emails
+                }, function (error) {
+                    console.log(error.statusText);
+                });
 
-						if (this.form.isLicensed === 'not set') {
-							this.form.isLicensed = false;
-						}
+            },
+            setSecFields: function () {
+                this.form.distributionList = this.emails;
 
-						if (this.form.distributionList === 'not set') {
-							this.form.distributionList = null;
-						}
-					},
+                let i, len;
+                len = this.form.guards.length || 0;
+                for (i = 0; i < len; ++i) {
+                    this.form.guards[i].regularHours = this.regularHours;
+                    this.form.guards[i].overtimeHours = this.overtimeHours;
+                    this.form.guards[i].regularRate = this.regularRate;
+                    this.form.guards[i].overtimeRate = this.overtimeRate;
 
-					getURLParam: function (param) {
-						let url = window.location.search.substring(1);
-						let urlVars = url.split('&');
-						let paramName;
-						for (let i = 0; i < urlVars.length; ++i) {
-							paramName = urlVars[i].split('=');
-							if (paramName[0] === param) {
-								return paramName[1];
-							}
-						}
-						return null;
-					},
+                    if (this.form.guards[i].name === "" || this.form.guards[i].name === null) {
+                        this.form.guards[i].name = "not set";
+                    }
+                }
+            },
+            submit: function (action) {
+                this.setSecFields();
 
-					getFormData: function () {
-						this.requestID = this.getURLParam('id');
-						if (this.requestID === null) {
-							window.location.replace("/requests");
-						}
+                if (action === 'accept') {
+                    this.form.requestStatus = "APPROVED";
+                    if (!this.canAccept) {
+                        return;
+                    }
+                } else if (action === 'reject') {
+                    this.form.requestStatus = 'REJECTED';
+                } else {
+                    if (!this.canAccept) {
+                        return;
+                    }
+                }
 
-						this.$http.get('/api/form/getByRequestID/'+this.requestID).then(function (response) {
-							if (response.data === null || response.data === undefined || response.data === "") {
-								window.location.replace("/requests");
-							}
+                //console.log("---------- Submitting:");
+                this.removeNull();
 
-							if (response.data.guards[0] !== null && response.data.guards[0] !== undefined) {
-								let g = response.data.guards[0];
-								this.regularRate = g.regularRate;
-								this.regularHours = g.regularHours;
-								this.overtimeRate = g.overtimeRate;
-								this.overtimeHours = g.overtimeHours;
-							}
+                this.$http.post('/api/form/saveSecurity', this.form,
+                    {params: {additionalMessage: this.additionalMessage}}).then(function (response) {
+                    console.log('Successfully sent form');
+                    window.location.replace('/requests')
+                }, function (error) {
+                    alert('Failed to send form!');
+                });
+            },
+            getBadgeClassName: function (status) {
+                switch (status) {
+                    case 'WAITING':
+                        return 'badge-warning';
+                        break;
+                    case 'APPROVED':
+                        return 'badge-success';
+                        break;
+                    case 'REJECTED':
+                        return 'badge-danger';
+                        break;
+                    default:
+                        return 'badge-default';
+                        break;
+                }
+            }
 
-							this.form = JSON.parse(JSON.stringify(response.data));
-							this.removeNull();
-							this.dates = updateDateTime(this.form.eventDates);
+        },
 
-							this.emailOptions.push(this.form.emailAddress); // TODO: get more emails
-						}, function (error) {
-							console.log(error.statusText);
-						});
+        created() {
+            // TODO: redirect if user doesn't have security authorization
+            this.getFormData();
+        },
 
-					},
-					setSecFields: function () {
-						this.form.distributionList = this.emails;
+        computed: {
+            canAccept: function () {
+                if (!this.form.guards || this.form.guards.length == 0) {
+                    return true;
+                } else {
+                    this.form.guards.forEach(function (g) {
+                        //console.log(g.guardID+"+"+g.location);
+                        if (g.guardID === 'id' || g.guardID === '' || g.location === '' || g.location === undefined
+                            || g.startDate === '' || g.startDate === undefined || g.endDate === ''
+                            || g.endDate === undefined || g.startTime === '' || g.startTime === undefined
+                            || g.endTime === '' || g.endTime === undefined || g.name === '' || g.name === undefined
+                            || g.telephone === '' || g.telephone === undefined) {
 
-						let i, len;
-						len = this.form.guards.length;
-						for (i = 0; i < len; ++i) {
-							this.form.guards[i].regularHours = this.regularHours;
-							this.form.guards[i].overtimeHours = this.overtimeHours;
-							this.form.guards[i].regularRate = this.regularRate;
-							this.form.guards[i].overtimeRate = this.overtimeRate;
+                            return false;
+                        }
+                    });
 
-							if (this.form.guards[i].name === "" || this.form.guards[i].name === null) {
-								this.form.guards[i].name = "not set";
-							}
-						}
-					},
+                    return true;
+                }
+            },
 
-					submit: function (action) {
-						this.setSecFields();
+            cost: function () {
+                if (!this.form.guards) return;
+                let guards = this.form.guards.length;
+                let cost = (this.regularHours * this.regularRate) + (this.overtimeHours * this.overtimeRate);
+                cost *= guards;
 
-						if (action === 'accept') {
-							this.form.requestStatus = "APPROVED";
-							if (!this.canAccept) {
-								return;
-							}
-						} else if (action === 'reject') {
-							this.form.requestStatus = 'REJECTED';
-						} else {
-							if (!this.canAccept) {
-								return;
-							}
-						}
+                return cost;
+            },
 
-						//console.log("---------- Submitting:");
-						this.removeNull();
+            totalHours: function () {
+                if (!this.form.guards) return;
+                let numGuards = this.form.guards.length;
+                let total = 0;
+                total += Number.parseFloat(this.regularHours) + Number.parseFloat(this.overtimeHours);
+                total *= numGuards;
 
-						this.$http.post('/api/form/saveSecurity', this.form,
-										{params: {additionalMessage: this.additionalMessage}}).then(function (response) {
-							console.log('Successfully sent form');
-							window.location.replace('/requests')
-						}, function (error) {
-							alert('Failed to send form!');
-						});
-					}
-				},
+                return total;
+            },
 
-				created: function () {
-					// TODO: redirect if user doesn't have security authorization
-					this.getFormData();
-				},
+            avgHours: function () {
+                let avg = 0;
+                avg += Number.parseFloat(this.regularHours) + Number.parseFloat(this.overtimeHours);
 
-				computed: {
-                    canAccept: function () {
-                        let numGuards = this.form.guards.length;
-                        if (numGuards === 0)
-                            return true;
+                return avg;
+            }
+        }
+    });
+</script>
 
-                        let isValid = true;
-                        this.form.guards.forEach(function (g) {
-							//console.log(g.guardID+"+"+g.location);
-                            if (g.guardID === 'id' || g.guardID === '' || g.location === '' || g.location === undefined
-								|| g.startDate === '' || g.startDate === undefined || g.endDate === ''
-								|| g.endDate === undefined || g.startTime === ''  || g.startTime === undefined
-								|| g.endTime === '' || g.endTime === undefined || g.name === '' || g.name === undefined
-								|| g.telephone === '' || g.telephone === undefined) {
-
-                                isValid = false;
-                                return isValid;
-                            }
-                        });
-
-                        return isValid;
-                    },
-
-					cost: function () {
-						let guards = this.form.guards.length;
-						let cost = (this.regularHours * this.regularRate) + (this.overtimeHours * this.overtimeRate);
-						cost *= guards;
-
-						return cost;
-					},
-
-					totalHours: function () {
-                    	let total = 0;
-						total += Number.parseFloat(this.regularHours) + Number.parseFloat(this.overtimeHours);
-						total *= this.form.guards.length;
-
-						return total;
-					},
-
-					avgHours: function () {
-						let avg = 0;
-						avg += Number.parseFloat(this.regularHours) + Number.parseFloat(this.overtimeHours);
-
-						return avg;
-					}
-				}
-			});
-		</script>
-
-	</div>
+</div>
 </body>
 </html>
