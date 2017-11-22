@@ -17,7 +17,7 @@ function getArrayDateTimes( aString ) {
 }
 
 function updateDateTime(aString){
-    if (!aString) {
+    if (!aString || aString == 'not set') {
         return [];
     }
 	var array = aString.split(", ");

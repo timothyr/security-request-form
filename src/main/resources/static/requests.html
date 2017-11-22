@@ -148,7 +148,6 @@
         methods: {
             changeDates: function() {
                 this.requests.forEach(function(request) {
-                    request.requestStatus = "WAITING";
                     request.eventDates = updateDateTime(request.eventDates);
                 });
             },
