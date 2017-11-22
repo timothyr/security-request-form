@@ -14,7 +14,7 @@ $(document).ready(function(){
                   '20:00','20:30','21:00','21:30','22:00','22:30','23:00','23:30',
                 ],
                 formatTime: 'g:i a',
-                defaultDate: new Date(),
+                defaultDate: (new Date()).setMinutes( (new Date()).getMinutes()<30?30:60 ),
                 minDateTime: new Date(),
                 onClose: setEndMinDate,
 			});
@@ -28,7 +28,7 @@ $(document).ready(function(){
                     '20:00','20:30','21:00','21:30','22:00','22:30','23:00','23:30',
                 ],
                 formatTime: 'g:i a',
-                defaultDate: new Date(),
+                defaultDate: (new Date()).setMinutes( (new Date()).getMinutes()<30?30:60 ),
                 minDateTime: new Date(),
             });
 
