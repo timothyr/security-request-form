@@ -26,6 +26,9 @@ public class DistributionController {
 
     @PostMapping(value="/api/dist/add")
     public ResponseEntity<Void> addDist(@RequestBody DistributionEmail distEmail) {
+        if (distEmail.getEmail().equals("")) {
+            return new ResponseEntity<Void>(HttpStatus.BAD_REQUEST);
+        }
         distributionEmailRepository.save(distEmail);
         return new ResponseEntity<Void>(HttpStatus.CREATED);
     }
