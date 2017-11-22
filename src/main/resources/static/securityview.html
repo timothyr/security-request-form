@@ -118,13 +118,13 @@
         <div class="row mt-5 form-heading mb-3"><h3>Security Fill Out</h3></div>
         <div class="row mt-3">
             <div class="col-lg-6">
-                <label for="regRate">Receiving Security Supervisor: </label>
-                <input class="form-control text-center" type="text" v-model="form.recievingSecuritySupervisor"
+                <label for="recvSup">Receiving Security Supervisor: </label>
+                <input class="form-control text-center" id="recvSup" type="text" placeholder="Supervisor" v-model="form.recievingSecuritySupervisor"
                        required="required">
             </div>
             <div class="col-lg-6">
-                <label for="regHours">Prepared By: </label>
-                <input class="form-control text-center" type="text" v-model="form.preparedBy" required="required">
+                <label for="prepBy">Prepared By: </label>
+                <input class="form-control text-center" id="prepBy" type="text" placeholder="Prepared By" v-model="form.preparedBy" required="required">
             </div>
         </div>
         <div class="row">
@@ -134,41 +134,41 @@
             <div class="row mt-3">
                 <div class="col">
                     <label for="gID">Dispatch #</label>
-                    <input class="form-control text-center" id="gID" type="text" v-model="g.guardID">
+                    <input class="form-control text-center" id="gID" type="text" placeholder="Dispatch #" v-model="g.guardID">
                 </div>
                 <div class="col">
                     <label for="gLoc">Location</label>
-                    <input class="form-control text-center" id="gLoc" type="text" v-model="g.location">
+                    <input class="form-control text-center" id="gLoc" type="text" placeholder="Location" v-model="g.location">
                 </div>
             </div>
             <div class="row mt-3">
                 <div class="col">
                     <label for="gDateStart">Start Date</label>
-                    <input class="form-control text-center" id="gDateStart" type="date" v-model="g.startDate">
+                    <input class="form-control text-center" id="gDateStart" type="date" placeholder="Start Date" v-model="g.startDate">
                 </div>
                 <div class="col">
                     <label for="gDateEnd">End Date</label>
-                    <input class="form-control text-center" id="gDateEnd" type="date" v-model="g.endDate">
+                    <input class="form-control text-center" id="gDateEnd" type="date" placeholder="End Date" v-model="g.endDate">
                 </div>
             </div>
             <div class="row mt-3">
                 <div class="col">
                     <label for="gTimeStart">Start Time</label>
-                    <input class="form-control text-center" id="gTimeStart" type="time" v-model="g.startTime">
+                    <input class="form-control text-center" id="gTimeStart" type="time" placeholder="Start Time" v-model="g.startTime">
                 </div>
                 <div class="col">
                     <label for="gTimeEnd">End Time</label>
-                    <input class="form-control text-center" id="gTimeEnd" type="time" v-model="g.endTime">
+                    <input class="form-control text-center" id="gTimeEnd" type="time" placeholder="End Time" v-model="g.endTime">
                 </div>
             </div>
             <div class="row mt-3">
                 <div class="col">
                     <label for="gName">Name</label>
-                    <input class="form-control text-center" id="gName" type="text" v-model="g.name">
+                    <input class="form-control text-center" id="gName" type="text" placeholder="Name" v-model="g.name">
                 </div>
                 <div class="col">
                     <label for="gTel">Telephone</label>
-                    <input class="form-control text-center" id="gTel" type="text" v-model="g.telephone">
+                    <input class="form-control text-center" id="gTel" type="text" placeholder="Telephone #" v-model="g.telephone">
                 </div>
                 <div class="col">
                     <label for="gType">Type</label>
@@ -235,8 +235,8 @@
         </div>
 
         <div class="form-group my-5">
-            <label for="remarksField">Remarks</label>
-            <textarea class="form-control" rows="4" v-model="form.securityRemarks" id="remarksField"></textarea>
+            <label for="remarksField">Security Remarks</label>
+            <textarea class="form-control" rows="4" placeholder="Remarks" v-model="form.securityRemarks" id="remarksField"></textarea>
         </div>
 
         <div class="row">
@@ -340,7 +340,7 @@
 
             addGuard: function () {
                 this.form.guards.push({
-                    guardID: 'id',
+                    guardID: '',
                     location: '',
                     startDate: '',
                     endDate: '',
@@ -386,8 +386,8 @@
                 }
 
                 if (this.form.distributionList === 'not set') {
-                    this.form.distributionList = null;
-                }
+					this.form.distributionList = null;
+				}
             },
 
             getURLParam: function (param) {
@@ -423,7 +423,7 @@
                     }
 
                     this.form = JSON.parse(JSON.stringify(response.data));
-                    this.removeNull();
+                    //this.removeNull();
                     this.dates = updateDateTime(this.form.eventDates);
 
                 }, function (error) {
@@ -451,10 +451,10 @@
                 this.setSecFields();
 
                 if (action === 'accept') {
-                    this.form.requestStatus = "APPROVED";
-                    if (!this.canAccept) {
-                        return;
-                    }
+					if (!this.canAccept) {
+						return;
+					}
+					this.form.requestStatus = "APPROVED";
                 } else if (action === 'reject') {
                     this.form.requestStatus = 'REJECTED';
                 } else {
@@ -518,7 +518,7 @@
                 } else {
                     this.form.guards.forEach(function (g) {
                         //console.log(g.guardID+"+"+g.location);
-                        if (g.guardID === 'id' || g.guardID === '' || g.location === '' || g.location === undefined
+                        if (g.guardID === '' || g.guardID === undefined || g.location === '' || g.location === undefined
                             || g.startDate === '' || g.startDate === undefined || g.endDate === ''
                             || g.endDate === undefined || g.startTime === '' || g.startTime === undefined
                             || g.endTime === '' || g.endTime === undefined || g.name === '' || g.name === undefined
