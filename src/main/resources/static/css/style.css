@@ -182,6 +182,9 @@ td {
 	color: #c6c6c6;
 }
 
+.dropdown {
+    cursor: pointer;
+}
 
 /* LOADING ICON - edit if interferes with other svg */
 svg path, svg rect {
@@ -230,3 +233,45 @@ svg path, svg rect {
      0% {transform: rotate(0deg);}
      100% {transform: rotate(360deg);}
  }
+
+ /* REQUEST FORM TOGGLE BUTTON */
+.active_toggle {
+    background-color: #DA3849 !important;
+    color: white !important;
+}
+
+.toggle-button {
+    background-color: transparent;
+    color: #686868;
+    border: 1px solid #CED4DA;
+}
+
+/* SECURITYVIEW LIST GROUP */
+.list-group {
+    color: #686868;
+}
+
+.dark-text {
+    color: #2e2e2e;
+}
+
+.grey-text {
+    color: #686868;
+}
+
+.blue-text {
+    color: #007bff;
+}
+
+.badge-med {
+    font-size: 1.0em
+}
+
+.line-break {
+    border-top: 1px solid #CED4DA;
+}
+
+.money-style {
+    font-size: 1.8em;
+    color: #007bff;
+}
