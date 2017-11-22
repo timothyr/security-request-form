@@ -252,9 +252,17 @@
                                 <p class="modal-title">Select who should be notified of this accepted service
                                     request</p>
                             </div>
-                            <div class="modal-body mx-5 text-left" id="emailList" v-for="e in emailOptions">
+                            <div class="modal-body mx-5 text-left" id="emailList" v-for="email in distEmails">
                                 <div class="checkbox">
-                                    <label><input type="checkbox" v-model="emails" :value="e"> {{e}}</label>
+                                    <label><input type="checkbox" v-model="emails" :value="email">{{email.email}}</label>
+                                </div>
+                            </div>
+                            <div class="container mb-4">
+                                <div class="row">
+                                    <div class="col-md-10 mx-auto input-group">
+                                        <input type="text" class="form-control">
+                                        <span class="input-group-btn"><button class="btn btn-primary">Add</button></span>
+                                    </div>
                                 </div>
                             </div>
                             <div class="modal-footer">
@@ -306,7 +314,6 @@
                 authorizerPhoneNumber: 'not set',
                 invoiceRequested: 'not set',
                 eventDates: 'not set',
-
             },
             dates: [],
 
@@ -315,9 +322,9 @@
             overtimeRate: 0,
             overtimeHours: 0,
 
-            emailOptions: [],
             emails: [],
-            additionalMessage: ''
+            additionalMessage: '',
+            distEmails: []
         },
 
         methods: {
@@ -416,7 +423,6 @@
                     this.removeNull();
                     this.dates = updateDateTime(this.form.eventDates);
 
-                    this.emailOptions.push(this.form.emailAddress); // TODO: get more emails
                 }, function (error) {
                     console.log(error.statusText);
                 });
@@ -480,6 +486,13 @@
                         return 'badge-default';
                         break;
                 }
+            },
+            getDistEmails: function () {
+                this.$http.get('/api/dist/all').then(function(response) {
+                    if (response.status == 200) {
+                        this.distEmails = response.data;
+                    }
+                })
             }
 
         },
@@ -487,6 +500,7 @@
         created() {
             // TODO: redirect if user doesn't have security authorization
             this.getFormData();
+            this.getDistEmails();
         },
 
         computed: {
