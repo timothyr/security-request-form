@@ -9,6 +9,10 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+/**
+ * Rest API for handling distribution emails - list of emails to send mail when
+ * request is accepted
+ */
 @RestController
 public class DistributionController {
 
