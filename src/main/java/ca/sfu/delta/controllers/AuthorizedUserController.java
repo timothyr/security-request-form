@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 /**
- * Rest API for managing the list of who can login as security
+ * Rest API for managing the list of who can login as security and admin users
  * This controller just manages the list and does not do any authentication/authorization
  */
 @RestController
