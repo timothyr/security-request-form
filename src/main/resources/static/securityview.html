@@ -494,8 +494,6 @@
                 if (!this.form.guards || this.form.guards.length == 0) {
                     return true;
                 } else {
-
-                    let isValid = true;
                     this.form.guards.forEach(function (g) {
                         //console.log(g.guardID+"+"+g.location);
                         if (g.guardID === 'id' || g.guardID === '' || g.location === '' || g.location === undefined
@@ -504,13 +502,12 @@
                             || g.endTime === '' || g.endTime === undefined || g.name === '' || g.name === undefined
                             || g.telephone === '' || g.telephone === undefined) {
 
-                            isValid = false;
-                            return isValid;
+                            return false;
                         }
                     });
-                }
 
-                return isValid;
+                    return true;
+                }
             },
 
             cost: function () {
