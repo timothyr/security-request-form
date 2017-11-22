@@ -33,7 +33,10 @@
                     </div>
                     <div class="form-group col-md-4">
                         <label for="department-input">Department</label>
-                        <input type="text" id="department-input" v-model="formData.department" class="form-control" required="required"/>
+                        <select required class="form-control" id="department-input" v-model="formData.department">
+                            <option value="" disabled selected>Choose...</option>
+                            <option :value="department" v-for="department in departments">{{department}}</option>
+                        </select>
                     </div>
                     <div class="form-group col-md-4">
                         <label for="sfu-id-input">SFU ID</label>
@@ -63,11 +66,11 @@
                         <label for="location-input">Location</label>
                         <!--<input type="text" th:field="*{eventLocation}" id="location-input" class="form-control"/>-->
                         <select required class="form-control" id="location-input" v-model="formData.eventLocation">
-                            <option value="">Choose...</option>
-                            <option value="bur">Burnaby</option>
-                            <option value="sur">Surrey</option>
-                            <option value="van">Vancouver</option>
-                            <option value="oth">Other</option>
+                            <option value="" disabled selected>Choose...</option>
+                            <option value="Burnaby">Burnaby</option>
+                            <option value="Surrey">Surrey</option>
+                            <option value="Vancouver">Vancouver</option>
+                            <option value="Other">Other</option>
                         </select>
                     </div>
                     <div class="form-group col-md-4">
@@ -246,7 +249,18 @@
         WAITING: 'WAITING',
         APPROVED: 'APPROVED',
         REJECTED: 'REJECTED'
-    }
+    };
+    // TODO more specific? https://www.sfu.ca/dean-gradstudies/blog/departments.html
+    const departments = [
+        "Faculty of Applied Sciences",
+        "Faculty of Arts and Social Sciences",
+        "Beedie School of Business",
+        "Faculty of Communication, Art and Technology",
+        "Faculty of Education",
+        "Faculty of Environment",
+        "Faculty of Health Sciences",
+        "Faculty of Science"
+    ];
 
     var Modal = Vue.component('modal', {
         template: '#modal-template',
@@ -298,6 +312,7 @@
             startdatetime: '',
 			enddatetime: '',
 			datetimelist: [],
+            departments: departments
         }),
 
         computed: {
