@@ -42,7 +42,7 @@ public class AuthorizedUserController {
     public ResponseEntity<Void> deleteDist(@PathVariable("id") long id) {
         AuthorizedUser authorizedUser = authorizedUserRepository.findOne(id);
         if (authorizedUser == null) {
-            System.out.println("Unable to delete dist email. Dist email with id " + id + " not found");
+            System.out.println("Unable to delete auth user. Auth user with id " + id + " not found");
             return new ResponseEntity<Void>(HttpStatus.NOT_FOUND);
         }
         authorizedUserRepository.delete(id);
