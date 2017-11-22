@@ -240,11 +240,16 @@
         </div>
 
         <div class="row">
-            <div class="text-center col-md-12 mx-auto">
-                <button class="btn btn-danger col-sm-12 col-md-2 mt-3" v-on:click="submit('reject')">Reject</button>
-                <button type="button" class="btn btn-success col-sm-12 col-md-2 mt-3" data-toggle="modal"
-                        data-target="#emailModal" v-if="canAccept">Accept
-                </button>
+            <div class="col-md-12">
+                <div class="text-center">
+                    <button class="btn btn-danger col-sm-12 col-md-2 mt-3" v-on:click="submit('reject')">Reject</button>
+                    <button type="button" class="btn btn-success col-sm-12 col-md-2 mt-3" data-toggle="modal"
+                            data-target="#emailModal" v-if="canAccept">Accept
+                    </button>
+                    <button class="btn btn-primary col-sm-12 col-md-2 mt-3" v-on:click="submit('update')" v-if="canAccept">
+                        Update
+                    </button>
+                </div>
                 <div id="emailModal" class="modal fade" role="dialog">
                     <div class="modal-dialog">
                         <div class="modal-content">
@@ -252,18 +257,31 @@
                                 <p class="modal-title">Select who should be notified of this accepted service
                                     request</p>
                             </div>
-                            <div class="modal-body mx-5 text-left" id="emailList" v-for="email in distEmails">
-                                <div class="checkbox">
-                                    <label><input type="checkbox" v-model="emails" :value="email">{{email.email}}</label>
-                                </div>
-                            </div>
                             <div class="container mb-4">
                                 <div class="row">
-                                    <div class="col-md-10 mx-auto input-group">
-                                        <input type="text" class="form-control" placeholder="Enter full email address" v-model="distEmail_input">
-                                        <span class="input-group-btn">
-                                            <button class="btn btn-primary" v-on:click="addDistEmail()">Add</button>
-                                        </span>
+                                    <div class="col-md-10 mx-auto">
+                                        <table class="table">
+                                            <thead>
+                                                <tr>
+                                                    <th><input type="checkbox"></th>
+                                                    <th>Email</th>
+                                                    <th><!--delete button col--></th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr v-for="email in distEmails" class="tr-delete">
+                                                    <td><input type="checkbox" v-model="emails" :value="email"></td>
+                                                    <td>{{email.email}}</td>
+                                                    <td><button class="td-delete-button" v-on:click="deleteDistEmail(email.id)">x</button></td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                        <div class="col-md-10 mx-auto input-group">
+                                            <input type="text" class="form-control" placeholder="Enter full email address" v-model="distEmail_input">
+                                            <span class="input-group-btn">
+                                                <button class="btn btn-primary" v-on:click="addDistEmail()">Add</button>
+                                            </span>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -276,9 +294,6 @@
                         </div>
                     </div>
                 </div>
-                <button class="btn btn-primary col-sm-12 col-md-2 mt-3" v-on:click="submit('update')" v-if="canAccept">
-                    Update
-                </button>
             </div>
             <div class="col col-md-3"></div>
             <div class="bottom-space"></div>
@@ -501,6 +516,11 @@
                 this.$http.post('/api/dist/add', {email: this.distEmail_input});
                 this.distEmail_input = "";
                 this.getDistEmails();
+            },
+            deleteDistEmail: function (id) {
+                this.$http.delete('/api/dist/delete/' + id).then(function(response){
+                   this.getDistEmails();
+                });
             }
 
         },
