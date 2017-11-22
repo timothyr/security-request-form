@@ -17,6 +17,9 @@ function getArrayDateTimes( aString ) {
 }
 
 function updateDateTime(aString){
+    if (!aString) {
+        return [];
+    }
 	var array = aString.split(", ");
 	var dates = [];
 

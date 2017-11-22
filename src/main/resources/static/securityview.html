@@ -276,6 +276,9 @@
                                                 </tr>
                                             </tbody>
                                         </table>
+                                        <div class="row">
+                                            <p v-if="distEmails.length == 0" class="mx-auto text-center mt-2 grey-text">No Emails Found</p>
+                                        </div>
                                         <div class="col-md-10 mx-auto input-group">
                                             <input type="text" class="form-control" placeholder="Enter full email address" v-model="distEmail_input">
                                             <span class="input-group-btn">
@@ -513,9 +516,13 @@
                 })
             },
             addDistEmail: function () {
-                this.$http.post('/api/dist/add', {email: this.distEmail_input});
-                this.distEmail_input = "";
-                this.getDistEmails();
+                if (!this.distEmail_input) {
+                    return;
+                }
+                this.$http.post('/api/dist/add', {email: this.distEmail_input}).then(function() {
+                    this.distEmail_input = "";
+                    this.getDistEmails();
+                });
             },
             deleteDistEmail: function (id) {
                 this.$http.delete('/api/dist/delete/' + id).then(function(response){
