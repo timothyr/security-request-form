@@ -31,6 +31,7 @@
                 <ul class="dropdown-menu">
                     <li class="dropdown-item" v-on:click="exportRequestCSV()">Export Request to CSV</li>
                     <li class="dropdown-item" v-on:click="exportRequestGuardsCSV()">Export Guard list to CSV</li>
+                    <li class="dropdown-item" v-on:click="exportInvoicePDF()">Generate Invoice</li>
                 </ul>
             </div>
         </div>
@@ -326,6 +327,9 @@
             },
             exportRequestGuardsCSV: function () {
                 window.location.assign("/api/csv/guards/" + this.requestID + "-guards.csv");
+            },
+            exportInvoicePDF: function () {
+                window.location.assign("/api/invoice/" + this.requestID + "-invoice.pdf");
             },
 
             addGuard: function () {
