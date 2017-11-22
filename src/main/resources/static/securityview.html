@@ -486,7 +486,7 @@
                 }
 
                 //console.log("---------- Submitting:");
-                this.removeNull();
+                //this.removeNull();
 
                 this.$http.post('/api/form/saveSecurity', this.form,
                     {params: {additionalMessage: this.additionalMessage}}).then(function (response) {
@@ -544,24 +544,38 @@
 
         computed: {
             canAccept: function () {
-                if (!this.form.guards || this.form.guards.length == 0) {
-                    return true;
-                } else {
-                    this.form.guards.forEach(function (g) {
-                        //console.log(g.guardID+"+"+g.location);
-                        if (g.guardID === '' || g.guardID === undefined || g.location === '' || g.location === undefined
-                            || g.startDate === '' || g.startDate === undefined || g.endDate === ''
-                            || g.endDate === undefined || g.startTime === '' || g.startTime === undefined
-                            || g.endTime === '' || g.endTime === undefined || g.name === '' || g.name === undefined
-                            || g.telephone === '' || g.telephone === undefined) {
+                /*if (!this.form.recievingSecuritySupervisor || this.form.recievingSecuritySupervisor == '') {
+					return false;
+				}
 
-                            return false;
-                        }
-                    });
+				console.log("Good recieving security supervisor");
+				if (!this.form.preparedBy || this.form.preparedBy == '')
+					return false;
 
-                    return true;
-                }
-            },
+				console.log("Good preparedBy");
+				*/
+
+                let goodGuards = true;
+				if (!this.form.guards || this.form.guards.length == 0) {
+					//console.log("No guards, allowing submission");
+					return goodGuards;
+				} else {
+					this.form.guards.forEach(function (g) {
+						//console.log(g.guardID+"+"+g.location);
+						if (g.guardID === '' || g.guardID === undefined || g.location === '' || g.location === undefined
+							|| g.startDate === '' || g.startDate === undefined || g.endDate === ''
+							|| g.endDate === undefined || g.startTime === '' || g.startTime === undefined
+							|| g.endTime === '' || g.endTime === undefined || g.name === '' || g.name === undefined
+							|| g.telephone === '' || g.telephone === undefined) {
+
+							console.log("Bad guard data, disallowing");
+							goodGuards = false;
+						}
+					});
+				}
+
+				return goodGuards;
+			},
 
             cost: function () {
                 if (!this.form.guards) return;
