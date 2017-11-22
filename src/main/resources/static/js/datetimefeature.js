@@ -6,6 +6,7 @@ $(document).ready(function(){
 
 			$("#chooseStartDateTime").datetimepicker({
 				dayOfWeekStart:0,
+				lang: 'en',
 				allowTimes:[
                   '00:00','00:30','01:00','01:30','02:00','02:30','03:00','03:30','04:00','04:30','05:00','05:30','06:00','06:30',
                   '07:00','07:30','08:00','08:30','09:00','09:30','10:00','10:30','11:00','11:30','12:00','12:30',
@@ -15,7 +16,7 @@ $(document).ready(function(){
                 formatTime: 'g:i a',
                 defaultDate: new Date(),
                 minDateTime: new Date(),
-                onClose: setMinDate,
+                onClose: setEndMinDate,
 			});
 			$("#chooseEndDateTime").datetimepicker({
 				dayOfWeekStart:0,
@@ -26,9 +27,9 @@ $(document).ready(function(){
                     '13:00','13:30','14:00','14:30','15:00','15:30','16:00','16:30','17:00','17:30','18:00','18:30','19:00','19:30',
                     '20:00','20:30','21:00','21:30','22:00','22:30','23:00','23:30',
                 ],
+                formatTime: 'g:i a',
                 defaultDate: new Date(),
                 minDateTime: new Date(),
-				formatTime: 'g:i a',
             });
 
 			document.getElementById("chooseStartDateTime").value = '';
@@ -54,7 +55,7 @@ $(document).ready(function(){
 		}
 
 
-		function setMinDate(){
+		function setEndMinDate(){
             var x=$('#chooseStartDateTime').val();
             if(x!=""){
                 var date = x.split(" ")[0];
@@ -69,9 +70,11 @@ $(document).ready(function(){
                     minDateTime: new Date(year,month-1,day,hour,min,00),
                 } );
             }
-
-
         }
+
+
+
+
 
 		//This function is temp. when DB supports table {R_id, startDate, startTime, endDate, endTime}, this will be removed.
 		function deleteEventDate(start,end,list,index,len){
