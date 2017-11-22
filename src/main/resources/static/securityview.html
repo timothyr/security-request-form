@@ -263,14 +263,14 @@
                                         <table class="table">
                                             <thead>
                                                 <tr>
-                                                    <th><input type="checkbox"></th>
+                                                    <th><input type="checkbox" v-model="selectAll"></th>
                                                     <th>Email</th>
                                                     <th><!--delete button col--></th>
                                                 </tr>
                                             </thead>
                                             <tbody>
                                                 <tr v-for="email in distEmails" class="tr-delete">
-                                                    <td><input type="checkbox" v-model="emails" :value="email"></td>
+                                                    <td><input type="checkbox" v-model="selectedEmails" :value="email.id" number></td>
                                                     <td>{{email.email}}</td>
                                                     <td><button class="td-delete-button" v-on:click="deleteDistEmail(email.id)">x</button></td>
                                                 </tr>
@@ -339,7 +339,7 @@
             overtimeRate: 0,
             overtimeHours: 0,
 
-            emails: [],
+            selectedEmails: [],
             additionalMessage: '',
             distEmails: [],
             distEmail_input: ""
@@ -576,6 +576,21 @@
                 avg += Number.parseFloat(this.regularHours) + Number.parseFloat(this.overtimeHours);
 
                 return avg;
+            },
+            selectAll: {
+                //Credit to Rifki @ https://stackoverflow.com/questions/33571382/check-all-checkboxes-vuejs
+                get: function() {
+                    return this.distEmails ? this.selectedEmails.length == this.distEmails.length : false;
+                },
+                set: function (value) {
+                    var selected = []
+                    if (value) {
+                        this.distEmails.forEach(function(email) {
+                            selected.push(email.id);
+                        });
+                    }
+                    this.selectedEmails = selected;
+                }
             }
         }
     });
