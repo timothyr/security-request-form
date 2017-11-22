@@ -149,7 +149,11 @@
                 <div>
                     <h3 class="auth-heading mt-4">Authorization</h3>
                 </div>
-                <div class="row mt-5">
+                <div class="row mt-4 ml-4">
+                    <!--TODO <a href="/login?redirect=servicerequest">-->
+                    <button type="button" id="sign-in" class="btn btn-danger" v-on:click="signedIn = true">Login SFU CAS</button>
+                </div>
+                <div class="row mt-4">
                     <div class="form-group col-md-4">
                         <label for="account-code-input">Account code</label>
                         <!-- no corresponding formData variable -->
@@ -312,7 +316,8 @@
             startdatetime: '',
 			enddatetime: '',
 			datetimelist: [],
-            departments: departments
+            departments: departments,
+            signedIn: false,
         }),
 
         computed: {
