@@ -76,7 +76,7 @@
                                 <td class="clickable">{{request.phoneNumber}}</td>
                                 <td class="clickable">{{request.eventName}}</td>
                                 <td class="clickable">{{request.eventLocation}}</td>
-                                <td class="clickable">{{request.eventDates[0].start}} to {{request.eventDates[0].end}}</td>
+                                <td class="clickable" v-if="request.eventDates[0]">{{request.eventDates[0].start}} to {{request.eventDates[0].end}}</td>
                                 <td class="clickable">
                                     <span class="badge white-text" v-bind:class="getBadgeClassName(request.requestStatus)">{{request.requestStatus}}</span>
                                 </td>
@@ -148,7 +148,6 @@
         methods: {
             changeDates: function() {
                 this.requests.forEach(function(request) {
-                    request.requestStatus = "WAITING";
                     request.eventDates = updateDateTime(request.eventDates);
                 });
             },
