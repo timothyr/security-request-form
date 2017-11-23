@@ -9,9 +9,20 @@
 </head>
 <body>
     <header>
-        <a href="/requests">
+        <a href="/security/requests">
             <img class="logo" src="/img/sfu-logo@2x.png" alt="sfu-logo"/>
         </a>
+        <!--TODO HARDCODED LOGGED USER-->
+        <div style="display: inline-block; float: right; margin-right: 10%; margin-top: 20px;">
+            <div class="dropdown" style="">
+                <div class="dropdown-toggle" id="" data-toggle="dropdown">
+                    <span class="blue-text"><span>Logged in as</span> Bob</span>
+                </div>
+                <ul class="dropdown-menu">
+                    <li class="dropdown-item">Logout from CAS</li>
+                </ul>
+            </div>
+        </div>
     </header>
     <div class="container col-md-10 offset-md-1 wrapper mb-5 col-lg-10" id="app">
         <div class="container col-md-10">
@@ -65,8 +76,10 @@
                                 <td class="clickable">{{request.phoneNumber}}</td>
                                 <td class="clickable">{{request.eventName}}</td>
                                 <td class="clickable">{{request.eventLocation}}</td>
-                                <td class="clickable">{{request.eventDates[0].start}} to {{request.eventDates[0].end}}</td>
-                                <td class="clickable">{{request.requestStatus}}</td>
+                                <td class="clickable" v-if="request.eventDates[0]">{{request.eventDates[0].start}} to {{request.eventDates[0].end}}</td>
+                                <td class="clickable">
+                                    <span class="badge white-text" v-bind:class="getBadgeClassName(request.requestStatus)">{{request.requestStatus}}</span>
+                                </td>
                             </tr>
                         </tbody>
                     </table>
@@ -112,6 +125,11 @@
         }
         return false;
     }
+    const status = {
+        WAITING: 'WAITING',
+        APPROVED: 'APPROVED',
+        REJECTED: 'REJECTED'
+    }
 
     var app = new Vue({
         el: '#app',
@@ -130,7 +148,6 @@
         methods: {
             changeDates: function() {
                 this.requests.forEach(function(request) {
-                    request.requestStatus = "WAITING";
                     request.eventDates = updateDateTime(request.eventDates);
                 });
             },
@@ -153,18 +170,34 @@
                     eventName: "Event Name",
                     Location: "Location",
                     eventDates: "Date",
-                    status: "Status"
+                    requestStatus: "Status"
                 }
                 return getKeyByValue(mappings, columnName);
             },
             goToRequest(requestID) {
-                window.location.assign("/securityview.html?id=" + requestID);
+                window.location.href = '/security/request/' + requestID;
             },
             showNoResults: function() {
                 return this.filteredRequests.length == 0 && !this.loading;
             },
             exportAllCSV: function() {
                 window.location.assign("/api/csv/form/all.csv");
+            },
+            getBadgeClassName: function(status) {
+                switch (status) {
+                    case 'WAITING':
+                        return 'badge-warning';
+                        break;
+                    case 'APPROVED':
+                        return 'badge-success';
+                        break;
+                    case 'REJECTED':
+                        return 'badge-danger';
+                        break;
+                    default:
+                        return 'badge-default';
+                        break;
+                }
             }
         },
         computed: {
@@ -176,17 +209,18 @@
                         return isTermInObject(request, this.searchTerm);
                     }).sort((requestA, requestB) => {
                         if (this.reversed) {
-                            console.log("=greater than than");
                             return requestA[this.getColumnValue(this.sortKey)] > requestB[this.getColumnValue(this.sortKey)]
                         } else {
-                            console.log("=less than");
                             return requestA[this.getColumnValue(this.sortKey)] < requestB[this.getColumnValue(this.sortKey)]
                         }
                     }).filter(request => {
                         if(this.activeStatus == "ALL") {
                             return true;
                         } else {
-                            return request.status.toLowerCase() == this.activeStatus.toLowerCase();
+                            if (!request.requestStatus || this.activeStatus) {
+                                return false;
+                            }
+                            return request.requestStatus.toLowerCase() == this.activeStatus.toLowerCase();
                         }
                     });
 
@@ -199,7 +233,7 @@
                 pageNumber: 1
             }).then(response  => {
                 this.requests = response.data;
-                //this.changeDates();
+                this.changeDates();
                 this.loading = false;
             });
         }

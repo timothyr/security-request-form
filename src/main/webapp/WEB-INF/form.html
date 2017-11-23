@@ -17,11 +17,6 @@
 	<div id="app">
 		<form method="post" v-on:submit.prevent="submitForm()">
 			<div class="container col-md-10 offset-md-1 wrapper mb-5 col-lg-10">
-				<div class="form-group col-md-4 add-space-top float-right">
-					<a href="/login?redirect=servicerequest">
-						<button type="button" v-on:click="signInOut" id="sign-in" class="btn btn-danger btn-lg col-md-8 float-right">{{signedInButtonMessage}}</button>
-					</a>
-				</div>
 				<div class="row mt-5">
 				</div>
 				<div class="container col-md-10 mt-5">
@@ -35,11 +30,14 @@
 						</div>
 						<div class="form-group col-md-4">
 							<label for="department-input">Department</label>
-							<input type="text" id="department-input" v-model="formData.department" class="form-control" required="required"/>
+                            <select required class="form-control" id="department-input" v-model="formData.department">
+                                <option value="" disabled selected>Choose...</option>
+                                <option :value="department" v-for="department in departments">{{department}}</option>
+                            </select>
 						</div>
 						<div class="form-group col-md-4">
 							<label for="sfu-id-input">SFU ID</label>
-							<input type="text" id="sfu-id-input" v-model="formData.requesterID" class="form-control" required="required"/>
+							<input type="text" id="sfu-id-input" v-model="formData.requesterID" class="form-control"/>
 						</div>
 					</div>
 					<div class="row">
@@ -65,11 +63,11 @@
 							<label for="location-input">Location</label>
 							<!--<input type="text" th:field="*{eventLocation}" id="location-input" class="form-control"/>-->
 							<select required class="form-control" id="location-input" v-model="formData.eventLocation">
-								<option value="">Choose...</option>
-								<option value="bur">Burnaby</option>
-								<option value="sur">Surrey</option>
-								<option value="van">Vancouver</option>
-								<option value="oth">Other</option>
+                                <option value="" disabled selected>Choose...</option>
+								<option value="Burnaby">Burnaby</option>
+								<option value="Surrey">Surrey</option>
+								<option value="Vancouver">Vancouver</option>
+								<option value="Other">Other</option>
 							</select>
 						</div>
 						<div class="form-group col-md-4">
@@ -87,6 +85,7 @@
 						<div class="form-group col-md-12">
 							<input type="checkbox" id="licensed-input" v-model="formData.isLicensed" class="mr-1 mt-4"/>
 							<label for="licensed-input">Licensed</label>
+                            <i class="fa fa-question-circle" data-toggle="tooltip" title="Is your event licensed?"></i>
 						</div>
 					</div>
 					<div>
@@ -110,7 +109,7 @@
 									<span class="input-group-addon">
 										<i class="fa fa-calendar calendar-icon"></i>
 									</span>
-										<input type="text" id="startdatetime" class="form-control" disabled="disabled"/>
+										<input type="text" id="startdatetime" class="form-control" required="required"/>
 									</div>
 								</th>
 
@@ -119,7 +118,7 @@
 									<span class="input-group-addon">
 										<i class="fa fa-calendar calendar-icon"></i>
 									</span>
-										<input type="text" id="enddatetime" class="form-control" disabled="disabled"/>
+										<input type="text" id="enddatetime" class="form-control diabled" required="required"/>
 									</div>
 								</th>
 
@@ -138,7 +137,7 @@
 									<span class="ml-2">{{dt.end}}</span>
 								</td>
 								<td>
-									<i v-on:click="deleteDatetime(dt)" class="fa fa-trash-o trash-icon ml-1"></i>
+									<i v-on:click="deleteDatetime(dt)" class="fa fa-trash-o trash-icon ml-1" style="cursor: pointer"></i>
 								</td>
 							</tr>
 							</tbody>
@@ -146,26 +145,41 @@
 					</div>
 					<div>
 						<h3 class="auth-heading mt-4">Authorization</h3>
+                        <p>Your request has to be authorized before it can be approved.</p>
 					</div>
-					<div class="row mt-6">
-						<div class="form-group col-md-4">
-							<label for="account-code-input">Account code</label>
-							<input type="number" id="account-code-input" v-model="formData.paymentAccountCode" class="form-control" required="required"/>
-						</div>
-					</div>
-					<div class="row mt-7" v-show="!signedIn">
-						<div v-if="!signedIn" class="form-group col-md-4">
-							<label for="authorizer-email-input">Email</label>
-							<input type="email" id="authorizer-email-input" class="form-control" v-model="formData.authorizerEmailAddress" placeholder="example@sfu.ca" required/>
-						</div>
-					</div>
-					<div v-if="signedIn" class="form-group col-md-12">
+                    <div class="row">
+                        <div class="btn-group mx-auto mt-3 mb-4" data-toggle="buttons">
+                            <div class="btn-group">
+                                <button class="btn toggle-button" v-bind:class="{active_toggle: authOption == 'authOwn'}" v-on:click="authOption = 'authOwn'">Authorize own request</button>
+                                <button class="btn toggle-button" v-bind:class="{active_toggle: authOption == 'passAuth'}" v-on:click="authOption = 'passAuth'">Send Authorization to someone else</button>
+                            </div>
+
+                        </div>
+                    </div>
+                    <div class="row">
+                        <!--OPTION 1 -- AUTH OWN-->
+                        <div v-if="authOption == 'authOwn'">
+                            <div class="form-group add-space-top">
+                                <!--TODO <a href="/login?redirect=servicerequest">-->
+                                <button type="button" id="sign-in" class="btn btn-danger" v-on:click="signedIn = true">Login SFU CAS</button>
+                            </div>
+                            <div class="form-group">
+                                <label for="account-code-input">Account code</label>
+                                <input type="number" id="account-code-input" v-model="formData.paymentAccountCode" class="form-control" required="required"/>
+                            </div>
+                        </div>
+                        <!--OPTION 2 -- PASS AUTH-->
+                        <div v-if="authOption == 'passAuth'" class="form-group col-md-4">
+                            <label for="authorizer-email-input">Email of Authorizer</label>
+                            <input type="email" id="authorizer-email-input" class="form-control" v-model="formData.authorizerEmailAddress" placeholder="example@sfu.ca" required/>
+                        </div>
+                    </div>
+					<div v-if="signedIn == 'passAuth'" class="form-group col-md-12">
 						<input type="checkbox" id="invoice-input" class="mr-1"/>
 						<label for="invoice-input">Please Invoice</label>
 					</div>
 				</div>
 					<div class="row mt-8">
-
 					</div>
 					<div class="row mt-5">
 						<div class="col-md-12 text-center">
@@ -187,6 +201,7 @@
 		</modal>
 	</div>
 	<script src="/js/jquery-3.2.1.min.js"></script>
+    <script src="/js/bootstrap.bundle.min.js"></script>
 	<script src="/js/vue.js"></script>
 	<script src="/js/vue-resource.min.js"></script>
 	<script src="/js/jquery.datetimepicker.full.js"></script>
@@ -242,6 +257,25 @@
             NOT_LOGGED_IN: 'Request Authorization',
             NOT_LOGGED_IN_LOAD: 'Requesting Authorization'
         }
+
+        // TODO more specific? https://www.sfu.ca/dean-gradstudies/blog/departments.html
+        const departments = [
+            "Faculty of Applied Sciences",
+            "Faculty of Arts and Social Sciences",
+            "Beedie School of Business",
+            "Faculty of Communication, Art and Technology",
+            "Faculty of Education",
+            "Faculty of Environment",
+            "Faculty of Health Sciences",
+            "Faculty of Science"
+        ];
+
+        $(document).ready(function(){
+            //initialize tooltips
+            $(function () {
+                $('[data-toggle="tooltip"]').tooltip()
+            });
+        });
 
         var Modal = Vue.component('modal', {
             template: '#modal-template',
@@ -302,7 +336,10 @@
                 startdatetime: '',
 				enddatetime: '',
 				datetimelist: [],
+                departments: departments,
+				datetimelistsize: '0',
                 loading: false,
+                authOption: 'authOwn'
             }),
 
 			computed: {
@@ -458,6 +495,8 @@
 							this.formData.eventDates += ", "+this.startdatetime +"-"+ this.enddatetime;
 						}
 						this.datetimelist.push( {start: this.startdatetime, end: this.enddatetime} );
+						disableDateInput(true);
+						this.datetimelistsize++;
 						this.startdatetime = '';
 						this.enddatetime = '';
             		}
@@ -466,6 +505,9 @@
             		var index = this.datetimelist.indexOf(dt);
             		this.formData.eventDates = deleteEventDate(dt.start,dt.end,this.formData.eventDates, index,this.datetimelist.length);
             		this.datetimelist.splice(index,1);
+            		if(this.datetimelist.length==0){
+            			disableDateInput(false);
+            		}
             	},
             },
 

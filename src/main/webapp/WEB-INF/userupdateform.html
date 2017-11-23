@@ -11,7 +11,9 @@
 </head>
 <body class="red-background">
 <header>
-    <img class="logo" src="/img/sfu-logo@2x.png" alt="sfu-logo"/>
+    <a href="/">
+        <img class="logo" src="/img/sfu-logo@2x.png" alt="sfu-logo"/>
+    </a>
 </header>
 <div id="app">
     <form method="post" v-on:submit.prevent="submitForm">
@@ -23,6 +25,9 @@
                 <div class="row">
                     <h1>#{{formData.requestID}}</h1>
                 </div>
+                <div class="row mb-4">
+                    <span class="badge white-text badge-med" v-bind:class="getBadgeClassName(formData.requestStatus)">{{formData.requestStatus}}</span>
+                </div>
                 <div class="row">
                     <div class="form-group col-md-4">
                         <label for="requested-by-input">Requested By</label>
@@ -30,7 +35,10 @@
                     </div>
                     <div class="form-group col-md-4">
                         <label for="department-input">Department</label>
-                        <input type="text" id="department-input" v-model="formData.department" class="form-control" required="required"/>
+                        <select required class="form-control" id="department-input" v-model="formData.department">
+                            <option value="" disabled selected>Choose...</option>
+                            <option :value="department" v-for="department in departments">{{department}}</option>
+                        </select>
                     </div>
                     <div class="form-group col-md-4">
                         <label for="sfu-id-input">SFU ID</label>
@@ -60,11 +68,11 @@
                         <label for="location-input">Location</label>
                         <!--<input type="text" th:field="*{eventLocation}" id="location-input" class="form-control"/>-->
                         <select required class="form-control" id="location-input" v-model="formData.eventLocation">
-                            <option value="">Choose...</option>
-                            <option value="bur">Burnaby</option>
-                            <option value="sur">Surrey</option>
-                            <option value="van">Vancouver</option>
-                            <option value="oth">Other</option>
+                            <option value="" disabled selected>Choose...</option>
+                            <option value="Burnaby">Burnaby</option>
+                            <option value="Surrey">Surrey</option>
+                            <option value="Vancouver">Vancouver</option>
+                            <option value="Other">Other</option>
                         </select>
                     </div>
                     <div class="form-group col-md-4">
@@ -143,13 +151,17 @@
                 <div>
                     <h3 class="auth-heading mt-4">Authorization</h3>
                 </div>
-                <div class="row mt-5">
+                <div class="row mt-4 ml-4">
+                    <!--TODO <a href="/login?redirect=servicerequest">-->
+                    <button type="button" id="sign-in" class="btn btn-danger" v-on:click="signedIn = true">Login SFU CAS</button>
+                </div>
+                <div class="row mt-4">
                     <div class="form-group col-md-4">
                         <label for="account-code-input">Account code</label>
-                        <!-- no corresponding formData variable -->
-                        <input type="text" id="account-code-input" class="form-control"/>
+                        <input type="text" id="account-code-input" v-model="formData.paymentAccountCode" class="form-control"/>
                     </div>
                     <div class="form-group col-md-4">
+                        <!--TODO INFER THIS VALUE-->
                         <label for="name-of-authorizee-input">Authorized by</label>
                         <input type="text" id="name-of-authorizee-input" v-model="formData.authorizerName" class="form-control"/>
                     </div>
@@ -189,7 +201,7 @@
 </div>
 <script src="/js/jquery-3.2.1.min.js"></script>
 <script src="/js/vue.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/vue-resource@1.3.4"></script>
+<script src="/js/vue-resource.min.js"></script>
 <script src="/js/jquery.datetimepicker.full.js"></script>
 <script src="/js/jquery.datetimepicker.js"></script>
 <script src="/js/datetimefeature.js"></script>
@@ -239,6 +251,23 @@
     const errorHeader = "Something went wrong";
     const errorMessage = "Sorry, there was an error. Your form may not have been updated.";
 
+    const status = {
+        WAITING: 'WAITING',
+        APPROVED: 'APPROVED',
+        REJECTED: 'REJECTED'
+    };
+    // TODO more specific? https://www.sfu.ca/dean-gradstudies/blog/departments.html
+    const departments = [
+        "Faculty of Applied Sciences",
+        "Faculty of Arts and Social Sciences",
+        "Beedie School of Business",
+        "Faculty of Communication, Art and Technology",
+        "Faculty of Education",
+        "Faculty of Environment",
+        "Faculty of Health Sciences",
+        "Faculty of Science"
+    ];
+
     var Modal = Vue.component('modal', {
         template: '#modal-template',
 
@@ -252,7 +281,6 @@
 
     const FormApp = Vue.extend({
         el: '#app',
-
         http: {
             root: '/',
             headers: {
@@ -290,6 +318,8 @@
             startdatetime: '',
 			enddatetime: '',
 			datetimelist: [],
+            departments: departments,
+            signedIn: false,
         }),
 
         computed: {
@@ -398,13 +428,31 @@
             	this.formData.eventDates = deleteEventDate(dt.start,dt.end,this.formData.eventDates,index,this.datetimelist.length);
             	this.datetimelist.splice(index,1);
             },
+            getBadgeClassName: function(status) {
+                switch (status) {
+                    case 'WAITING':
+                        return 'badge-warning';
+                        break;
+                    case 'APPROVED':
+                        return 'badge-success';
+                        break;
+                    case 'REJECTED':
+                        return 'badge-danger';
+                        break;
+                    default:
+                        return 'badge-default';
+                        break;
+                }
+            },
         },
         created: function() {
             let urlParams = getUrlParams(window.location);
-            this.$http.get(urlParams.token, {
+            this.$http.get("/api/form/get/user/" + urlParams.token, {
             }).then(response  => {
-                this.formData = response.data;
-                this.datetimelist = updateDateTime(this.formData.eventDates);
+                if (response.status == 200) {
+                    this.formData = response.data;
+                    this.datetimelist = updateDateTime(this.formData.eventDates);
+                }
             });
         },
 

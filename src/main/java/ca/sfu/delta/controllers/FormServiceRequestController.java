@@ -18,6 +18,7 @@ import org.springframework.web.servlet.config.annotation.ViewControllerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Map;
@@ -43,14 +44,9 @@ public class FormServiceRequestController extends WebMvcConfigurerAdapter {
 
     @Override
     public void addViewControllers(ViewControllerRegistry registry) {
-        registry.addViewController("/results").setViewName("results.html");
-        registry.addViewController("/requests").setViewName("requests.html");
-        //registry.addViewController("/servicerequest").setViewName("form.html");
-
-        registry.addViewController("/admin").setViewName("admin.html");
         registry.addViewController("/securitylogin").setViewName("securitylogin.html");
-        registry.addViewController("/updateform").setViewName("userupdateform.html");
-        registry.addViewController("/securityview").setViewName("securityview.html");
+        registry.addViewController("/updateform").setViewName("userupdateform");
+        //registry.addViewController("/securityview").setViewName("request.html");
     }
 
     @RequestMapping(value = "/api/form/get/{id}", method = RequestMethod.GET, produces = "application/json")
@@ -141,16 +137,16 @@ public class FormServiceRequestController extends WebMvcConfigurerAdapter {
     @RequestMapping(value = "/api/csv/form/{id}.csv", method = RequestMethod.GET, produces = "text/csv")
     @ResponseBody
     public String getCSV(@PathVariable("id") String id) {
-        String csvString = new String();
         for (FormData form : formRepository.findAll()) {
 
             if(form.getRequestID().equals(id))
             {
+                String csvString = new String();
                 csvString = form.getAsCSV(true);
+                return csvString;
             }
         }
-        System.out.println(csvString);
-        return csvString;
+        return "Error: this form does not exist";
     }
 
     @RequestMapping(value = "/api/csv/guards/{id}-guards.csv", method = RequestMethod.GET, produces = "text/csv")
@@ -163,6 +159,7 @@ public class FormServiceRequestController extends WebMvcConfigurerAdapter {
             if(form.getRequestID().equals(id))
             {
                 correctForm = form;
+                break;
             }
         }
         List<Guard> correctFormGuards = correctForm.getGuards();
@@ -199,6 +196,55 @@ public class FormServiceRequestController extends WebMvcConfigurerAdapter {
         }
 
         return csvWriter.toString();
+    }
+
+    @RequestMapping(value = "/api/csv/{selectedIDs}/selectedRequests.csv", method = RequestMethod.GET, produces = "text/csv")
+    @ResponseBody
+    public String getAllCSV(@PathVariable("selectedIDs") String[] ids) {
+        boolean first = true;
+        String thisForm;
+        int numberOfFormsAdded = 0;
+        List<String> formIDs = new ArrayList<String>(Arrays.asList(ids));
+        StringWriter csvWriter = new StringWriter();
+
+        for (FormData form : formRepository.findAll()) {
+            if(formIDs.contains(form.getRequestID()))
+            {
+                if(first) {
+                    thisForm = form.getAsCSV(true);
+                    first = false;
+                    csvWriter.append(thisForm);
+                    numberOfFormsAdded++;
+                }
+                else {
+                    thisForm = form.getAsCSV(false);
+                    csvWriter.append(thisForm);
+                    numberOfFormsAdded++;
+                }
+            }
+
+            //Don't want to iterate over all the requests if we don't need to
+            if(numberOfFormsAdded == formIDs.size())
+            {
+                break;
+            }
+        }
+
+        return csvWriter.toString();
+    }
+
+    @RequestMapping(value = "/api/invoice/{id}-invoice.pdf", method = RequestMethod.GET, produces =  "application/pdf")
+    @ResponseBody
+    public byte[] getDocument(@PathVariable("id") String id) {
+        //Arbitrary number for initialization
+        byte[] pdfBytes = new byte[8];
+        for (FormData form : formRepository.findAll()) {
+            if(form.getRequestID().equals(id))
+            {
+                pdfBytes = form.generateInvoicePDF();
+            }
+        }
+        return pdfBytes;
     }
 
     // Reserve the next request ID in the sequence to ensure each form has a unique request ID
@@ -401,7 +447,7 @@ public class FormServiceRequestController extends WebMvcConfigurerAdapter {
 
         getUsernameFromTicket(request, ticket);
 
-        return "form.html";
+        return "form";
     }
 
     /* This CONSUMES the ticket because they are only single use */
@@ -423,8 +469,8 @@ public class FormServiceRequestController extends WebMvcConfigurerAdapter {
     }
 
     @GetMapping("/")
-    public String landingRequest() {
-        return "landing.html";
+    public String formRequest() {
+        return "form";
     }
 
 
