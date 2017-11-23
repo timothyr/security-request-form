@@ -349,7 +349,7 @@ public class FormServiceRequestController extends WebMvcConfigurerAdapter {
         String userEmailAddress = form.getEmailAddress();
         String authEmailAddress = form.getAuthorizerEmailAddress();
         String trackingID = form.getRequestID();
-        String requestURL = request.getServerName() + ":" + request.getServerPort() + formRequestURL + formFromTokenURL + token;
+        String requestURL = request.getServerName() + ":" + request.getServerPort() + formRequestURL + token;
 
         if (form != null) {
             System.out.println("saved");
