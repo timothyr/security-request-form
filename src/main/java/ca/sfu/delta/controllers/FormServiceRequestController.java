@@ -141,16 +141,16 @@ public class FormServiceRequestController extends WebMvcConfigurerAdapter {
     @RequestMapping(value = "/api/csv/form/{id}.csv", method = RequestMethod.GET, produces = "text/csv")
     @ResponseBody
     public String getCSV(@PathVariable("id") String id) {
-        String csvString = new String();
         for (FormData form : formRepository.findAll()) {
 
             if(form.getRequestID().equals(id))
             {
+                String csvString = new String();
                 csvString = form.getAsCSV(true);
+                return csvString;
             }
         }
-        System.out.println(csvString);
-        return csvString;
+        return "Error: this form does not exist";
     }
 
     @RequestMapping(value = "/api/csv/guards/{id}-guards.csv", method = RequestMethod.GET, produces = "text/csv")
@@ -163,6 +163,7 @@ public class FormServiceRequestController extends WebMvcConfigurerAdapter {
             if(form.getRequestID().equals(id))
             {
                 correctForm = form;
+                break;
             }
         }
         List<Guard> correctFormGuards = correctForm.getGuards();
