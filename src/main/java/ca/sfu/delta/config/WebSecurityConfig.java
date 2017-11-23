@@ -22,14 +22,17 @@ import javax.servlet.http.HttpServletRequest;
 @Configuration
 @EnableWebSecurity
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
+//	Spring Security wants you to use port 8443, with https.
+	private final static String PORT="8443";
 
 	@Bean
 	public ServiceProperties serviceProperties() {
 		ServiceProperties serviceProperties = new ServiceProperties();
-		serviceProperties.setService("http://localhost:8080/cas/j_spring_cas_security_check");
+		serviceProperties.setService("https://localhost:"+PORT+"/j_spring_cas_security_check");
 //		serviceProperties.setService("http://localhost:8080/");
 //		serviceProperties.setService("https://cas.sfu.ca/cas/serviceValidate");
 		serviceProperties.setSendRenew(false);
+		serviceProperties.setAuthenticateAllArtifacts(true);
 		return serviceProperties;
 	}
 
@@ -51,14 +54,14 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 	@Bean
 	public Cas20ServiceTicketValidator cas20ServiceTicketValidator() {
 //		return new Cas20ServiceTicketValidator("http://localhost:8080/cas");
-		return new Cas20ServiceTicketValidator("https://cas.sfu.ca/cas/serviceValidate");
+		return new Cas20ServiceTicketValidator("https://cas.sfu.ca/cas");
 	}
 
 	@Bean
 	public CasAuthenticationFilter casAuthenticationFilter() throws Exception {
 		CasAuthenticationFilter casAuthenticationFilter = new CasAuthenticationFilter();
 		casAuthenticationFilter.setAuthenticationManager(authenticationManager());
-		casAuthenticationFilter.setAuthenticationDetailsSource(dynamicServiceResolver());
+//		casAuthenticationFilter.setAuthenticationDetailsSource(dynamicServiceResolver());
 		return casAuthenticationFilter;
 	}
 
