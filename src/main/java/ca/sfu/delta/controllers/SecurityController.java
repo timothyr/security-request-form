@@ -9,8 +9,25 @@ import org.springframework.web.bind.annotation.RestController;
 @Controller
 @RequestMapping("/security")
 public class SecurityController {
-    @RequestMapping("/request/**")
-    public String securityLogin() {;
-        return "/securityview";
+
+    @RequestMapping({"", "/"})
+    public String defaultView() {
+        return "/requests";
     }
+
+    @RequestMapping("/login")
+    public String loginView() {
+        return "/securitylogin";
+    }
+
+    @RequestMapping("/request/**")
+    public String securityLoginView() {;
+        return "/request";
+    }
+
+    @RequestMapping("/requests")
+    public String securityRequestsView() {;
+        return "/requests";
+    }
+
 }

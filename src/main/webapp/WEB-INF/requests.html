@@ -9,7 +9,7 @@
 </head>
 <body>
     <header>
-        <a href="/requests">
+        <a href="/security/requests">
             <img class="logo" src="/img/sfu-logo@2x.png" alt="sfu-logo"/>
         </a>
         <!--TODO HARDCODED LOGGED USER-->
@@ -175,7 +175,7 @@
                 return getKeyByValue(mappings, columnName);
             },
             goToRequest(requestID) {
-                window.location.assign("/securityview.html?id=" + requestID);
+                window.location.href = '/security/request/' + requestID;
             },
             showNoResults: function() {
                 return this.filteredRequests.length == 0 && !this.loading;

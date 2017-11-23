@@ -43,13 +43,9 @@ public class FormServiceRequestController extends WebMvcConfigurerAdapter {
 
     @Override
     public void addViewControllers(ViewControllerRegistry registry) {
-        registry.addViewController("/requests").setViewName("requests.html");
-        //registry.addViewController("/servicerequest").setViewName("form.html");
-
-        registry.addViewController("/admin").setViewName("admin.html");
         registry.addViewController("/securitylogin").setViewName("securitylogin.html");
-        registry.addViewController("/updateform").setViewName("userupdateform.html");
-        registry.addViewController("/securityview").setViewName("securityview.html");
+        registry.addViewController("/updateform").setViewName("userupdateform");
+        //registry.addViewController("/securityview").setViewName("request.html");
     }
 
     @RequestMapping(value = "/api/form/get/{id}", method = RequestMethod.GET, produces = "application/json")
@@ -399,7 +395,7 @@ public class FormServiceRequestController extends WebMvcConfigurerAdapter {
 
         getUsernameFromTicket(request, ticket);
 
-        return "form.html";
+        return "form";
     }
 
     /* This CONSUMES the ticket because they are only single use */
@@ -421,8 +417,8 @@ public class FormServiceRequestController extends WebMvcConfigurerAdapter {
     }
 
     @GetMapping("/")
-    public String landingRequest() {
-        return "landing.html";
+    public String formRequest() {
+        return "form";
     }
 
 
