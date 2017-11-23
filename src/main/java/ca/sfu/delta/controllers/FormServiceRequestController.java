@@ -18,6 +18,7 @@ import org.springframework.web.servlet.config.annotation.ViewControllerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Map;
@@ -196,6 +197,41 @@ public class FormServiceRequestController extends WebMvcConfigurerAdapter {
             else {
                 thisForm = form.getAsCSV(false);
                 csvWriter.append(thisForm);
+            }
+        }
+
+        return csvWriter.toString();
+    }
+
+    @RequestMapping(value = "/api/csv/{selectedIDs}/selectedRequests.csv", method = RequestMethod.GET, produces = "text/csv")
+    @ResponseBody
+    public String getAllCSV(@PathVariable("selectedIDs") String[] ids) {
+        boolean first = true;
+        String thisForm;
+        int numberOfFormsAdded = 0;
+        List<String> formIDs = new ArrayList<String>(Arrays.asList(ids));
+        StringWriter csvWriter = new StringWriter();
+
+        for (FormData form : formRepository.findAll()) {
+            if(formIDs.contains(form.getRequestID()))
+            {
+                if(first) {
+                    thisForm = form.getAsCSV(true);
+                    first = false;
+                    csvWriter.append(thisForm);
+                    numberOfFormsAdded++;
+                }
+                else {
+                    thisForm = form.getAsCSV(false);
+                    csvWriter.append(thisForm);
+                    numberOfFormsAdded++;
+                }
+            }
+
+            //Don't want to iterate over all the requests if we don't need to
+            if(numberOfFormsAdded == formIDs.size())
+            {
+                break;
             }
         }
 
