@@ -64,8 +64,8 @@ public class Date {
         String yearReturn = String.format("%04d", year);
         String monthReturn = String.format("%02d", month);
         String dayReturn = String.format("%02d", day);
-        String hourReturn = String.format("02d", hour);
-        String minuteReturn = String.format("02d", minute);
+        String hourReturn = String.format("%02d", hour);
+        String minuteReturn = String.format("%02d", minute);
         return yearReturn + "-" + monthReturn + "-" + dayReturn + " " + hourReturn + ":" + minuteReturn;
     }
 }
