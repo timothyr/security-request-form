@@ -430,10 +430,13 @@
             },
 
             getFormData: function () {
-                this.requestID = this.getURLParam('id');
-                if (this.requestID === null) {
-                    window.location.replace("/requests");
-                }
+//                this.requestID = this.getURLParam('id');
+//                if (this.requestID === null) {
+//                    window.location.replace("/requests");
+//                }
+                let urlSegments = window.location.href.split('/');
+                this.requestID = urlSegments.pop() || urlSegments.pop();
+                console.log(this.requestID);
 
                 this.$http.get('/api/form/getByRequestID/' + this.requestID).then(function (response) {
                     if (response.data === null || response.data === undefined || response.data === "") {

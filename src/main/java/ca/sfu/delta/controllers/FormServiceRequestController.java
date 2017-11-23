@@ -43,7 +43,6 @@ public class FormServiceRequestController extends WebMvcConfigurerAdapter {
 
     @Override
     public void addViewControllers(ViewControllerRegistry registry) {
-        registry.addViewController("/results").setViewName("results.html");
         registry.addViewController("/requests").setViewName("requests.html");
         //registry.addViewController("/servicerequest").setViewName("form.html");
 
