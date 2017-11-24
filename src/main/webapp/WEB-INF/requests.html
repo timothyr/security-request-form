@@ -217,7 +217,7 @@
                         if(this.activeStatus == "ALL") {
                             return true;
                         } else {
-                            if (!request.requestStatus || this.activeStatus) {
+                            if (request.requestStatus == "") {
                                 return false;
                             }
                             return request.requestStatus.toLowerCase() == this.activeStatus.toLowerCase();
