@@ -11,21 +11,19 @@ import ca.sfu.delta.repository.URLTokenRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.config.annotation.ViewControllerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Calendar;
-import java.util.List;
-import java.util.Map;
-import java.util.Date;
+import java.util.*;
 import java.text.SimpleDateFormat;
 import java.text.DateFormat;
 import java.io.StringWriter;
+import java.util.Date;
 
 
 @Controller
@@ -47,6 +45,32 @@ public class FormServiceRequestController extends WebMvcConfigurerAdapter {
         registry.addViewController("/securitylogin").setViewName("securitylogin.html");
         registry.addViewController("/updateform").setViewName("userupdateform");
         //registry.addViewController("/securityview").setViewName("request.html");
+    }
+
+    @RequestMapping(value = "/api/user/get", method = RequestMethod.GET, produces = "application/json")
+    public @ResponseBody Map<String, Object> getCurrentUser(Authentication principal) {
+        if (principal == null) {
+            Map<String, Object> map = new HashMap();
+            map.put("authenticated", false);
+            map.put("username", null);
+            map.put("privileges", null);
+            return map;
+        } else {
+            String name = principal.getName();
+
+            String authorities = "";
+            for (GrantedAuthority authority : principal.getAuthorities()) {
+                authorities += authority.getAuthority() + " ";
+            }
+            authorities = authorities.trim();
+
+            Map<String, Object> map = new HashMap();
+            map.put("authenticated", true);
+            map.put("username", name);
+            map.put("privileges", authorities);
+
+            return map;
+        }
     }
 
     @RequestMapping(value = "/api/form/get/{id}", method = RequestMethod.GET, produces = "application/json")
