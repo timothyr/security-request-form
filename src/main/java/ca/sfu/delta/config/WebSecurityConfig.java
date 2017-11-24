@@ -1,36 +1,30 @@
 package ca.sfu.delta.config;
 
+import ca.sfu.delta.models.AuthorizedUser;
 import org.jasig.cas.client.validation.Cas20ServiceTicketValidator;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.security.authentication.AuthenticationDetailsSource;
 import org.springframework.security.cas.ServiceProperties;
 import org.springframework.security.cas.authentication.CasAuthenticationProvider;
 import org.springframework.security.cas.web.CasAuthenticationEntryPoint;
 import org.springframework.security.cas.web.CasAuthenticationFilter;
-import org.springframework.security.cas.web.authentication.ServiceAuthenticationDetails;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.core.userdetails.AuthenticationUserDetailsService;
-import org.springframework.web.util.UriComponents;
-import org.springframework.web.util.UriComponentsBuilder;
-
-import javax.servlet.http.HttpServletRequest;
 
 @Configuration
 @EnableWebSecurity
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 //	Spring Security wants you to use port 8443, with https.
 	private final static String PORT="8443";
+	private final static String PROTOCOL="https";
 
 	@Bean
 	public ServiceProperties serviceProperties() {
 		ServiceProperties serviceProperties = new ServiceProperties();
-		serviceProperties.setService("https://localhost:"+PORT+"/j_spring_cas_security_check");
-//		serviceProperties.setService("http://localhost:8080/");
-//		serviceProperties.setService("https://cas.sfu.ca/cas/serviceValidate");
+		serviceProperties.setService(PROTOCOL+"://localhost:"+PORT+"/j_spring_cas_security_check");
 		serviceProperties.setSendRenew(false);
 		serviceProperties.setAuthenticateAllArtifacts(true);
 		return serviceProperties;
@@ -53,7 +47,6 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
 	@Bean
 	public Cas20ServiceTicketValidator cas20ServiceTicketValidator() {
-//		return new Cas20ServiceTicketValidator("http://localhost:8080/cas");
 		return new Cas20ServiceTicketValidator("https://cas.sfu.ca/cas");
 	}
 
@@ -61,31 +54,12 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 	public CasAuthenticationFilter casAuthenticationFilter() throws Exception {
 		CasAuthenticationFilter casAuthenticationFilter = new CasAuthenticationFilter();
 		casAuthenticationFilter.setAuthenticationManager(authenticationManager());
-//		casAuthenticationFilter.setAuthenticationDetailsSource(dynamicServiceResolver());
 		return casAuthenticationFilter;
-	}
-
-	@Bean
-	public AuthenticationDetailsSource<HttpServletRequest,ServiceAuthenticationDetails> dynamicServiceResolver() {
-		return new AuthenticationDetailsSource<HttpServletRequest, ServiceAuthenticationDetails>() {
-			@Override
-			public ServiceAuthenticationDetails buildDetails(HttpServletRequest context) {
-				System.out.println("HELLO");
-//				final String url = makeDynamicUrlFromRequest(serviceProperties());
-				return new ServiceAuthenticationDetails() {
-					@Override
-					public String getServiceUrl() {
-						return context.getRequestURI();
-					}
-				};
-			}
-		};
 	}
 
 	@Bean
 	public CasAuthenticationEntryPoint casAuthenticationEntryPoint() {
 		CasAuthenticationEntryPoint casAuthenticationEntryPoint = new CasAuthenticationEntryPoint();
-//		casAuthenticationEntryPoint.setLoginUrl("http://localhost:8080/cas/login");
 		casAuthenticationEntryPoint.setLoginUrl("https://cas.sfu.ca/cas/login");
 		casAuthenticationEntryPoint.setServiceProperties(serviceProperties());
 		return casAuthenticationEntryPoint;
@@ -101,11 +75,20 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
 		http
 				.authenticationProvider(casAuthenticationProvider())
-				.authorizeRequests()
-				.antMatchers("/css/**", "/").permitAll()
-				.antMatchers("/security/**").authenticated()
-				.and()
-				.formLogin().loginPage("/my-app/login");
+				.authorizeRequests().antMatchers(
+						"/css/**",
+						"/fonts/**",
+						"/img/**",
+						"/js/**",
+						"/"
+				).permitAll().and()
+
+				.authorizeRequests().antMatchers(
+						"/security/**"
+				).hasAnyAuthority(
+					AuthorizedUser.Privilege.ADMIN.toString(),
+					AuthorizedUser.Privilege.SECURITY.toString()
+				).anyRequest().authenticated();
 	}
 
 	@Override

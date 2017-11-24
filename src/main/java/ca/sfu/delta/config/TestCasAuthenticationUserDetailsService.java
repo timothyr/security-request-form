@@ -1,58 +1,44 @@
 package ca.sfu.delta.config;
 
+import ca.sfu.delta.models.AuthorizedUser;
+import ca.sfu.delta.repository.AuthorizedUserRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.AuthenticationUserDetailsService;
+import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 
 public class TestCasAuthenticationUserDetailsService implements AuthenticationUserDetailsService {
+
+    @Autowired
+    AuthorizedUserRepository userRepository;
+
+    @Value("${admin.username}")
+    String adminUsername;
+
     @Override
     public UserDetails loadUserDetails(Authentication token) throws UsernameNotFoundException {
         String username = token.getName();
-        System.out.println(username);
-        return new UserDetails() {
-            @Override
-            public Collection<? extends GrantedAuthority> getAuthorities() {
-                List<GrantedAuthority> l = new ArrayList();
-                l.add(() -> "ADMIN");
 
-                return l;
-            }
+        if (adminUsername != null && username.equals(adminUsername)) {
+            List<GrantedAuthority> authorities = new ArrayList();
+            authorities.add((GrantedAuthority) () -> AuthorizedUser.Privilege.ADMIN.toString());
+            return new User(username, "", authorities);
+        }
 
-            @Override
-            public String getPassword() {
-                return "fakepassword";
-            }
+        for (AuthorizedUser user : userRepository.findAllByUsername(username + "@sfu.ca")) {
+            List<GrantedAuthority> authorities = new ArrayList();
+            authorities.add((GrantedAuthority) () -> user.getPrivilege().toString());
 
-            @Override
-            public String getUsername() {
-                return username;
-            }
+            return new User(username, "", authorities);
+        }
 
-            @Override
-            public boolean isAccountNonExpired() {
-                return true;
-            }
-
-            @Override
-            public boolean isAccountNonLocked() {
-                return true;
-            }
-
-            @Override
-            public boolean isCredentialsNonExpired() {
-                return true;
-            }
-
-            @Override
-            public boolean isEnabled() {
-                return true;
-            }
-        };
+        return new User("unauthorized", "", new ArrayList());
     }
 }
