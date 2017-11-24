@@ -1,4 +1,4 @@
-package ca.sfu.delta.config;
+package ca.sfu.delta.security;
 
 import ca.sfu.delta.models.AuthorizedUser;
 import ca.sfu.delta.repository.AuthorizedUserRepository;

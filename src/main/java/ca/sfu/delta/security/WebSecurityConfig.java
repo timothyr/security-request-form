@@ -1,4 +1,4 @@
-package ca.sfu.delta.config;
+package ca.sfu.delta.security;
 
 import ca.sfu.delta.models.AuthorizedUser;
 import org.jasig.cas.client.validation.Cas20ServiceTicketValidator;
@@ -80,6 +80,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 						"/fonts/**",
 						"/img/**",
 						"/js/**",
+						"/userAndSession/**",
 						"/"
 				).permitAll().and()
 
