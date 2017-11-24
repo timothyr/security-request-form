@@ -2,6 +2,7 @@ package ca.sfu.delta.security;
 
 import ca.sfu.delta.models.AuthorizedUser;
 import org.jasig.cas.client.validation.Cas20ServiceTicketValidator;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.cas.ServiceProperties;
@@ -18,13 +19,17 @@ import org.springframework.security.core.userdetails.AuthenticationUserDetailsSe
 @EnableWebSecurity
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 //	Spring Security wants you to use port 8443, with https.
-	private final static String PORT="8443";
-	private final static String PROTOCOL="https";
+
+	@Value("${spring.security.enabled}")
+	private boolean isSecurityEnabled;
+
+	@Value("${server.port}")
+	private String PORT;
 
 	@Bean
 	public ServiceProperties serviceProperties() {
 		ServiceProperties serviceProperties = new ServiceProperties();
-		serviceProperties.setService(PROTOCOL+"://localhost:"+PORT+"/j_spring_cas_security_check");
+		serviceProperties.setService("https://localhost:"+PORT+"/j_spring_cas_security_check");
 		serviceProperties.setSendRenew(false);
 		serviceProperties.setAuthenticateAllArtifacts(true);
 		return serviceProperties;
@@ -67,25 +72,27 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
-		http
-				.addFilter(casAuthenticationFilter());
-		http
-				.exceptionHandling()
-				.authenticationEntryPoint(casAuthenticationEntryPoint());
+		if (!isSecurityEnabled) {
+			return;
+		}
 
-		http
-				.authenticationProvider(casAuthenticationProvider())
+		http.addFilter(casAuthenticationFilter());
+
+		http.exceptionHandling().authenticationEntryPoint(casAuthenticationEntryPoint());
+
+		http.authenticationProvider(casAuthenticationProvider())
 				.authorizeRequests().antMatchers(
 						"/css/**",
 						"/fonts/**",
 						"/img/**",
 						"/js/**",
-						"/userAndSession/**",
+						"/api/**",
 						"/"
 				).permitAll().and()
 
 				.authorizeRequests().antMatchers(
-						"/security/**"
+						"/security/**",
+						"/api/authuser/**"
 				).hasAnyAuthority(
 					AuthorizedUser.Privilege.ADMIN.toString(),
 					AuthorizedUser.Privilege.SECURITY.toString()
