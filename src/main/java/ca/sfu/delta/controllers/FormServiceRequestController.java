@@ -44,14 +44,9 @@ public class FormServiceRequestController extends WebMvcConfigurerAdapter {
 
     @Override
     public void addViewControllers(ViewControllerRegistry registry) {
-        registry.addViewController("/results").setViewName("results.html");
-        registry.addViewController("/requests").setViewName("requests.html");
-        //registry.addViewController("/servicerequest").setViewName("form.html");
-
-        registry.addViewController("/admin").setViewName("admin.html");
         registry.addViewController("/securitylogin").setViewName("securitylogin.html");
-        registry.addViewController("/updateform").setViewName("userupdateform.html");
-        registry.addViewController("/securityview").setViewName("securityview.html");
+        registry.addViewController("/updateform").setViewName("userupdateform");
+        //registry.addViewController("/securityview").setViewName("request.html");
     }
 
     @RequestMapping(value = "/api/form/get/{id}", method = RequestMethod.GET, produces = "application/json")
@@ -354,7 +349,7 @@ public class FormServiceRequestController extends WebMvcConfigurerAdapter {
         String userEmailAddress = form.getEmailAddress();
         String authEmailAddress = form.getAuthorizerEmailAddress();
         String trackingID = form.getRequestID();
-        String requestURL = request.getServerName() + ":" + request.getServerPort() + formRequestURL + formFromTokenURL + token;
+        String requestURL = request.getServerName() + ":" + request.getServerPort() + formRequestURL + token;
 
         if (form != null) {
             System.out.println("saved");
@@ -370,7 +365,7 @@ public class FormServiceRequestController extends WebMvcConfigurerAdapter {
                         System.out.print("Error sending the email: " + e.getMessage());
                     }
                     System.out.println("Successfully saved Form with requestID = " + form.getId() + " and token = " + token);
-                    return formFromTokenURL + token;
+                    return token;
                 }
 
                 // Else if authorizer and user email exists
@@ -385,7 +380,7 @@ public class FormServiceRequestController extends WebMvcConfigurerAdapter {
                         System.out.print("Error sending the emails: " + e.getMessage());
                     }
                     System.out.println("Successfully saved Form with requestID = " + form.getId() + " and token = " + token);
-                    return formFromTokenURL + token;
+                    return token;
                 }
             } else {
                 System.out.print("Could not find RequestID/TrackingID");
@@ -437,7 +432,7 @@ public class FormServiceRequestController extends WebMvcConfigurerAdapter {
 
         getUsernameFromTicket(request, ticket);
 
-        return "form.html";
+        return "form";
     }
 
     /* This CONSUMES the ticket because they are only single use */
@@ -459,8 +454,8 @@ public class FormServiceRequestController extends WebMvcConfigurerAdapter {
     }
 
     @GetMapping("/")
-    public String landingRequest() {
-        return "landing.html";
+    public String formRequest() {
+        return "form";
     }
 
 

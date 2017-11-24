@@ -11,7 +11,9 @@
 </head>
 <body class="red-background">
 <header>
-    <img class="logo" src="/img/sfu-logo@2x.png" alt="sfu-logo"/>
+    <a href="/">
+        <img class="logo" src="/img/sfu-logo@2x.png" alt="sfu-logo"/>
+    </a>
 </header>
 <div id="app">
     <form method="post" v-on:submit.prevent="submitForm">
@@ -155,8 +157,8 @@
                 </div>
                 <div class="row mt-4">
                     <div class="form-group col-md-4">
-                        <label for="account-code-input" v-model="formData.paymentAccountCode">Account code</label>
-                        <input type="text" id="account-code-input" class="form-control"/>
+                        <label for="account-code-input">Account code</label>
+                        <input type="text" id="account-code-input" v-model="formData.paymentAccountCode" class="form-control"/>
                     </div>
                     <div class="form-group col-md-4">
                         <!--TODO INFER THIS VALUE-->
@@ -445,10 +447,12 @@
         },
         created: function() {
             let urlParams = getUrlParams(window.location);
-            this.$http.get(urlParams.token, {
+            this.$http.get("/api/form/get/user/" + urlParams.token, {
             }).then(response  => {
-                this.formData = response.data;
-                this.datetimelist = updateDateTime(this.formData.eventDates);
+                if (response.status == 200) {
+                    this.formData = response.data;
+                    this.datetimelist = updateDateTime(this.formData.eventDates);
+                }
             });
         },
 

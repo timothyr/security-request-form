@@ -55,7 +55,8 @@ public class SendEmail {
 		input.put("trackingID", trackingID);
 		input.put("requestURL", requestURL);
 
-		String htmlEmailBody = makeEmailFromHtml("src/main/resources/static/emailUserRequestConfirmation.html", input);
+		String htmlEmailBody = makeEmailFromHtml("src/main/webapp/WEB-INF/emailUserRequestConfirmation.html", input);
+        System.out.println("DEBUG: \n" + htmlEmailBody);
 
 		sendMail(sendToEmailAddress, subject, htmlEmailBody);
 	}
@@ -69,7 +70,7 @@ public class SendEmail {
 		input.put("trackingID", trackingID);
 		input.put("requestURL", requestURL);
 
-		String htmlEmailBody = makeEmailFromHtml("src/main/resources/static/emailAuthorizerRequestConfirmation.html", input);
+		String htmlEmailBody = makeEmailFromHtml("src/main/webapp/WEB-INF/emailAuthorizerRequestConfirmation.html", input);
 
 		sendMail(sendToEmailAddress, subject, htmlEmailBody);
 	}
@@ -83,7 +84,7 @@ public class SendEmail {
 		input.put("trackingID", trackingID);
 		input.put("rejectionMessage", rejectionMessage);
 
-		String htmlEmailBody = makeEmailFromHtml("src/main/resources/static/emailRequestRejected.html", input);
+		String htmlEmailBody = makeEmailFromHtml("src/main/webapp/WEB-INF/emailRequestRejected.html", input);
 
 		sendMail(sendToEmailAddress, subject, htmlEmailBody);
 	}
@@ -96,7 +97,7 @@ public class SendEmail {
 		input.put("Greeting", getGreeting(personName));
 		input.put("trackingID", trackingID);
 
-		String htmlEmailBody = makeEmailFromHtml("src/main/resources/static/emailRequestApproved.html", input);
+		String htmlEmailBody = makeEmailFromHtml("src/main/webapp/WEB-INF/emailRequestApproved.html", input);
 
 		sendMail(sendToEmailAddress, subject, htmlEmailBody);
 	}

@@ -11,7 +11,7 @@
 
 <body>
 <header>
-    <a href="/requests"><img class="logo" src="/img/sfu-logo@2x.png" alt="sfu-logo"/></a>
+    <a href="/security/requests"><img class="logo" src="/img/sfu-logo@2x.png" alt="sfu-logo"/></a>
 </header>
 <div class="container col-md-10 offset-md-1 wrapper mb-5 col-lg-10" id="app">
     <div class="row mt-5"></div>
@@ -430,14 +430,18 @@
             },
 
             getFormData: function () {
-                this.requestID = this.getURLParam('id');
-                if (this.requestID === null) {
-                    window.location.replace("/requests");
-                }
+                //TODO change to error page instead
+//                this.requestID = this.getURLParam('id');
+//                if (this.requestID === null) {
+//                    window.location.replace("/requests");
+//                }
+                // get last segment of url (the id hopefully)
+                let urlSegments = window.location.href.split('/');
+                this.requestID = urlSegments.pop() || urlSegments.pop();
 
                 this.$http.get('/api/form/getByRequestID/' + this.requestID).then(function (response) {
                     if (response.data === null || response.data === undefined || response.data === "") {
-                        window.location.replace("/requests");
+                        window.location.replace("/security/requests");
                     }
 
                     if (response.data.guards && response.data.guards[0] && response.data.guards.length > 0) {
@@ -489,13 +493,10 @@
                     }
                 }
 
-                //console.log("---------- Submitting:");
-                //this.removeNull();
-
                 this.$http.post('/api/form/saveSecurity', this.form,
                     {params: {additionalMessage: this.additionalMessage}}).then(function (response) {
                     console.log('Successfully sent form');
-                    window.location.replace('/requests')
+                    window.location.replace('/security/requests')
                 }, function (error) {
                     alert('Failed to send form!');
                 });

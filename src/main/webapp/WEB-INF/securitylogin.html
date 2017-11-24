@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Security Login</title>
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+    <header>
+        <img class="logo" src="/img/sfu-logo@2x.png" alt="sfu-logo"/>
+    </header>
+    <div class="container col-md-10 offset-md-1 wrapper mb-5 col-lg-10" id="app">
+        <div class="container col-md-10">
+            <div class="row mt-5">
+                <h1 class="mt-5">Security Login</h1>
+            </div>
+            <div class="row mt-5">
+                <a href="/login?redirect=requests" class="btn btn-primary">Login SFU CAS</a>
+            </div>
+        </div>
+        <div class="bottom-space"></div>
+    </div>
+    <script src="/js/vue.js"></script>
+    <script>
+        var app = new Vue({
+            el: '#app',
+            data: {}
+        });
+    </script>
+</body>
+</html>
