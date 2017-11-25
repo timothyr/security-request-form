@@ -61,8 +61,6 @@ public class FormServiceRequestController extends WebMvcConfigurerAdapter {
     public @ResponseBody FormData getForm(@PathVariable("id") String id) {
         for (FormData f : formRepository.findAll()) {
         	if (f.getRequestID().equals(id)) {
-        		//System.out.println("found form with requestID = "+f.getRequestID());
-        		//System.out.println(f.getGuards());
         		return f;
 			}
 		}
@@ -127,9 +125,6 @@ public class FormServiceRequestController extends WebMvcConfigurerAdapter {
 		}
 
 		formRepository.save(form);
-		//for (FormData f : formRepository.findAll()) {
-		//	System.out.println(f.toString());
-		//}
 
 		return "";
 	}
@@ -303,6 +298,8 @@ public class FormServiceRequestController extends WebMvcConfigurerAdapter {
             @RequestParam(required=false) String faxNumber,
 			@RequestParam(required=false) String requestID,
             @RequestParam(required=false) String authorizerEmailAddress,
+            @RequestParam(required=false) String numGuards,
+            @RequestParam(required=false) String guardType,
             HttpServletRequest request
             ) {
         FormData form = new FormData();
@@ -326,6 +323,8 @@ public class FormServiceRequestController extends WebMvcConfigurerAdapter {
         form.setEventDetails(eventDetails);
         form.setFaxNumber(faxNumber);
         form.setAuthorizerEmailAddress(authorizerEmailAddress);
+        form.setNumGuards(numGuards);
+        form.setGuardType(guardType);
 
         //Set requestedOnDate to current date
         DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
@@ -419,6 +418,8 @@ public class FormServiceRequestController extends WebMvcConfigurerAdapter {
         form.setEventDates(data.getEventDates());
         form.setEventDetails(data.getEventDetails());
         form.setFaxNumber(data.getFaxNumber());
+        form.setNumGuards(data.getNumGuards());
+        form.setGuardType(data.getGuardType());
 
         formRepository.save(form);
         return new ResponseEntity<FormData>(form, HttpStatus.OK);
