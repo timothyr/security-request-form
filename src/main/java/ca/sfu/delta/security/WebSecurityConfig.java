@@ -23,13 +23,13 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 	@Value("${spring.security.enabled}")
 	private boolean isSecurityEnabled;
 
-	@Value("${server.port}")
-	private String PORT;
+	@Value("${server.baseUrl}")
+	private String baseUrl;
 
 	@Bean
 	public ServiceProperties serviceProperties() {
 		ServiceProperties serviceProperties = new ServiceProperties();
-		serviceProperties.setService("https://localhost:"+PORT+"/j_spring_cas_security_check");
+		serviceProperties.setService("https://"+baseUrl+"/j_spring_cas_security_check");
 		serviceProperties.setSendRenew(false);
 		serviceProperties.setAuthenticateAllArtifacts(true);
 		return serviceProperties;
@@ -87,6 +87,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 						"/img/**",
 						"/js/**",
 						"/api/**",
+						"/WEB-INF/form.html",
 						"/"
 				).permitAll().and()
 
