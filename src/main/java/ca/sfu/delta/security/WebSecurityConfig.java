@@ -14,14 +14,13 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.core.userdetails.AuthenticationUserDetailsService;
+import org.springframework.security.web.authentication.logout.LogoutFilter;
+import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
 
 @Configuration
 @EnableWebSecurity
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 //	Spring Security wants you to use port 8443, with https.
-
-	@Value("${spring.security.enabled}")
-	private boolean isSecurityEnabled;
 
 	@Value("${server.baseUrl}")
 	private String baseUrl;
@@ -72,10 +71,6 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
-		if (!isSecurityEnabled) {
-			return;
-		}
-
 		http.addFilter(casAuthenticationFilter());
 
 		http.exceptionHandling().authenticationEntryPoint(casAuthenticationEntryPoint());
