@@ -448,21 +448,6 @@ public class FormServiceRequestController extends WebMvcConfigurerAdapter {
         return new ResponseEntity<FormData>(form, HttpStatus.OK);
     }
 
-	@RequestMapping(value = "/hi", method = RequestMethod.GET)
-	public String showForm1() {
-		return "redirect:/hello";
-	}
-
-	@RequestMapping(value = "/hello", method = RequestMethod.GET)
-	public String showForm2() {
-		try {
-			Thread.sleep(1000);
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-		}
-		return "redirect:/";
-	}
-
     @RequestMapping(value = "/servicerequest", method = RequestMethod.GET)
     public String showForm(
             @RequestParam(value = "ticket", required = false) String ticket,
