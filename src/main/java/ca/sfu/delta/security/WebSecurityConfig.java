@@ -86,18 +86,33 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 						"/fonts/**",
 						"/img/**",
 						"/js/**",
-						"/api/**",
-						"/WEB-INF/form.html",
+						"/api/form/save/**",
+						"/api/form/update/**",
 						"/"
 				).permitAll().and()
 
 				.authorizeRequests().antMatchers(
-						"/security/**",
-						"/api/authuser/**"
+					"/security/**",
+					"/api/authuser/**",
+					"/api/dist/**",
+					"/api/user/**",
+					"/api/form/getByRequestID/**",
+					"/api/form/get/**",
+					"/api/form/get/user/**",
+					"/api/form/search",
+					"/api/form/saveSecurity",
+					"/api/csv/**",
+					"/api/invoice/**"
 				).hasAnyAuthority(
 					AuthorizedUser.Privilege.ADMIN.toString(),
 					AuthorizedUser.Privilege.SECURITY.toString()
-				).anyRequest().authenticated();
+				).anyRequest().authenticated().and()
+
+				.authorizeRequests().antMatchers(
+						"/api/admin/**",
+						"/api/authuser/**"
+				).hasAnyAuthority(AuthorizedUser.Privilege.ADMIN.toString())
+				.anyRequest().authenticated();
 	}
 
 	@Override
