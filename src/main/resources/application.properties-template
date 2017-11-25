@@ -9,7 +9,7 @@ spring.thymeleaf.cache=false
 
 spring.mail.host=smtp.gmail.com
 spring.mail.port=587
-spring.mail.username=teamdelta373@gmail.com 
+spring.mail.username=teamdelta373@gmail.com
 spring.mail.password=8teammembers
 spring.mail.properties.mail.smtp.auth=true
 spring.mail.properties.mail.smtp.starttls.enable=true
@@ -20,15 +20,15 @@ spring.mail.properties.mail.transport.protocol=smtp
 # Spring Security Parameters #
 ##############################
 
-spring.security.enabled=true
-
-# Comment these out to use HTTP rather than HTTPS
-server.ssl.key-store=keystore.p12
+server.ssl.key-store=<KEYSTORE-FILE-NAME>
 server.ssl.key-store-password=<KEYSTORE-PASSWORD>
 
 # Spring Security wants the port to be 8443
-server.baseUrl=cmpt373-1177d.cmpt.sfu.ca:8443
 server.port=8443
+
+# The base URL that the application will be running on (e.g., example.com).
+# By default set to localhost:8443, for running the server locally.
+server.baseUrl=localhost:8443
 
 # This username will be given full access to the application, regardless of whether it's contained in the database
 admin.username=<SFU-USERNAME>
