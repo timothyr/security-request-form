@@ -33,7 +33,15 @@ public class AuthController {
 
     private static final String CAS_LOGOUT_URL = "https://cas.sfu.ca/cas/logout";
 
-    @RequestMapping(value = "/logout", method = RequestMethod.GET, produces = "application/json")
+    @RequestMapping(value = "/login")
+    public String login(
+            @RequestParam(defaultValue="/", required=false) String redirect
+    ) throws ServletException, IOException {
+        // Nothing to do, spring security automatically handles this.
+        return "redirect:" + redirect;
+    }
+
+    @RequestMapping(value = "/logout")
     public String logoutCurrentUser(
             HttpServletRequest request, HttpSession session
     ) throws ServletException, IOException {

@@ -77,13 +77,14 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
 		http.authenticationProvider(casAuthenticationProvider())
 				.authorizeRequests().antMatchers(
-						"/css/**",
-						"/fonts/**",
-						"/img/**",
-						"/js/**",
-						"/api/form/save/**",
-						"/api/form/update/**",
-						"/"
+					"/css/**",
+					"/fonts/**",
+					"/img/**",
+					"/js/**",
+					"/api/form/save/**",
+					"/api/form/update/**",
+					"/logout",
+					"/"
 				).permitAll().and()
 
 				.authorizeRequests().antMatchers(

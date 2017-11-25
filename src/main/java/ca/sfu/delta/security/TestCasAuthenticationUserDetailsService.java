@@ -39,6 +39,6 @@ public class TestCasAuthenticationUserDetailsService implements AuthenticationUs
             return new User(username, "", authorities);
         }
 
-        return new User("unauthorized", "", new ArrayList());
+        return new User(username, "", new ArrayList());
     }
 }
