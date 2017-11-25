@@ -373,7 +373,7 @@ public class FormServiceRequestController extends WebMvcConfigurerAdapter {
         String userEmailAddress = form.getEmailAddress();
         String authEmailAddress = form.getAuthorizerEmailAddress();
         String trackingID = form.getRequestID();
-        String requestURL = request.getServerName() + ":" + request.getServerPort() + formRequestURL + formFromTokenURL + token;
+        String requestURL = request.getServerName() + ":" + request.getServerPort() + formRequestURL + token;
 
         if (form != null) {
             System.out.println("saved");
@@ -389,7 +389,7 @@ public class FormServiceRequestController extends WebMvcConfigurerAdapter {
                         System.out.print("Error sending the email: " + e.getMessage());
                     }
                     System.out.println("Successfully saved Form with requestID = " + form.getId() + " and token = " + token);
-                    return formFromTokenURL + token;
+                    return token;
                 }
 
                 // Else if authorizer and user email exists
@@ -404,7 +404,7 @@ public class FormServiceRequestController extends WebMvcConfigurerAdapter {
                         System.out.print("Error sending the emails: " + e.getMessage());
                     }
                     System.out.println("Successfully saved Form with requestID = " + form.getId() + " and token = " + token);
-                    return formFromTokenURL + token;
+                    return token;
                 }
             } else {
                 System.out.print("Could not find RequestID/TrackingID");
