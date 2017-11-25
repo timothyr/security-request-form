@@ -1,8 +1,4 @@
 package ca.sfu.delta.controllers;
-import javax.mail.MessagingException;
-import javax.servlet.http.HttpServletRequest;
-import javax.validation.Valid;
-
 import ca.sfu.delta.Utilities.GlobalConstants;
 import ca.sfu.delta.models.*;
 import ca.sfu.delta.repository.FormRepository;
@@ -11,18 +7,19 @@ import ca.sfu.delta.repository.URLTokenRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.GrantedAuthority;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.config.annotation.ViewControllerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
 
-import java.util.*;
-import java.text.SimpleDateFormat;
-import java.text.DateFormat;
+import javax.mail.MessagingException;
+import javax.servlet.http.HttpServletRequest;
+import javax.validation.Valid;
 import java.io.StringWriter;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.*;
 import java.util.Date;
 
 
@@ -45,32 +42,6 @@ public class FormServiceRequestController extends WebMvcConfigurerAdapter {
         registry.addViewController("/securitylogin").setViewName("securitylogin.html");
         registry.addViewController("/updateform").setViewName("userupdateform");
         //registry.addViewController("/securityview").setViewName("request.html");
-    }
-
-    @RequestMapping(value = "/api/user/get", method = RequestMethod.GET, produces = "application/json")
-    public @ResponseBody Map<String, Object> getCurrentUser(Authentication principal) {
-        if (principal == null) {
-            Map<String, Object> map = new HashMap();
-            map.put("authenticated", false);
-            map.put("username", null);
-            map.put("privileges", null);
-            return map;
-        } else {
-            String name = principal.getName();
-
-            String authorities = "";
-            for (GrantedAuthority authority : principal.getAuthorities()) {
-                authorities += authority.getAuthority() + " ";
-            }
-            authorities = authorities.trim();
-
-            Map<String, Object> map = new HashMap();
-            map.put("authenticated", true);
-            map.put("username", name);
-            map.put("privileges", authorities);
-
-            return map;
-        }
     }
 
     @RequestMapping(value = "/api/form/get/{id}", method = RequestMethod.GET, produces = "application/json")
@@ -454,27 +425,8 @@ public class FormServiceRequestController extends WebMvcConfigurerAdapter {
             @RequestParam(value = "gateway", required = false) String gateway,
             HttpServletRequest request) {
 
-        getUsernameFromTicket(request, ticket);
 
         return "form";
-    }
-
-    /* This CONSUMES the ticket because they are only single use */
-    private String getUsernameFromTicket(HttpServletRequest request, String ticket) {
-        if(ticket != null) {
-            AuthController authController = new AuthController();
-            String baseUrl = authController.getBaseUrl(request);
-            String username = authController.getUsernameFromTicket(baseUrl +  request.getServletPath(), ticket);
-            if(username == null) {
-                System.out.println(request.getServletPath() + " - Invalid ticket - User is not logged in.");
-                return null;
-            } else {
-                System.out.println(request.getServletPath() + " - User is logged in - Username = " + username);
-                return username;
-            }
-        }
-        System.out.println(request.getServletPath() + " - User is not logged in.");
-        return null;
     }
 
     @GetMapping("/")
