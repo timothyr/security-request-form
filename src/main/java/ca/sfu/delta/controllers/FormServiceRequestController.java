@@ -1,14 +1,11 @@
 package ca.sfu.delta.controllers;
-import javax.mail.MessagingException;
-import javax.servlet.http.HttpServletRequest;
-import javax.validation.Valid;
-
 import ca.sfu.delta.Utilities.GlobalConstants;
 import ca.sfu.delta.models.*;
 import ca.sfu.delta.repository.FormRepository;
 import ca.sfu.delta.repository.RequestIDRepository;
 import ca.sfu.delta.repository.URLTokenRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -17,15 +14,14 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.config.annotation.ViewControllerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Calendar;
-import java.util.List;
-import java.util.Map;
-import java.util.Date;
-import java.text.SimpleDateFormat;
-import java.text.DateFormat;
+import javax.mail.MessagingException;
+import javax.servlet.http.HttpServletRequest;
+import javax.validation.Valid;
 import java.io.StringWriter;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.*;
+import java.util.Date;
 
 
 @Controller
@@ -39,7 +35,9 @@ public class FormServiceRequestController extends WebMvcConfigurerAdapter {
     @Autowired
     SendEmail sendEmail;
 
-    private static final String formFromTokenURL = "/api/form/get/user/";
+    @Value("${server.baseUrl}")
+    String baseUrl;
+
     private static final String formRequestURL = "/updateform?token=";
 
     @Override
@@ -68,7 +66,7 @@ public class FormServiceRequestController extends WebMvcConfigurerAdapter {
         return null;
     }
 
-    @RequestMapping(value = formFromTokenURL + "{token}", method = RequestMethod.GET, produces = "application/json")
+    @RequestMapping(value = "/api/form/get/user/{token}", method = RequestMethod.GET, produces = "application/json")
 	public @ResponseBody ResponseEntity getFormFromToken(@PathVariable("token") String token) {
     	if (urlTokenRepository.existsByToken(token)) {
 		    URLToken urlToken = urlTokenRepository.getByToken(token);
@@ -298,7 +296,7 @@ public class FormServiceRequestController extends WebMvcConfigurerAdapter {
 
 	    System.out.println("Successfully saved Form with requestID = " + form.getId() + " and token = " + token);
 
-        String requestURL = request.getServerName() + ":" + request.getServerPort() + formRequestURL + token;
+        String requestURL = "https://" + baseUrl + formRequestURL + token;
         if (form.getRequestID() != null) {
 	        if (form.getAuthorizerEmailAddress() != null && !form.getAuthorizerEmailAddress().isEmpty()) {
 		        try {
@@ -333,30 +331,7 @@ public class FormServiceRequestController extends WebMvcConfigurerAdapter {
             System.out.println("User with id " + id + " not found");
             return new ResponseEntity<FormData>(HttpStatus.NOT_FOUND);
         }
-        form.setDepartment(data.getDepartment());
-        form.setRequesterName(data.getRequesterName());
-        form.setPhoneNumber(data.getPhoneNumber());
-        form.setRequestedOnDate(data.getRequestedOnDate());
-        form.setRequesterID(data.getRequesterID());
-        form.setAuthorizationDate(data.getAuthorizationDate());
-        form.setPaymentAccountCode(data.getPaymentAccountCode());
-        form.setEmailAddress(data.getEmailAddress());
-        form.setTimes(data.getTimes());
-        form.setEventName(data.getEventName());
-        form.setIsLicensed(data.getIsLicensed());
-        form.setNumAttendees(data.getNumAttendees());
-        form.setAuthorizerID(data.getAuthorizerID());
-        form.setAuthorizerPhoneNumber(data.getAuthorizerPhoneNumber());
-        form.setServiceRequestNumber(data.getServiceRequestNumber());
-        form.setEventLocation(data.getEventLocation());
-        form.setAuthorizerName(data.getAuthorizerName());
-        form.setEventDates(data.getEventDates());
-        form.setEventDetails(data.getEventDetails());
-        form.setFaxNumber(data.getFaxNumber());
-        form.setNumGuards(data.getNumGuards());
-        form.setGuardType(data.getGuardType());
-
-        formRepository.save(form);
+        formRepository.save(data);
         return new ResponseEntity<FormData>(form, HttpStatus.OK);
     }
 
@@ -366,27 +341,8 @@ public class FormServiceRequestController extends WebMvcConfigurerAdapter {
             @RequestParam(value = "gateway", required = false) String gateway,
             HttpServletRequest request) {
 
-        getUsernameFromTicket(request, ticket);
 
         return "form";
-    }
-
-    /* This CONSUMES the ticket because they are only single use */
-    private String getUsernameFromTicket(HttpServletRequest request, String ticket) {
-        if(ticket != null) {
-            AuthController authController = new AuthController();
-            String baseUrl = authController.getBaseUrl(request);
-            String username = authController.getUsernameFromTicket(baseUrl +  request.getServletPath(), ticket);
-            if(username == null) {
-                System.out.println(request.getServletPath() + " - Invalid ticket - User is not logged in.");
-                return null;
-            } else {
-                System.out.println(request.getServletPath() + " - User is logged in - Username = " + username);
-                return username;
-            }
-        }
-        System.out.println(request.getServletPath() + " - User is not logged in.");
-        return null;
     }
 
     @GetMapping("/")
