@@ -175,8 +175,9 @@
                         <!--OPTION 1 -- AUTH OWN-->
                         <div v-if="authOption == 'authOwn'" class="col-md-12">
                             <div class="form-group add-space-top">
-                                <!--TODO <a href="/login?redirect=servicerequest">-->
-                                <button type="button" id="sign-in" class="btn btn-danger" v-on:click="signedIn = true">Login SFU CAS</button>
+                                <a href="https://cas.sfu.ca/cas/login?service=https%3A%2F%2Flocalhost%3A8443%2Fj_spring_cas_security_check&redirect%3D%2F">
+                                    <button type="button" id="sign-in" class="btn btn-danger" v-on:click="signedIn = true">Login SFU CAS</button>
+                                </a>
                             </div>
                             <div class="row">
                                 <div class="form-group col-md-6">
@@ -290,6 +291,11 @@
                 $('#phone-input').mask("(999) 999-9999");
             });
         });
+
+        //persisting data on reload
+        window.onbeforeunload = function() {
+
+        }
 
         var Modal = Vue.component('modal', {
             template: '#modal-template',
