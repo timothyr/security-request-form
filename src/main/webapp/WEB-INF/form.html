@@ -9,6 +9,7 @@
 	<link rel="stylesheet" href="/css/jquery.datetimepicker.min.css">
 	<link rel="stylesheet" href="/css/style.css">
 	<link rel="stylesheet" href="/css/modal.css">
+    <link rel="icon" href="img/favicon.ico" type="image/x-icon"/>
 </head>
 <body class="red-background">
 	<header>
@@ -466,36 +467,6 @@
                             this.formData.authorizerEmailAddress='';
                         }
                         this.formData.phoneNumber = $("#phone-input").val();
-
-                        <!-- submit GET request with vue -->
-                        this.$http.post(formSaveAPI, {
-                                department:             this.formData.department,
-                                requesterName:          this.formData.requesterName,
-                                phoneNumber:            this.formData.phoneNumber,
-                                requestedOnDate:        this.formData.requestedOnDate,
-                                requesterID:            this.formData.requesterID,
-                                authorizationDate:      this.formData.authorizationDate,
-                                paymentAccountCode:     this.formData.paymentAccountCode,
-                                emailAddress:           this.formData.emailAddress,
-                                times:                  this.formData.times,
-                                eventName:              this.formData.eventName,
-                                isLicensed:             this.formData.isLicensed,
-                                numAttendees:           this.formData.numAttendees,
-                                authorizerId:           this.formData.authorizerId,
-                                authorizerPhoneNumber:  this.formData.authorizerPhoneNumber,
-                                serviceRequestNumber:   this.formData.serviceRequestNumber,
-                                eventLocation:          this.formData.eventLocation,
-                                authorizerName:         this.formData.authorizerName,
-                                eventDates:             this.formData.eventDates,
-                                eventDetails:           this.formData.eventDetails,
-                                faxNumber:              this.formData.faxNumber,
-                                authorizerEmailAddress: this.formData.authorizerEmailAddress
-                        }).then(response => {
-                            successCallback(response)
-                            this.loading = false;
-                        }, response => {
-                            errorCallback();
-                        });
 
                         this.$http.post(formSaveAPI, this.formData).then(function (response) {
 	                        successCallback(response);

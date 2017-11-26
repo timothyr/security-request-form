@@ -8,6 +8,7 @@
     <link rel="stylesheet" href="/css/jquery.datetimepicker.min.css">
     <link rel="stylesheet" href="/css/style.css">
     <link rel="stylesheet" href="/css/modal.css">
+    <link rel="icon" href="img/favicon.ico" type="image/x-icon"/>
 </head>
 <body class="red-background">
 <header>
@@ -48,7 +49,7 @@
                 <div class="row">
                     <div class="form-group col-md-4">
                         <label for="phone-input">Phone</label>
-                        <input type="text" placeholder="xxx-xxx-xxxx" id="phone-input" v-model="formData.phoneNumber" class="form-control masked" pattern="[0-9]{3}[ |-][0-9]{3}[ |-][0-9]{4}" data-valid-example="000-000-0000" required="required"/>
+                        <input type="text" id="phone-input" class="form-control" required="required"/>
                     </div>
                     <div class="form-group col-md-4">
                         <label for="email-input">Email</label>
@@ -219,6 +220,7 @@
 <script src="/js/jquery.datetimepicker.js"></script>
 <script src="/js/datetimefeature.js"></script>
 <script src="/js/datetime.js"></script>
+<script src="/js/jquery.maskedinput.min.js"></script>
 <script type="text/x-template" id="modal-template">
     <transition name="modal">
         <div class="modal-mask">
@@ -399,7 +401,8 @@
                 function errorCallback() {
                     self.displayErrorModal();
                 }
-
+                //get value from phone-input
+                this.formData.phoneNumber = $("#phone-input").val();
 	            if (this.isValid) {
 		            this.$http.post(formSaveAPI, this.formData).then(function (response) {
 			            successCallback(response);
@@ -451,12 +454,23 @@
             this.$http.get("/api/form/get/user/" + urlParams.token, {
             }).then(response  => {
                 if (response.status >= 200 && response.status <=300) {
+                    let phoneNumber = response.data.phoneNumber;
+                    $(document).ready(function(){
+                        //initialize tooltips
+                        $(function () {
+                            //init input masks
+                            $('#phone-input').mask("(999) 999-9999");
+                            $('#phone-input').val(phoneNumber);
+                            console.log(phoneNumber + "X");
+                        });
+                    });
                     this.formData = response.data;
                     this.datetimelist = updateDateTime(this.formData.eventDates);
                 } else {
                     console.log(response.status);
                 }
             });
+
         },
 
         components: {Modal}
