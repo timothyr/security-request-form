@@ -266,7 +266,10 @@
                             <button class="btn btn-primary col-sm-12 col-md-2 mt-3" v-on:click="submit('update')" v-if="canAccept">
                                 Update
                             </button>
-                            <button class="btn btn-danger col-sm-12 col-md-2 mt-3" v-on:click="submit('reject')">Reject</button>
+                            <button class="btn btn-danger col-sm-12 col-md-2 mt-3" v-on:click="submit('reject')" v-bind:class="{disabled: rejectLoading}">
+                                <div class="loading-icon mr-3" v-if="rejectLoading" style="width: 20px; height: 20px"></div>
+                                Reject
+                            </button>
                         </div>
                         <div id="emailModal" class="modal fade" role="dialog">
                             <div class="modal-dialog">
@@ -362,7 +365,8 @@
             selectedEmails: [],
             additionalMessage: '',
             distEmails: [],
-            distEmail_input: ""
+            distEmail_input: "",
+            rejectLoading: false,
         },
 
         methods: {
@@ -491,11 +495,12 @@
                         return;
                     }
                 }
-
+                this.rejectLoading = true;
                 this.$http.post('/api/form/saveSecurity', this.form,
                     {params: {additionalMessage: this.additionalMessage}}).then(function (response) {
                     console.log('Successfully sent form');
-                    window.location.replace('/security/requests')
+                    this.rejectLoading = false;
+                    window.location.replace('/security/requests');
                 }, function (error) {
                     alert('Failed to send form!');
                 });
