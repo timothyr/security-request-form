@@ -22,59 +22,56 @@ import org.apache.pdfbox.pdmodel.font.PDType1Font;
 @Entity
 public class FormData {
     @Id
-    @GeneratedValue(strategy= GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
     // TODO: ensure all fields are saved in csv
 
     //Specified by user
-    private String department;
-    private String requesterName;
-    private String phoneNumber;
-    private String faxNumber;
-    private String emailAddress;
-    private String eventName;
-    private String requesterID; //SFU ID
-    private String eventLocation; //String for now, until we have full list of possible locations.
-    private Boolean isLicensed;
-    private int numAttendees;
-    private String times; //Unsure of how we want to store times, String for now.
+    private String department = null;
+    private String requesterName = null;
+    private String phoneNumber = null;
+    private String faxNumber = null;
+    private String emailAddress = null;
+    private String eventName = null;
+    private String requesterID = null; //SFU ID
+    private String eventLocation = null; //String for now, until we have full list of possible locations.
+    private Boolean isLicensed = false;
+    private int numAttendees = 0;
+    private String times = null; //Unsure of how we want to store times, String for now.
 	//Todo: these will need to be changed back to arrays of dates once the front end supports dates
-    private String eventDates;
-    private String requestedOnDate;
+    private String eventDates = null;
+    private String requestedOnDate = null;
 
-    private String paymentAccountCode;
-    private Boolean invoiceRequested;
+    private String paymentAccountCode = null;
+    private Boolean invoiceRequested = false;
     private String eventDetails = null;
-    private String serviceRequestNumber; //Generated automatically, pre-populate.
-    private String recievingSecuritySupervisor;
+    private String serviceRequestNumber = null; //Generated automatically, pre-populate.
+    private String recievingSecuritySupervisor = null;
 
     @ElementCollection
     private List<Guard> guards; //Things like total billable and grand total can be calculated from these
     @ElementCollection
     private List<String> distributionList;
-    private String preparedBy;
+
+    private String preparedBy = null;
     private String securityRemarks = null;
-    private String requestStatus;
+    private String requestStatus = null;
 
-	private String requestID;
-	private String numGuards;
-	private String guardType;
-
-
-    public FormData() {
-
-    }
+	private String requestID = null;
+	private String numGuards = null;
+	private String guardType = null;
 
     //Specified by Authorizer
-    private String authorizerName;
-    private String authorizerID; //SFU ID
+    private String authorizerName = null;
+    private String authorizerID = null; //SFU ID
 	//Todo: this will need to be changed back to a date once the front end supports dates
-    private String authorizationDate;
-    private String authorizerPhoneNumber;
-    private Boolean isAuthorized;
-    private String authorizerEmailAddress;
+    private String authorizationDate = null;
+    private String authorizerPhoneNumber = null;
+    private Boolean isAuthorized = null;
+    private String authorizerEmailAddress = null;
 
+    public FormData() {}
 
     //Constructor takes all info that a requester can provide (optional or no)
     public FormData(
@@ -94,21 +91,21 @@ public class FormData {
             Boolean invoiceRequested,
             String eventDetails
     ){
-        this.department = department;
-    	this.eventDates = dates;
-        this.requesterName = requestorName;
-        this.phoneNumber = phoneNumber;
-        this.faxNumber = faxNumber;
-        this.emailAddress = emailAddress;
-        this.requestedOnDate = requestedOnDate;
-        this.eventName = eventName;
-        this.requesterID = requesterID;
-        this.isLicensed = isLicensed;
-        this.numAttendees = numAttendees;
-        this.times = times;
-        this.paymentAccountCode = paymentAccountCode;
-        this.invoiceRequested = invoiceRequested;
-        this.eventDetails = eventDetails;
+        this.setDepartment(department);
+    	this.setEventDates(dates);
+        this.setRequesterName(requestorName);
+        this.setPhoneNumber(phoneNumber);
+        this.setFaxNumber(faxNumber);
+        this.setEmailAddress(emailAddress);
+        this.setRequestedOnDate(requestedOnDate);
+        this.setEventName(eventName);
+        this.setRequesterID(requesterID);
+        this.setIsLicensed(isLicensed);
+        this.setNumAttendees(numAttendees);
+        this.setTimes(times);
+        this.setPaymentAccountCode(paymentAccountCode);
+        this.setInvoiceRequested(invoiceRequested);
+        this.setEventDetails(eventDetails);
     }
 
     public Long getId() {
@@ -134,7 +131,7 @@ public class FormData {
     }
 
     public void setDepartment(String newDepartment) {
-    	department = newDepartment;
+        this.department = newDepartment;
     }
 
     public String getRequesterName() {
