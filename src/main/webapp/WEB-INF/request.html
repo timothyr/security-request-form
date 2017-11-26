@@ -481,7 +481,11 @@
                 this.$http.post('/api/form/saveSecurity', this.form,
                     {params: {additionalMessage: this.additionalMessage}}).then(function (response) {
                     console.log('Successfully sent form');
-                    window.location.replace('/security/requests')
+
+                    if (action === 'accept')
+                        window.location.replace('/security/requests');
+                    else
+                    	alert('Request has been updated');
                 }, function (error) {
                     alert('Failed to send form!');
                 });
