@@ -21,7 +21,7 @@
 			<div class="container col-md-10 offset-md-1 wrapper mb-5 col-lg-10">
 				<div class="row mt-5">
 				</div>
-				<div class="container col-md-10 mt-5">
+				<div class="container col-md-10 mt-4">
 					<div class="row">
 						<h1 class="text-center form-heading">Security Service Request</h1>
 					</div>
@@ -45,7 +45,7 @@
 					<div class="row">
 						<div class="form-group col-md-4">
 							<label for="phone-input">Phone</label>
-							<input type="text" placeholder="xxx-xxx-xxxx" id="phone-input" v-model="formData.phoneNumber" class="form-control masked" pattern="[0-9]{3}[ |-][0-9]{3}[ |-][0-9]{4}" data-valid-example="000-000-0000" required="required"/>
+							<input type="text" id="phone-input" class="form-control" required="required"/>
 						</div>
 						<div class="form-group col-md-4">
 							<label for="email-input">Email</label>
@@ -210,6 +210,7 @@
 	<script src="/js/jquery.datetimepicker.js"></script>
 	<script src="/js/datetimefeature.js"></script>
     <script src="/js/datetime.js"></script>
+    <script src="/js/jquery.maskedinput.min.js"></script>
 	<script type="text/x-template" id="modal-template">
 		<transition name="modal">
 			<div class="modal-mask">
@@ -264,7 +265,9 @@
         $(document).ready(function(){
             //initialize tooltips
             $(function () {
-                $('[data-toggle="tooltip"]').tooltip()
+                $('[data-toggle="tooltip"]').tooltip();
+                //init phone mask
+                $('#phone-input').mask("(999) 999-9999");
             });
         });
 
@@ -440,7 +443,7 @@
                         if(this.signedIn) {
                             this.formData.authorizerEmailAddress='';
                         }
-
+                        this.formData.phoneNumber = $("#phone-input").val();
 
                         <!-- submit GET request with vue -->
                         this.$http.get(formSaveAPI, {
