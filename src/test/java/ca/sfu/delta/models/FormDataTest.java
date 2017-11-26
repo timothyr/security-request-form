@@ -40,7 +40,8 @@ public class FormDataTest {
 
     //This is gross, sorry
     private String correctCSVOutput = "Request ID, Department, Requester Name, Phone Number, Fax Number, Email Address, Event Name, Requester ID, Event Location, Licensed?, Number of Attendees, Time(s), Event Dates, Requested On Date, Payment Account Code, Invoice Requested?, Event Details, Service Request Number, Recieving Security Supervisor, Prepared By, Security Remarks, Authorizer Name, Authorizer ID, Authorization Date, Authorizer Phone Number, Authorized?\n" +
-                                      "Not specified, Computer Science, Billy, 778-555-5555, 604-555-5555, Billy@sfu.ca, Networking Night, 301248474, BBY AQ3019, No, 4, 14:30:00, August 19 2017, September 30 2017, ASD12345, No, details of the event., 99999999, Aaron Judge, SFU Security, Security remarks, Not specified, Not specified, Not specified, Not specified, Not specified\n";
+                                      "Not Specified, Computer Science, Billy, 778-555-5555, 604-555-5555, Billy@sfu.ca, Networking Night, 301248474, BBY AQ3019, No, 4, 14:30:00, August 19 2017, September 30 2017, ASD12345, No, details of the event., 99999999, Aaron Judge, SFU Security, Security remarks, Not Specified, Not Specified, Not Specified, Not Specified, Not Specified\n";
+
     private FormData data;
     private FormData dataNoNumbers;
 
@@ -337,6 +338,14 @@ public class FormDataTest {
     public void saveAsCSV() throws Exception {
         String testMe = data.getAsCSV(true);
         assertEquals(correctCSVOutput, testMe);
+    }
+
+    /* Check that there are no NullPointerExceptions */
+    @Test
+    public void saveAsCSVEmptyForm() throws Exception {
+        FormData newForm = new FormData();
+        newForm.getAsCSV(true);
+        newForm.getAsCSV(false);
     }
 
     @Test

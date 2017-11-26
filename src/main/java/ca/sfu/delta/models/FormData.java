@@ -6,7 +6,6 @@ import java.lang.reflect.Field;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.io.BufferedWriter;
 import java.io.StringWriter;
 import java.io.File; 
 import java.nio.file.Files; 
@@ -424,6 +423,14 @@ public class FormData {
      * probably be the requestID of the form, and NOT user input. If the file being written to already exists
      * (in the case of writing multiple forms to a csv), a new row is appended to it; Otherwise the file is created.
      */
+    private String getObjectOrNotSpecified(Object o) {
+        if(o == null) {
+            return "Not Specified";
+        } else {
+            return o.toString();
+        }
+    }
+
     public String getAsCSV(Boolean needHeader) {
             StringWriter csvWriter = new StringWriter();
             //Only add first row with field names if we need the header (in case that we are creating a new CSV
@@ -457,45 +464,35 @@ public class FormData {
                                   "Authorized?" + "\n";
                 csvWriter.append(firstRow);
             }
-            //Append fields to csv, strip out commas from places they could be present
-            //Avoid null pointer exceptions if certain fields are blank
 
-            if(eventDetails == null){
-                eventDetails = new String("null");
-            }
-            if(securityRemarks == null){
-                securityRemarks = new String("null");
-            }
-
-            String nextRow = requestID + ", " +
-                             department + ", " +
-                             requesterName + ", " +
-                             phoneNumber + ", " +
-                             faxNumber + ", " +
-                             emailAddress + ", " +
-                             eventName + ", " +
-                             requesterID + ", " +
-                             eventLocation + ", " +
-                             isLicensed + ", " +
-                             numAttendees + ", " +
-                             times + ", " +
-                             eventDates + ", " +
-                             requestedOnDate + ", " +
-                             paymentAccountCode + ", " +
-                             invoiceRequested + ", " +
-                             eventDetails.replace(",", "") + ", " +
-                             serviceRequestNumber + ", " +
-                             recievingSecuritySupervisor + ", " +
-                             preparedBy + ", " +
-                             securityRemarks.replace(",", "") + ", " +
-                             authorizerName + ", " +
-                             authorizerID + ", " +
-                             authorizationDate + ", " +
-                             authorizerPhoneNumber + ", " +
-                             isAuthorized + "\n";
+            String nextRow = getObjectOrNotSpecified(requestID) + ", " +
+                        getObjectOrNotSpecified(department) + ", " +
+                        getObjectOrNotSpecified(requesterName) + ", " +
+                        getObjectOrNotSpecified(phoneNumber) + ", " +
+                        getObjectOrNotSpecified(faxNumber) + ", " +
+                        getObjectOrNotSpecified(emailAddress) + ", " +
+                        getObjectOrNotSpecified(eventName) + ", " +
+                        getObjectOrNotSpecified(requesterID) + ", " +
+                        getObjectOrNotSpecified(eventLocation) + ", " +
+                        getObjectOrNotSpecified(isLicensed) + ", " +
+                        getObjectOrNotSpecified(numAttendees) + ", " +
+                        getObjectOrNotSpecified(times) + ", " +
+                        getObjectOrNotSpecified(eventDates) + ", " +
+                        getObjectOrNotSpecified(requestedOnDate) + ", " +
+                        getObjectOrNotSpecified(paymentAccountCode) + ", " +
+                        getObjectOrNotSpecified(invoiceRequested) + ", " +
+                        getObjectOrNotSpecified(eventDetails).replace(",", "") + ", " +
+                        getObjectOrNotSpecified(serviceRequestNumber) + ", " +
+                        getObjectOrNotSpecified(recievingSecuritySupervisor) + ", " +
+                        getObjectOrNotSpecified(preparedBy) + ", " +
+                        getObjectOrNotSpecified(securityRemarks).replace(",", "") + ", " +
+                        getObjectOrNotSpecified(authorizerName) + ", " +
+                        getObjectOrNotSpecified(authorizerID) + ", " +
+                        getObjectOrNotSpecified(authorizationDate) + ", " +
+                        getObjectOrNotSpecified(authorizerPhoneNumber) + ", " +
+                        getObjectOrNotSpecified(isAuthorized) + "\n";
 
             //Do some prettying up
-            nextRow = nextRow.replace("null", "Not specified");
             nextRow = nextRow.replace("false", "No");
             nextRow = nextRow.replace("true", "Yes");
             csvWriter.append(nextRow);
