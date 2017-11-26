@@ -69,17 +69,17 @@
                             <tr v-for="request in filteredRequests" v-on:click="goToRequest(request.requestID)"v-cloak>
                                 <!--<td v-for="value in request" class="clickable" v-on:click="goToRequest(request.requestID)">{{value}}</td>-->
                                 <td class="clickable text-primary">{{request.requestID}}</td>
+                                <td class="clickable">
+                                    <span class="badge white-text" v-bind:class="getBadgeClassName(request.requestStatus)">{{request.requestStatus}}</span>
+                                </td>
                                 <td class="clickable">{{request.requesterName}}</td>
-                                <td class="clickable">{{request.requesterID}}</td>
                                 <td class="clickable">{{request.requestedOnDate}}</td>
                                 <td class="clickable">{{request.emailAddress}}</td>
                                 <td class="clickable">{{request.phoneNumber}}</td>
                                 <td class="clickable">{{request.eventName}}</td>
                                 <td class="clickable">{{request.eventLocation}}</td>
                                 <td class="clickable" v-if="request.eventDates[0]">{{request.eventDates[0].start}} to {{request.eventDates[0].end}}</td>
-                                <td class="clickable">
-                                    <span class="badge white-text" v-bind:class="getBadgeClassName(request.requestStatus)">{{request.requestStatus}}</span>
-                                </td>
+                                <td class="clickable">{{request.requesterID}}</td>
                             </tr>
                         </tbody>
                     </table>
@@ -135,8 +135,8 @@
         el: '#app',
         data: {
             loading: true,
-            columns: ["Request ID", "Name", "ID", "Request Date", "Email",
-                        "Phone", "Event Name", "Location", "Date", "Status"],
+            columns: ["Request ID", "Status", "Name", "Request Date", "Email",
+                        "Phone", "Event Name", "Location", "Date", "Requester ID"],
             activeStatus: "ALL",
             searchTerm: "",
             sortKey: "",
@@ -163,7 +163,7 @@
                     // value: columnName
                     requestID: "Request ID",
                     requesterName: "Name",
-                    requesterID: "ID",
+                    requesterID: "Requester ID",
                     requestedOnDate: "Request Date",
                     emailAddress: "Email",
                     phoneNumber: "Phone",
