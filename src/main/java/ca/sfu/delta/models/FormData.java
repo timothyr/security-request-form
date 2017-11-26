@@ -58,6 +58,9 @@ public class FormData {
     private String requestStatus;
 
 	private String requestID;
+	private String numGuards;
+	private String guardType;
+
 
     public FormData() {
 
@@ -381,9 +384,6 @@ public class FormData {
             }
         }
 
-        //for (String s : map.keySet())
-        //	System.out.println(s +"->"+map.get(s));
-
         return map;
     }
 
@@ -426,7 +426,6 @@ public class FormData {
      * Writes the contents of this formdata to a csv file specified by fileName. fileName should
      * probably be the requestID of the form, and NOT user input. If the file being written to already exists
      * (in the case of writing multiple forms to a csv), a new row is appended to it; Otherwise the file is created.
-     * @param fileName - If this does not have the .csv extension it will be added.
      */
     public String getAsCSV(Boolean needHeader) {
             StringWriter csvWriter = new StringWriter();
@@ -592,4 +591,20 @@ public class FormData {
             return null;
         }
     }
+
+	public String getGuardType() {
+		return guardType;
+	}
+
+	public void setGuardType(String guardType) {
+		this.guardType = guardType;
+	}
+
+	public String getNumGuards() {
+		return numGuards;
+	}
+
+	public void setNumGuards(String numGuards) {
+		this.numGuards = numGuards;
+	}
 }

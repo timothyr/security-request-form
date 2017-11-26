@@ -63,7 +63,6 @@
 						</div>
 						<div class="form-group col-md-4">
 							<label for="location-input">Location</label>
-							<!--<input type="text" th:field="*{eventLocation}" id="location-input" class="form-control"/>-->
 							<select required class="form-control" id="location-input" v-model="formData.eventLocation">
                                 <option value="" disabled selected>Choose...</option>
 								<option value="Burnaby">Burnaby</option>
@@ -88,6 +87,19 @@
 							<input type="checkbox" id="licensed-input" v-model="formData.isLicensed" class="mr-1 mt-4"/>
 							<label for="licensed-input">Licensed</label>
                             <i class="fa fa-question-circle" data-toggle="tooltip" title="Is your event licensed?"></i>
+						</div>
+					</div>
+					<div class="row">
+						<div class="form-group col-md-4">
+							<label for="number-of-guards-input"># of Guards Requested</label>
+							<input type="number" min="1" value="1" id="number-of-guards-input" v-model="formData.numGuards" class="form-control" required="required"/>
+						</div>
+						<div class="form-group col-md-4">
+							<label for="guard-type-input">Type of Guard Requested</label>
+							<select required class="form-control" id="guard-type-input" v-model="formData.guardType">
+								<option value="" disabled selected>Choose...</option>
+								<option :value="guardType" v-for="guardType in guardTypes">{{guardType}}</option>
+							</select>
 						</div>
 					</div>
 					<div>
@@ -160,14 +172,16 @@
                     </div>
                     <div class="row">
                         <!--OPTION 1 -- AUTH OWN-->
-                        <div v-if="authOption == 'authOwn'">
+                        <div v-if="authOption == 'authOwn'" class="col-md-12">
                             <div class="form-group add-space-top">
                                 <!--TODO <a href="/login?redirect=servicerequest">-->
                                 <button type="button" id="sign-in" class="btn btn-danger" v-on:click="signedIn = true">Login SFU CAS</button>
                             </div>
-                            <div class="form-group">
-                                <label for="account-code-input">Account code</label>
-                                <input type="number" id="account-code-input" v-model="formData.paymentAccountCode" class="form-control" required="required"/>
+                            <div class="row">
+                                <div class="form-group col-md-6">
+                                    <label for="account-code-input">Account code</label>
+                                    <input type="number" id="account-code-input" v-model="formData.paymentAccountCode" class="form-control" required="required"/>
+                                </div>
                             </div>
                         </div>
                         <!--OPTION 2 -- PASS AUTH-->
@@ -262,6 +276,11 @@
             NOT_LOGGED_IN_LOAD: 'Requesting Authorization'
         }
 
+        const guardTypes = [
+            "Guard",
+            "SCSP"
+        ];
+
         $(document).ready(function(){
             //initialize tooltips
             $(function () {
@@ -325,12 +344,15 @@
                     eventDetails: '',
                     faxNumber: '',
                     requestID: '',
-                    authorizerEmailAddress: ''
+                    authorizerEmailAddress: '',
+	                guardType: '',
+	                numGuards: '0'
                 },
                 startdatetime: '',
 				enddatetime: '',
 				datetimelist: [],
                 departments: departments,
+	            guardTypes: guardTypes,
 				datetimelistsize: '0',
                 loading: false,
                 authOption: 'authOwn'
@@ -446,7 +468,7 @@
                         this.formData.phoneNumber = $("#phone-input").val();
 
                         <!-- submit GET request with vue -->
-                        this.$http.get(formSaveAPI, {
+                        this.$http.post(formSaveAPI, {
                             params: {
                                 department:             this.formData.department,
                                 requesterName:          this.formData.requesterName,
@@ -476,6 +498,13 @@
                         }, response => {
                             errorCallback();
                         });
+
+                        this.$http.post(formSaveAPI, this.formData).then(function (response) {
+	                        successCallback(response);
+	                        this.loading = false;
+	                    }, function () {
+	                        errorCallback();
+	                    });
                     }
                 },
 

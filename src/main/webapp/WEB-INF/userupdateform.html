@@ -92,6 +92,19 @@
                         <label for="licensed-input">Licensed</label>
                     </div>
                 </div>
+                <div class="row">
+                    <div class="form-group col-md-4">
+                        <label for="number-of-guards-input"># of Guards Requested</label>
+                        <input type="number" min="1" value="1" id="number-of-guards-input" v-model="formData.numGuards" class="form-control" required="required"/>
+                    </div>
+                    <div class="form-group col-md-4">
+                        <label for="guard-type-input">Type of Guard Requested</label>
+                        <select required class="form-control" id="guard-type-input" v-model="formData.guardType">
+                            <option value="" disabled selected>Choose...</option>
+                            <option :value="guardType" v-for="guardType in guardTypes">{{guardType}}</option>
+                        </select>
+                    </div>
+                </div>
                 <div>
                     <div class="row">
                         <div class="form-group col-md-12">
@@ -268,6 +281,11 @@
         "Faculty of Science"
     ];
 
+    const guardTypes = [
+	    "Guard",
+	    "SCSP"
+    ];
+
     var Modal = Vue.component('modal', {
         template: '#modal-template',
 
@@ -314,12 +332,15 @@
                 eventDetails: '',
                 faxNumber: '',
                 requestID: '',
+	            guardType: '',
+	            numGuards: '0'
             },
             startdatetime: '',
 			enddatetime: '',
 			datetimelist: [],
             departments: departments,
-            signedIn: false,
+	        guardTypes: guardTypes,
+	        signedIn: false
         }),
 
         computed: {
@@ -379,36 +400,16 @@
                     self.displayErrorModal();
                 }
 
-                if (this.isValid) {
-                    this.$http.put('api/form/update/' + this.formData.id, {
-                        department: this.formData.department,
-                        requesterName: this.formData.requesterName,
-                        phoneNumber: this.formData.phoneNumber,
-                        requestedOnDate: this.formData.requestedOnDate,
-                        requesterID: this.formData.requesterID,
-                        authorizationDate: this.formData.authorizationDate,
-                        paymentAccountCode: this.formData.paymentAccountCode,
-                        emailAddress: this.formData.emailAddress,
-                        times: this.formData.times,
-                        eventName: this.formData.eventName,
-                        isLicensed: this.formData.isLicensed,
-                        numAttendees: this.formData.numAttendees,
-                        authorizerId: this.formData.authorizerId,
-                        authorizerPhoneNumber: this.formData.authorizerPhoneNumber,
-                        serviceRequestNumber: this.formData.serviceRequestNumber,
-                        eventLocation: this.formData.eventLocation,
-                        authorizerName: this.formData.authorizerName,
-                        eventDates: this.formData.eventDates,
-                        eventDetails: this.formData.eventDetails,
-                        faxNumber: this.formData.faxNumber
-
-                    }).then(response => {
-                        successCallback(response)
-                    }, response => {
-                        errorCallback();
-                    });
-                }
+	            if (this.isValid) {
+		            this.$http.post(formSaveAPI, this.formData).then(function (response) {
+			            successCallback(response);
+			            this.loading = false;
+		            }, function () {
+			            errorCallback();
+		            });
+	            }
             },
+
             addDatetime: function(){
             	this.startdatetime = getDateTime("chooseStartDateTime","startdatetime");
             	this.enddatetime = getDateTime("chooseEndDateTime","enddatetime");
@@ -449,9 +450,11 @@
             let urlParams = getUrlParams(window.location);
             this.$http.get("/api/form/get/user/" + urlParams.token, {
             }).then(response  => {
-                if (response.status == 200) {
+                if (response.status >= 200 && response.stats <=300) {
                     this.formData = response.data;
                     this.datetimelist = updateDateTime(this.formData.eventDates);
+                } else {
+                    console.log(response.status);
                 }
             });
         },
