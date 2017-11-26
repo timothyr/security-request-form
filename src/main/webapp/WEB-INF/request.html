@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 
-<html lang="en" xmlns:v-on="http://www.w3.org/1999/xhtml">
+<html lang="en" xmlns:v-on="http://www.w3.org/1999/xhtml" xmlns:v-bind="http://www.w3.org/1999/xhtml">
 <head>
     <meta charset="UTF-8">
     <title>Request Details</title>
@@ -183,6 +183,28 @@
                     </select>
                 </div>
             </div>
+            <div class="row my-5">
+                <div class="col-md-3">
+                    <label for="regRate">Regular Rate</label>
+                    <input class="form-control text-center" id="regRate" type="number" step="0.01" min="0"
+                           v-model="g.regularRate" required="required">
+                </div>
+                <div class="col-md-3">
+                    <label for="regHours">Regular Hours</label>
+                    <input class="form-control text-center" id="regHours" type="number" step="0.01" min="0"
+                           v-model="g.regularHours" required="required">
+                </div>
+                <div class="col-md-3">
+                    <label for="overRate">Overtime Rate</label>
+                    <input class="form-control text-center" id="overRate" type="number" step="0.01" min="0"
+                           v-model="g.overtimeRate" required="required">
+                </div>
+                <div class="col-md-3">
+                    <label for="overHours">Overtime Hours</label>
+                    <input class="form-control text-center" id="overHours" type="number" step="0.01" min="0"
+                           v-model="g.overtimeHours" required="required">
+                </div>
+            </div>
             <div class="row my-2 text-center">
                 <div class="col col-md-3"></div>
                 <div class="col">
@@ -201,29 +223,6 @@
             <div class="col col-md-3"></div>
         </div>
 
-        <div class="row my-5">
-            <div class="col-md-3">
-                <label for="regRate">Regular Rate</label>
-                <input class="form-control text-center" id="regRate" type="number" step="0.01" min="0"
-                       v-model="regularRate" required="required">
-            </div>
-            <div class="col-md-3">
-                <label for="regHours">Regular Hours</label>
-                <input class="form-control text-center" id="regHours" type="number" step="0.01" min="0"
-                       v-model="regularHours" required="required">
-            </div>
-            <div class="col-md-3">
-                <label for="overRate">Overtime Rate</label>
-                <input class="form-control text-center" id="overRate" type="number" step="0.01" min="0"
-                       v-model="overtimeRate" required="required">
-            </div>
-            <div class="col-md-3">
-                <label for="overHours">Overtime Hours</label>
-                <input class="form-control text-center" id="overHours" type="number" step="0.01" min="0"
-                       v-model="overtimeHours" required="required">
-            </div>
-        </div>
-
         <div class="row text-center">
             <div class="col-md-4">
                 <p class="d-block">Estimated Personnel Cost:</p>
@@ -234,7 +233,7 @@
                 <span class="money-style d-block">{{totalHours}} Hours</span>
             </div>
             <div class="col-md-4">
-                <p class="d-block">Hours per Guard:</p>
+                <p class="d-block">Hours per Guard/SCSP:</p>
                 <span class="money-style d-block">{{avgHours}} Hours</span>
             </div>
         </div>
@@ -315,7 +314,7 @@
 
 <script src="/js/jquery-3.2.1.min.js"></script>
 <script src="/js/bootstrap.bundle.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/tether/1.4.0/js/tether.min.js"></script>
+<script src="/js/tether.min.js"></script>
 <script src="/js/vue.js"></script>
 <script src="/js/vue-resource.min.js"></script>
 <script src="/js/datetime.js"></script>
@@ -345,11 +344,6 @@
                 eventDates: 'not set',
             },
             dates: [],
-
-            regularRate: 0,
-            regularHours: 0,
-            overtimeRate: 0,
-            overtimeHours: 0,
 
             selectedEmails: [],
             additionalMessage: '',
@@ -448,14 +442,6 @@
                         window.location.replace("/security/requests");
                     }
 
-                    if (response.data.guards && response.data.guards[0] && response.data.guards.length > 0) {
-                        let g = response.data.guards[0];
-                        this.regularRate = g.regularRate;
-                        this.regularHours = g.regularHours;
-                        this.overtimeRate = g.overtimeRate;
-                        this.overtimeHours = g.overtimeHours;
-                    }
-
                     this.form = JSON.parse(JSON.stringify(response.data));
                     //this.removeNull();
                     this.dates = updateDateTime(this.form.eventDates);
@@ -471,11 +457,6 @@
                 let i, len;
                 len = this.form.guards.length || 0;
                 for (i = 0; i < len; ++i) {
-                    this.form.guards[i].regularHours = this.regularHours;
-                    this.form.guards[i].overtimeHours = this.overtimeHours;
-                    this.form.guards[i].regularRate = this.regularRate;
-                    this.form.guards[i].overtimeRate = this.overtimeRate;
-
                     if (this.form.guards[i].name === "" || this.form.guards[i].name === null) {
                         this.form.guards[i].name = "not set";
                     }
@@ -553,17 +534,6 @@
 
         computed: {
             canAccept: function () {
-                /*if (!this.form.recievingSecuritySupervisor || this.form.recievingSecuritySupervisor == '') {
-					return false;
-				}
-
-				console.log("Good recieving security supervisor");
-				if (!this.form.preparedBy || this.form.preparedBy == '')
-					return false;
-
-				console.log("Good preparedBy");
-				*/
-
                 let goodGuards = true;
 				if (!this.form.guards || this.form.guards.length == 0) {
 					//console.log("No guards, allowing submission");
@@ -587,30 +557,38 @@
 			},
 
             cost: function () {
-                if (!this.form.guards) return;
-                let guards = this.form.guards.length;
-                let cost = (this.regularHours * this.regularRate) + (this.overtimeHours * this.overtimeRate);
-                cost *= guards;
+				let cost = 0;
 
-                return cost;
+				if (!this.form.guards)
+					return cost;
+
+				for (const g of this.form.guards) {
+					cost += (Number(g.regularHours) * Number(g.regularRate)) + (Number(g.overtimeHours) * Number(g.overtimeRate));
+				}
+
+				return Math.round(cost * 100) / 100;
             },
 
             totalHours: function () {
-                if (!this.form.guards) return;
-                let numGuards = this.form.guards.length;
-                let total = 0;
-                total += Number.parseFloat(this.regularHours) + Number.parseFloat(this.overtimeHours);
-                total *= numGuards;
+            	let hours = 0;
 
-                return total;
+                if (!this.form.guards)
+                	return hours;
+
+				this.form.guards.forEach(function (g) {
+					hours += Number(g.regularHours) + Number(g.overtimeHours);
+				});
+
+                return hours;
             },
 
             avgHours: function () {
-                let avg = 0;
-                avg += Number.parseFloat(this.regularHours) + Number.parseFloat(this.overtimeHours);
+            	if (!this.form.guards || this.form.guards.length === 0)
+            		return 0;
 
-                return avg;
+				return Number(this.totalHours) / this.form.guards.length;
             },
+
             selectAll: {
                 //Credit to Rifki @ https://stackoverflow.com/questions/33571382/check-all-checkboxes-vuejs
                 get: function() {
