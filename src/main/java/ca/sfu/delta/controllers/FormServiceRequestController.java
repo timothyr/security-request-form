@@ -5,6 +5,7 @@ import ca.sfu.delta.repository.FormRepository;
 import ca.sfu.delta.repository.RequestIDRepository;
 import ca.sfu.delta.repository.URLTokenRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -34,7 +35,9 @@ public class FormServiceRequestController extends WebMvcConfigurerAdapter {
     @Autowired
     SendEmail sendEmail;
 
-    private static final String formFromTokenURL = "/api/form/get/user/";
+    @Value("${server.baseUrl}")
+    String baseUrl;
+
     private static final String formRequestURL = "/updateform?token=";
 
     @Override
@@ -65,7 +68,7 @@ public class FormServiceRequestController extends WebMvcConfigurerAdapter {
         return null;
     }
 
-    @RequestMapping(value = formFromTokenURL + "{token}", method = RequestMethod.GET, produces = "application/json")
+    @RequestMapping(value = "/api/form/get/user/{token}", method = RequestMethod.GET, produces = "application/json")
 	public @ResponseBody ResponseEntity getFormFromToken(@PathVariable("token") String token) {
     	if (urlTokenRepository.existsByToken(token)) {
 		    URLToken urlToken = urlTokenRepository.getByToken(token);
@@ -344,7 +347,7 @@ public class FormServiceRequestController extends WebMvcConfigurerAdapter {
         String userEmailAddress = form.getEmailAddress();
         String authEmailAddress = form.getAuthorizerEmailAddress();
         String trackingID = form.getRequestID();
-        String requestURL = request.getServerName() + ":" + request.getServerPort() + formRequestURL + token;
+        String requestURL = "https://" + baseUrl + formRequestURL + token;
 
         if (form != null) {
             System.out.println("saved");

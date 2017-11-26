@@ -31,25 +31,12 @@ import java.util.regex.Pattern;
 @Controller
 public class AuthController {
 
-    private static final String CAS_LOGOUT_URL = "https://cas.sfu.ca/cas/logout";
-
     @RequestMapping(value = "/login")
     public String login(
             @RequestParam(defaultValue="/", required=false) String redirect
     ) throws ServletException, IOException {
         // Nothing to do, spring security automatically handles this.
         return "redirect:" + redirect;
-    }
-
-    @RequestMapping(value = "/logout")
-    public String logoutCurrentUser(
-            HttpServletRequest request, HttpSession session
-    ) throws ServletException, IOException {
-
-        session.invalidate();
-        request.logout();
-
-        return "redirect:"+CAS_LOGOUT_URL;
     }
 
     @RequestMapping(value = "/api/user/get", method = RequestMethod.GET, produces = "application/json")

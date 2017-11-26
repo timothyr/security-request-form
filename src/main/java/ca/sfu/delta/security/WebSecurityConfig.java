@@ -75,7 +75,12 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
 		http.exceptionHandling().authenticationEntryPoint(casAuthenticationEntryPoint());
 
+		http.csrf().disable();
+
+		http.logout().permitAll().logoutSuccessUrl("https://cas.sfu.ca/cas/logout");
+
 		http.authenticationProvider(casAuthenticationProvider())
+				// Public access
 				.authorizeRequests().antMatchers(
 					"/css/**",
 					"/fonts/**",
@@ -84,9 +89,12 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 					"/api/form/save/**",
 					"/api/form/update/**",
 					"/logout",
+					"/updateform",
+					"/api/form/get/user/**",
 					"/"
 				).permitAll().and()
 
+				// Access to Security and Admin
 				.authorizeRequests().antMatchers(
 					"/security/**",
 					"/api/authuser/**",
@@ -94,7 +102,6 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 					"/api/user/**",
 					"/api/form/getByRequestID/**",
 					"/api/form/get/**",
-					"/api/form/get/user/**",
 					"/api/form/search",
 					"/api/form/saveSecurity",
 					"/api/csv/**",
@@ -104,6 +111,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 					AuthorizedUser.Privilege.SECURITY.toString()
 				).anyRequest().authenticated().and()
 
+				// Access to Admin only
 				.authorizeRequests().antMatchers(
 						"/api/admin/**",
 						"/api/authuser/**"
