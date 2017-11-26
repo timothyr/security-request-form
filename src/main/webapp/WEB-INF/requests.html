@@ -186,7 +186,15 @@
                 window.location.assign("/api/csv/form/all.csv");
             },
             exportSelectedCSV: function() {
-                //TODO
+                //TODO ADD ENPOINT AND LINK
+                let visibleRequests = this.getFilteredRequests().map(request => {
+                    return request.requestID;
+                });
+                this.$http.post('ENDPOINT HERE', visibleRequests).then(function(response) {
+                    if (response == 200) {
+                        //REDIRECT TO CSV
+                    }
+                });
             },
             getBadgeClassName: function(status) {
                 switch (status) {
@@ -203,32 +211,34 @@
                         return 'badge-default';
                         break;
                 }
+            },
+            getFilteredRequests: function() {
+                return this.requests.filter(request => {
+                    return isTermInObject(request, this.searchTerm);
+                }).sort((requestA, requestB) => {
+                    if (this.reversed) {
+                        return requestA[this.getColumnValue(this.sortKey)] > requestB[this.getColumnValue(this.sortKey)]
+                    } else {
+                        return requestA[this.getColumnValue(this.sortKey)] < requestB[this.getColumnValue(this.sortKey)]
+                    }
+                }).filter(request => {
+                    if(this.activeStatus == "ALL") {
+                        return true;
+                    } else {
+                        if (request.requestStatus == "") {
+                            return false;
+                        }
+                        return request.requestStatus.toLowerCase() == this.activeStatus.toLowerCase();
+                    }
+                });
             }
+
         },
         computed: {
             filteredRequests: {
                 cache: false,
                 get: function() {
-                    console.log(this.reversed + " " + this.sortKey + " helloo this is reversed/sortKey");
-                    return this.requests.filter(request => {
-                        return isTermInObject(request, this.searchTerm);
-                    }).sort((requestA, requestB) => {
-                        if (this.reversed) {
-                            return requestA[this.getColumnValue(this.sortKey)] > requestB[this.getColumnValue(this.sortKey)]
-                        } else {
-                            return requestA[this.getColumnValue(this.sortKey)] < requestB[this.getColumnValue(this.sortKey)]
-                        }
-                    }).filter(request => {
-                        if(this.activeStatus == "ALL") {
-                            return true;
-                        } else {
-                            if (request.requestStatus == "") {
-                                return false;
-                            }
-                            return request.requestStatus.toLowerCase() == this.activeStatus.toLowerCase();
-                        }
-                    });
-
+                    return this.getFilteredRequests();
                 }
             }
         },
