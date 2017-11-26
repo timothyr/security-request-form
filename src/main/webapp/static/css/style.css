@@ -73,6 +73,11 @@ button {
 	font-weight: 300;
 }
 
+.username {
+    display: inline;
+    color: #007bff;
+}
+
 /* ICONS */
 .calendar-icon {
 	font-size: 1.5em;
