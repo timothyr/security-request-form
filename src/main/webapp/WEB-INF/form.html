@@ -61,7 +61,6 @@
 						</div>
 						<div class="form-group col-md-4">
 							<label for="location-input">Location</label>
-							<!--<input type="text" th:field="*{eventLocation}" id="location-input" class="form-control"/>-->
 							<select required class="form-control" id="location-input" v-model="formData.eventLocation">
                                 <option value="" disabled selected>Choose...</option>
 								<option value="Burnaby">Burnaby</option>
@@ -86,6 +85,19 @@
 							<input type="checkbox" id="licensed-input" v-model="formData.isLicensed" class="mr-1 mt-4"/>
 							<label for="licensed-input">Licensed</label>
                             <i class="fa fa-question-circle" data-toggle="tooltip" title="Is your event licensed?"></i>
+						</div>
+					</div>
+					<div class="row">
+						<div class="form-group col-md-4">
+							<label for="number-of-guards-input"># of Guards Requested</label>
+							<input type="number" min="1" value="1" id="number-of-guards-input" v-model="formData.numGuards" class="form-control" required="required"/>
+						</div>
+						<div class="form-group col-md-4">
+							<label for="guard-type-input">Type of Guard Requested</label>
+							<select required class="form-control" id="guard-type-input" v-model="formData.guardType">
+								<option value="" disabled selected>Choose...</option>
+								<option :value="guardType" v-for="guardType in guardTypes">{{guardType}}</option>
+							</select>
 						</div>
 					</div>
 					<div>
@@ -270,6 +282,11 @@
             "Faculty of Science"
         ];
 
+        const guardTypes = [
+        	"Guard",
+	        "SCSP"
+        ];
+
         $(document).ready(function(){
             //initialize tooltips
             $(function () {
@@ -331,12 +348,15 @@
                     eventDetails: '',
                     faxNumber: '',
                     requestID: '',
-                    authorizerEmailAddress: ''
+                    authorizerEmailAddress: '',
+	                guardType: '',
+	                numGuards: '0'
                 },
                 startdatetime: '',
 				enddatetime: '',
 				datetimelist: [],
                 departments: departments,
+	            guardTypes: guardTypes,
 				datetimelistsize: '0',
                 loading: false,
                 authOption: 'authOwn'
@@ -450,38 +470,12 @@
                             this.formData.authorizerEmailAddress='';
                         }
 
-
-                        <!-- submit GET request with vue -->
-                        this.$http.get(formSaveAPI, {
-                            params: {
-                                department:             this.formData.department,
-                                requesterName:          this.formData.requesterName,
-                                phoneNumber:            this.formData.phoneNumber,
-                                requestedOnDate:        this.formData.requestedOnDate,
-                                requesterID:            this.formData.requesterID,
-                                authorizationDate:      this.formData.authorizationDate,
-                                paymentAccountCode:     this.formData.paymentAccountCode,
-                                emailAddress:           this.formData.emailAddress,
-                                times:                  this.formData.times,
-                                eventName:              this.formData.eventName,
-                                isLicensed:             this.formData.isLicensed,
-                                numAttendees:           this.formData.numAttendees,
-                                authorizerId:           this.formData.authorizerId,
-                                authorizerPhoneNumber:  this.formData.authorizerPhoneNumber,
-                                serviceRequestNumber:   this.formData.serviceRequestNumber,
-                                eventLocation:          this.formData.eventLocation,
-                                authorizerName:         this.formData.authorizerName,
-                                eventDates:             this.formData.eventDates,
-                                eventDetails:           this.formData.eventDetails,
-                                faxNumber:              this.formData.faxNumber,
-                                authorizerEmailAddress: this.formData.authorizerEmailAddress
-                            }
-                        }).then(response => {
-                            successCallback(response)
-                            this.loading = false;
-                        }, response => {
-                            errorCallback();
-                        });
+                        this.$http.post(formSaveAPI, this.formData).then(function (response) {
+	                        successCallback(response);
+	                        this.loading = false;
+	                    }, function () {
+	                        errorCallback();
+	                    });
                     }
                 },
 

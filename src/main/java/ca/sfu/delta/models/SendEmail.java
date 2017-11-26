@@ -56,7 +56,6 @@ public class SendEmail {
 		input.put("requestURL", requestURL);
 
 		String htmlEmailBody = makeEmailFromHtml("src/main/webapp/WEB-INF/emailUserRequestConfirmation.html", input);
-        System.out.println("DEBUG: \n" + htmlEmailBody);
 
 		sendMail(sendToEmailAddress, subject, htmlEmailBody);
 	}
