@@ -469,7 +469,6 @@
 
                         <!-- submit GET request with vue -->
                         this.$http.post(formSaveAPI, {
-                            params: {
                                 department:             this.formData.department,
                                 requesterName:          this.formData.requesterName,
                                 phoneNumber:            this.formData.phoneNumber,
@@ -491,7 +490,6 @@
                                 eventDetails:           this.formData.eventDetails,
                                 faxNumber:              this.formData.faxNumber,
                                 authorizerEmailAddress: this.formData.authorizerEmailAddress
-                            }
                         }).then(response => {
                             successCallback(response)
                             this.loading = false;

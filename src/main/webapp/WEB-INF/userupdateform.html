@@ -450,7 +450,7 @@
             let urlParams = getUrlParams(window.location);
             this.$http.get("/api/form/get/user/" + urlParams.token, {
             }).then(response  => {
-                if (response.status >= 200 && response.stats <=300) {
+                if (response.status >= 200 && response.status <=300) {
                     this.formData = response.data;
                     this.datetimelist = updateDateTime(this.formData.eventDates);
                 } else {
