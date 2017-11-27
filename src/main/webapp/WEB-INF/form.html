@@ -166,7 +166,7 @@
                         <div class="btn-group mx-auto mt-3 mb-4" data-toggle="buttons">
                             <div class="btn-group">
                                 <button class="btn toggle-button" v-bind:class="{active_toggle: authOption == 'authOwn'}" v-on:click="authOption = 'authOwn'">Authorize own request</button>
-                                <button class="btn toggle-button" v-bind:class="{active_toggle: authOption == 'passAuth'}" v-on:click="authOption = 'passAuth'">Send Authorization to someone else</button>
+                                <button class="btn toggle-button" v-bind:class="{active_toggle: authOption == 'passAuth'}" v-on:click="authOption = 'passAuth'">Send authorization to someone else</button>
                             </div>
 
                         </div>
@@ -189,10 +189,13 @@
                                     </p>
                             </div>
                             <div class="row">
-                                <div class="form-group col-md-6">
+                                <div class="form-group col-md-6 mt-5">
                                     <label for="account-code-input">Account code</label>
                                     <input type="text" id="account-code-input" v-model="formData.paymentAccountCode" class="form-control" required="required"/>
                                 </div>
+                            </div>
+                            <div class="row">
+
                             </div>
                         </div>
                         <!--OPTION 2 -- PASS AUTH-->

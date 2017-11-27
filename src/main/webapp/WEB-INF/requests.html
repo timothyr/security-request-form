@@ -188,15 +188,11 @@
                 window.location.assign("/api/csv/form/all.csv");
             },
             exportSelectedCSV: function() {
-                //TODO ADD ENPOINT AND LINK
                 let visibleRequests = this.getFilteredRequests().map(request => {
                     return request.requestID;
                 });
-                this.$http.post('ENDPOINT HERE', visibleRequests).then(function(response) {
-                    if (response == 200) {
-                        //REDIRECT TO CSV
-                    }
-                });
+                let url = "/api/csv/" + visibleRequests.join(',') + "/selectedRequests.csv";
+                window.location.assign(url);
             },
             getBadgeClassName: function(status) {
                 switch (status) {
