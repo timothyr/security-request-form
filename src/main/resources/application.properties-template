@@ -20,11 +20,12 @@ spring.mail.defaultEncoding=UTF-8
 ##############################
 # Spring Security Parameters #
 ##############################
+spring.mvc.favicon.enabled=false
 
 server.ssl.key-store=<KEYSTORE-FILE-NAME>
 server.ssl.key-store-password=<KEYSTORE-PASSWORD>
 
-# Spring Security wants the port to be 8443
+# Default https port is 8443 (or 443)
 server.port=8443
 
 # The base URL that the application will be running on (e.g., example.com).
