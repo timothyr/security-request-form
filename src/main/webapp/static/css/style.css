@@ -36,8 +36,9 @@ header {
 }
 
 .logo {
-	width: 300px;
+	width: 350px;
 	margin-bottom: 20px;
+    margin-top: 0px;
 }
 
 /* BUTTON */
@@ -60,6 +61,11 @@ button {
     min-height: 1000px;
 }
 
+.wrapper-sm {
+    /* fit to height of content */
+    min-height: 0px !important;
+}
+
 /* TITLE */
 .form-heading {
 	padding-bottom: 20px;
@@ -70,6 +76,11 @@ button {
 
 .auth-heading {
 	font-weight: 300;
+}
+
+.username {
+    display: inline;
+    color: #007bff;
 }
 
 /* ICONS */

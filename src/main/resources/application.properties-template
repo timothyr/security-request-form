@@ -19,6 +19,7 @@ spring.mail.properties.mail.transport.protocol=smtp
 ##############################
 # Spring Security Parameters #
 ##############################
+spring.mvc.favicon.enabled=false
 
 server.ssl.key-store=<KEYSTORE-FILE-NAME>
 server.ssl.key-store-password=<KEYSTORE-PASSWORD>
