@@ -86,12 +86,12 @@ button {
 /* ICONS */
 .calendar-icon {
 	font-size: 1.5em;
-	color: #A8162B;
+	color: #007bff;
 }
 
 .trash-icon {
     font-size: 1.5em;
-    color: #A8162B;
+    color: #007bff;
 }
 
 /* SPACING - add to div*/
@@ -247,7 +247,7 @@ svg path, svg rect {
 
  /* REQUEST FORM TOGGLE BUTTON */
 .active_toggle {
-    background-color: #DA3849 !important;
+    background-color: #007bff !important;
     color: white !important;
 }
 
