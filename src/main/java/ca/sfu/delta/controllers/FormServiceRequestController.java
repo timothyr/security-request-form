@@ -277,7 +277,7 @@ public class FormServiceRequestController extends WebMvcConfigurerAdapter {
 		return token;
     }
 
-    @RequestMapping(value = "/api/form/save", method = RequestMethod.POST, produces = "text/plain")
+    @PostMapping(value = "/api/form/save", produces = "text/plain")
     public @ResponseBody ResponseEntity addForm(@RequestBody @Valid FormData form,
                                                 BindingResult result,
                                                 HttpServletRequest request) {
