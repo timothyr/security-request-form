@@ -86,6 +86,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 					"/fonts/**",
 					"/img/**",
 					"/js/**",
+					"/api/get/user/**",
 					"/api/form/save/**",
 					"/api/form/update/**",
 					"/logout",
