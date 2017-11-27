@@ -4,8 +4,10 @@ import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.PDPage;
 import org.apache.pdfbox.pdmodel.PDPageContentStream;
 import org.apache.pdfbox.pdmodel.font.PDType1Font;
+import org.hibernate.validator.constraints.NotEmpty;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 import java.io.File;
 import java.io.IOException;
 import java.io.StringWriter;
@@ -28,6 +30,8 @@ public class FormData {
 
     //Specified by user
     private String department = null;
+
+    @NotNull(message = "Requester name must be filled out") @NotEmpty(message = "Requester name must be filled out")
     private String requesterName = null;
     private String phoneNumber = null;
     private String faxNumber = null;

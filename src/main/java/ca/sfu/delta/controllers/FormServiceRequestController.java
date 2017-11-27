@@ -10,6 +10,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
+import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.config.annotation.ViewControllerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
@@ -277,10 +278,30 @@ public class FormServiceRequestController extends WebMvcConfigurerAdapter {
     }
 
     @RequestMapping(value = "/api/form/save", method = RequestMethod.POST, produces = "text/plain")
-    public @ResponseBody ResponseEntity addForm(@RequestBody FormData form, HttpServletRequest request) {
+    public @ResponseBody ResponseEntity addForm(@RequestBody @Valid FormData form,
+                                                BindingResult result,
+                                                HttpServletRequest request) {
 	    if (form == null) {
-		    return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("ERROR: form didn't save");
+            System.out.println("A Null Form was not saved.");
+		    return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("ERROR: Form is null");
 	    }
+
+	    if(result.hasErrors()) {
+            System.out.println("An invalid Form was not saved. Here's why:");
+            ObjectError errorToDisplay = null;
+            int errorCount = 1;
+	        for(ObjectError e : result.getAllErrors()) {
+	            errorToDisplay = e;
+	            System.out.println(errorCount + ") " + e.getDefaultMessage());
+	            errorCount++;
+            }
+
+            if(errorToDisplay != null) {
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorToDisplay.getDefaultMessage());
+            } else {
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("ERROR: Form was invalid");
+            }
+        }
 
         //Set requestedOnDate to current date
         DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
