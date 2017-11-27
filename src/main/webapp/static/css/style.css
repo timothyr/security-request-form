@@ -274,6 +274,14 @@ svg path, svg rect {
     color: #007bff;
 }
 
+.green-text {
+    color: #50AE54;
+}
+
+.red-text {
+    color: #A8162B;
+}
+
 .badge-med {
     font-size: 1.0em
 }
