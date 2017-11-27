@@ -61,6 +61,11 @@ button {
     min-height: 1000px;
 }
 
+.wrapper-sm {
+    /* fit to height of content */
+    min-height: 0px !important;
+}
+
 /* TITLE */
 .form-heading {
 	padding-bottom: 20px;
