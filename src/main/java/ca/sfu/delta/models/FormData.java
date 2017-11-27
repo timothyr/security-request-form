@@ -1,22 +1,22 @@
 package ca.sfu.delta.models;
 
+import org.apache.pdfbox.pdmodel.PDDocument;
+import org.apache.pdfbox.pdmodel.PDPage;
+import org.apache.pdfbox.pdmodel.PDPageContentStream;
+import org.apache.pdfbox.pdmodel.font.PDType1Font;
+
 import javax.persistence.*;
-import java.lang.String;
+import java.io.File;
+import java.io.IOException;
+import java.io.StringWriter;
 import java.lang.reflect.Field;
+import java.nio.file.Files;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.io.StringWriter;
-import java.io.File; 
-import java.nio.file.Files; 
-import java.io.IOException;
-import java.util.Date;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import org.apache.pdfbox.pdmodel.PDDocument;
-import org.apache.pdfbox.pdmodel.PDPage;
-import org.apache.pdfbox.pdmodel.PDPageContentStream; 
-import org.apache.pdfbox.pdmodel.font.PDType1Font;
 
 @Entity
 public class FormData {
@@ -56,7 +56,6 @@ public class FormData {
     private String preparedBy = null;
     private String securityRemarks = null;
     private String requestStatus = null;
-
 	private String requestID = null;
 	private String numGuards = null;
 	private String guardType = null;
@@ -348,6 +347,22 @@ public class FormData {
 		this.requestStatus = requestStatus;
 	}
 
+    public String getGuardType() {
+        return guardType;
+    }
+
+    public void setGuardType(String guardType) {
+        this.guardType = guardType;
+    }
+
+    public String getNumGuards() {
+        return numGuards;
+    }
+
+    public void setNumGuards(String numGuards) {
+        this.numGuards = numGuards;
+    }
+
     public void setSecurityFields(
             String recievingSecuritySupervisor,
             List<Guard> guards,
@@ -355,7 +370,8 @@ public class FormData {
             String preparedBy,
             String securityRemarks
     ){
-    	this.recievingSecuritySupervisor = recievingSecuritySupervisor;
+
+        this.recievingSecuritySupervisor = recievingSecuritySupervisor;
     	this.guards = guards;
     	this.distributionList = distributionList;
     	this.preparedBy = preparedBy;
@@ -577,20 +593,4 @@ public class FormData {
             return null;
         }
     }
-
-	public String getGuardType() {
-		return guardType;
-	}
-
-	public void setGuardType(String guardType) {
-		this.guardType = guardType;
-	}
-
-	public String getNumGuards() {
-		return numGuards;
-	}
-
-	public void setNumGuards(String numGuards) {
-		this.numGuards = numGuards;
-	}
 }

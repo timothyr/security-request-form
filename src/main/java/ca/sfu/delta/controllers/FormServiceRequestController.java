@@ -145,8 +145,7 @@ public class FormServiceRequestController extends WebMvcConfigurerAdapter {
     @RequestMapping(value = "/api/csv/guards/{id}-guards.csv", method = RequestMethod.GET, produces = "text/csv")
     @ResponseBody
     public String getGuardCSV(@PathVariable("id") String id) {
-        String csvString = new String();
-        FormData correctForm =  new FormData();
+        FormData correctForm = null;
         for (FormData form : formRepository.findAll()) {
 
             if(form.getRequestID().equals(id))
@@ -155,6 +154,11 @@ public class FormServiceRequestController extends WebMvcConfigurerAdapter {
                 break;
             }
         }
+
+        if(correctForm == null) {
+            return null;
+        }
+
         List<Guard> correctFormGuards = correctForm.getGuards();
 
         Boolean first = true;
@@ -275,7 +279,7 @@ public class FormServiceRequestController extends WebMvcConfigurerAdapter {
     @RequestMapping(value = "/api/form/save", method = RequestMethod.POST, produces = "text/plain")
     public @ResponseBody ResponseEntity addForm(@RequestBody FormData form, HttpServletRequest request) {
 	    if (form == null) {
-		    return ResponseEntity.status(HttpStatus.NOT_FOUND).body("ERROR: form didn't save");
+		    return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("ERROR: form didn't save");
 	    }
 
         //Set requestedOnDate to current date
