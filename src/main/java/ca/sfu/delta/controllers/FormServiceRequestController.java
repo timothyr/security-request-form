@@ -279,7 +279,7 @@ public class FormServiceRequestController extends WebMvcConfigurerAdapter {
 	    }
 
         //Set requestedOnDate to current date
-        DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
+        DateFormat dateFormat = new SimpleDateFormat("MM/dd/yyyy");
         Date date = new Date();
         form.setRequestedOnDate(dateFormat.format(date));
 

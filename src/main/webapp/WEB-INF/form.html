@@ -160,7 +160,8 @@
 					</div>
 					<div>
 						<h3 class="auth-heading mt-4">Authorization</h3>
-                        <p>Your request has to be authorized before it can be approved.</p>
+                        <p><i class="fa fa-info-circle mr-1 ml-2 dark-text"></i>
+                            Your request has to be authorized before it can be approved.</p>
 					</div>
                     <div class="card card-block">
                         <div class="row">
@@ -205,7 +206,7 @@
                                 <input type="email" id="authorizer-email-input" class="form-control" v-model="formData.authorizerEmailAddress" placeholder="example@example.ca" required/>
                             </div>
                         </div>
-                        <div v-if="signedIn == 'passAuth'" class="form-group col-md-12">
+                        <div class="form-group col-md-12 text-center" v-if="authOption == 'authOwn'">
                             <input type="checkbox" id="invoice-input" class="mr-1"/>
                             <label for="invoice-input">Please Invoice</label>
                         </div>
@@ -412,9 +413,11 @@
 
 			computed: {
 				validation: function () {
+				    let authed = (this.authOption == "authOwn") ? this.userName != "": true;
                     return {
-                        authorizerEmailAddress: this.signedIn || emailValid.test(this.formData.authorizerEmailAddress),
-                        emailAddress: emailValid.test(this.formData.emailAddress)
+                        //authorizerEmailAddress: this.signedIn || emailValid.test(this.formData.authorizerEmailAddress),
+                        emailAddress: emailValid.test(this.formData.emailAddress),
+                        authed: authed
                     }
 				},
 				isValid: function () {
