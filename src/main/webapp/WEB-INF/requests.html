@@ -26,6 +26,8 @@
                     </ul>
                 </div>
             </div>
+            <a class="d-inline blue-text" style="float: right; margin-right: 20px; margin-top: 20px;"
+                href="/security/admin" v-if="isAdmin">ADMIN</a>
         </header>
         <div class="container col-md-10 offset-md-1 wrapper mb-5 col-lg-10">
             <div class="container col-md-10">
@@ -148,6 +150,7 @@
             reversed: true,
             requests: [],
             userName: "",
+            isAdmin: false,
         },
         methods: {
             changeDates: function() {
@@ -237,6 +240,13 @@
                     }
                 });
             },
+            setAdmin: function() {
+                this.$http.get("/api/user/get").then(function(response) {
+                    if (response.status == 200 && response.data.privileges.includes("ADMIN")) {
+                        this.isAdmin = true;
+                    }
+                });
+            }
         },
         computed: {
             filteredRequests: {
@@ -248,7 +258,7 @@
         },
         created: function() {
             this.$http.get('/api/form/search', {
-                pageSize: 100,
+                pageSize: 1000,
                 pageNumber: 1
             }).then(response  => {
                 this.requests = response.data;
@@ -256,6 +266,7 @@
                 this.loading = false;
             });
             this.setUserName();
+            this.setAdmin();
         }
     });
 </script>
