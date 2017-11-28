@@ -42,6 +42,9 @@ public class SendEmail {
     private Boolean IsAuthorized;
     @Value("{spring.mail.properties.mail.smtp.starttls.enable}")
     private String IsTtlsEnabled;
+    @Value ("{spring.mail.properties.mail.transport.protocol}")
+	private String transportProtocol;
+
 
     @Autowired
     public SendEmail(JavaMailSender javaMailSender){
@@ -141,12 +144,16 @@ public class SendEmail {
 	private Properties setSmtpProperties(){
 		//Mail Properties
 		properties = System.getProperties();
-		properties.put("mail.smtp.starttls.enable", "true");
+		properties.put("mail.smtp.starttls.enable", "false");
+		properties.put("mail.smtp.ssl.enable", IsTtlsEnabled);
+
 		properties.put("mail.smtp.host", mailHost);
+		properties.put("mail.smtp.port", smtpPort);
+		properties.put("mail.transport.protocol", transportProtocol);
 		properties.put("mail.smtp.user", smtpSenderEmail);
 		properties.put("mail.smtp.password", smtpSenderEmailPassword);
-		properties.put("mail.smtp.port", smtpPort);
 		properties.put("mail.smtp.auth", IsAuthorized);
+
 
 		return properties;
 	}
@@ -164,7 +171,7 @@ public class SendEmail {
 	private void sendMail(Session session, MimeMessage message){
 		Transport transport = null;
 		try {
-			transport = session.getTransport("smtp");
+			transport = session.getTransport("smtps");
 			transport.connect(mailHost, smtpSenderEmail, smtpSenderEmailPassword);
 			transport.sendMessage(message, message.getAllRecipients());
 			transport.close();
