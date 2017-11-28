@@ -33,17 +33,17 @@ public class FormData {
     @NotEmpty(message = "Department field must be filled out")
     private String department = null;
 
-    @NotNull(message = "Requester field name must be filled out")
-    @NotEmpty(message = "Requester field name must be filled out")
+    @NotNull(message = "Requester name field must be filled out")
+    @NotEmpty(message = "Requester name field must be filled out")
     private String requesterName = null;
 
     //Regex for matching phone numbers from https://regex101.com/library/kQ5xQ6
     @NotNull(message = "Phone number field must be filled out")
-    @NotEmpty(message = "Phone number field name must be filled out")
+    @NotEmpty(message = "Phone number field must be filled out")
     @Pattern(message="Phone number must be in format (123)-456-7890", regexp="\\d{3}([ .-])?\\d{3}([ .-])?\\d{4}|\\(\\d{3}\\)([ ])?\\d{3}([.-])?\\d{4}|\\(\\d{3}\\)([ ])?\\d{3}([ ])?\\d{4}|\\(\\d{3}\\)([.-])?\\d{3}([.-])?\\d{4}|\\d{3}([ ])?\\d{3}([ .-])?\\d{4}")
     private String phoneNumber = null;
 
-    // Not required
+    // Optional
     private String faxNumber = null;
 
     //Regex for matching valid emails from https://regex101.com/library/kQ5xQ6
@@ -52,37 +52,57 @@ public class FormData {
     @Pattern(message="Email must be valid", regexp="^([a-zA-Z0-9_\\-\\.]+)@((\\[[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\.)|(([a-zA-Z0-9\\-]+\\.)+))([a-zA-Z]{2,4}|[0-9]{1,3})(\\]?)$")
     private String emailAddress = null;
 
-    @NotNull(message = "Event name field name must be filled out")
-    @NotEmpty(message = "Event name field name must be filled out")
+    @NotNull(message = "Event name field must be filled out")
+    @NotEmpty(message = "Event name field must be filled out")
     private String eventName = null;
 
-    // Not required
+    // Optional
     private String requesterID = null; //SFU ID
 
-    @NotNull(message = "Event location field name must be filled out")
-    @NotEmpty(message = "Event location field name must be filled out")
+    @NotNull(message = "Event location field must be filled out")
+    @NotEmpty(message = "Event location field must be filled out")
     private String eventLocation = null; //String for now, until we have full list of possible locations.
 
-    // Not required
+    // Optional
     private Boolean isLicensed = false;
 
-    //@NotNull(message = "Num attendees field name must be filled out")
-    //@NotEmpty(message = "Num attendees field name must be filled out")
     @Min(value = 1, message = "Minimum number of attendees is 1")
     @Max(value = 5000, message = "Exceeded maximum number of attendees")
     private int numAttendees = 0;
 
-
+    // Currently not actually used
     private String times = null; //Unsure of how we want to store times, String for now.
 	//Todo: these will need to be changed back to arrays of dates once the front end supports dates
+
+    @NotNull(message = "Date times field must be filled out")
+    @NotEmpty(message = "Date times field must be filled out")
     private String eventDates = null;
+
+    // Not part of submission
     private String requestedOnDate = null;
 
+    // Optional
     private String paymentAccountCode = null;
+
+    // Optional
     private Boolean invoiceRequested = false;
+
+    // Optional
     private String eventDetails = null;
-    private String serviceRequestNumber = null; //Generated automatically, pre-populate.
+
+    //Generated automatically, pre-populate.
+    private String serviceRequestNumber = null;
+
+    // Not part of submission
     private String recievingSecuritySupervisor = null;
+
+    @NotNull(message = "Number of Guards field must be filled out")
+    @NotEmpty(message = "Number of Guards field must be filled out")
+    private String numGuards = null;
+
+    @NotNull(message = "Guard Type field must be filled out")
+    @NotEmpty(message = "Guard Type field must be filled out")
+    private String guardType = null;
 
     @ElementCollection
     private List<Guard> guards; //Things like total billable and grand total can be calculated from these
@@ -93,8 +113,6 @@ public class FormData {
     private String securityRemarks = null;
     private String requestStatus = null;
 	private String requestID = null;
-	private String numGuards = null;
-	private String guardType = null;
 
     //Specified by Authorizer
     private String authorizerName = null;
