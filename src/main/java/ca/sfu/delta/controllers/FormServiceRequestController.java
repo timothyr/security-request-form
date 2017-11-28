@@ -93,9 +93,15 @@ public class FormServiceRequestController extends WebMvcConfigurerAdapter {
     }
 
 	@RequestMapping(value = "/api/form/saveSecurity", method = RequestMethod.POST)
-	public @ResponseBody ResponseEntity saveSecurity(@RequestBody FormData form,
-	                                         @RequestParam(required = false) String additionalMessage)
-								throws MessagingException {
+	public @ResponseBody ResponseEntity saveSecurity(@RequestBody @Valid FormData form,
+                                                     BindingResult result,
+                                                     @RequestParam(required = false) String additionalMessage)
+            throws MessagingException {
+
+        if(result.hasErrors()) {
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("ERROR: Form was invalid");
+        }
+
 		String userName = form.getRequesterName();
 		String userEmailAddress = form.getEmailAddress();
 		String authEmailAddress = form.getAuthorizerEmailAddress();
@@ -356,12 +362,18 @@ public class FormServiceRequestController extends WebMvcConfigurerAdapter {
 
 
     @RequestMapping(value = "/api/form/update/{id}", method = RequestMethod.PUT)
-    public ResponseEntity<FormData> updateForm(@PathVariable("id") long id, @RequestBody FormData data,
+    public ResponseEntity<FormData> updateForm(@PathVariable("id") long id,
+                                               @RequestBody @Valid FormData data,
+                                               BindingResult result,
                                                @RequestParam boolean loggedOn) {
         FormData form = formRepository.findOne(id);
         if (form == null) {
             System.out.println("User with id " + id + " not found");
             return new ResponseEntity<FormData>(HttpStatus.NOT_FOUND);
+        }
+
+        if(result.hasErrors()) {
+            return new ResponseEntity<FormData>(form, HttpStatus.BAD_REQUEST);
         }
 
         if (loggedOn && data.getRequestStatus().equals(GlobalConstants.WAITING)) {
