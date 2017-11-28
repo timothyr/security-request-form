@@ -266,6 +266,7 @@
 
     const status = {
         WAITING: 'WAITING',
+        AUTHORIZED: 'AUTHORIZED',
         APPROVED: 'APPROVED',
         REJECTED: 'REJECTED'
     };
@@ -386,6 +387,7 @@
             submitForm: function () {
 
             },
+
             updateForm: function () {
                 let self = this;
                 function successCallback(response) {
@@ -401,8 +403,9 @@
                 }
 
 	            if (this.isValid) {
-                    console.log("FUCK " + this.formData.id);
-		            this.$http.put("/api/form/update/" + this.formData.id, this.formData).then(function (response) {
+		            this.$http.put("/api/form/update/" + this.formData.id, this.formData, {params : {
+			            loggedOn : this.signedIn
+		            }}).then(function (response) {
 			            successCallback(response);
 			            this.loading = false;
 		            }, function () {
@@ -425,16 +428,21 @@
 					this.enddatetime = '';
             	}
             },
+
             deleteDatetime: function(dt){
             	var index = this.datetimelist.indexOf(dt);
             	this.formData.eventDates = deleteEventDate(dt.start,dt.end,this.formData.eventDates,index,this.datetimelist.length);
             	this.datetimelist.splice(index,1);
             },
+
             getBadgeClassName: function(status) {
                 switch (status) {
                     case 'WAITING':
                         return 'badge-warning';
                         break;
+	                case 'AUTHORIZED':
+		                return 'badge-primary';
+		                break;
                     case 'APPROVED':
                         return 'badge-success';
                         break;
