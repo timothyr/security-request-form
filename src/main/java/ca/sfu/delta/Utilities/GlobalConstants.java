@@ -8,4 +8,10 @@ public class GlobalConstants {
 
 	// The length of the tokens used for user request form retrieval URLs
 	public static final int LENGTH_OF_TOKENS = 30;
+
+	// These are the status options
+	public static final String WAITING = "WAITING";
+	public static final String AUTHORIZED = "AUTHORIZED";
+	public static final String ACCEPTED = "ACCEPTED";
+	public static final String REJECTED = "REJECTED";
 }

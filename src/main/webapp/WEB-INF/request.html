@@ -73,8 +73,10 @@
                                     class="dark-text">{{form.faxNumber}}</span></li>
                             <li class="list-group-item d-flex justify-content-between align-items-center"># of Attendees: <span
                                     class="dark-text">{{form.numAttendees}}</span></li>
-                            <li class="list-group-item d-flex justify-content-between align-items-center">Licensed: <span
-                                    class="dark-text">{{form.isLicensed}}</span></li>
+                            <li class="list-group-item d-flex justify-content-between align-items-center">Licensed:
+                                <span class="dark-text" v-if="form.isLicensed">Yes</span>
+                                <span class="dark-text" v-else>No</span>
+                            </li>
                             <li class="list-group-item d-flex justify-content-between align-items-center"># of Guards Requested: <span
                                     class="dark-text">{{form.numGuards}}</span></li>
                             <li class="list-group-item d-flex justify-content-between align-items-center">Type of Guard Requested: <span
@@ -125,117 +127,119 @@
                         <ul class="list-group">
                             <li class="list-group-item d-flex justify-content-between align-items-center">Authorizer Phone:
                                 <span class="dark-text">{{form.authorizerPhoneNumber}}</span></li>
-                            <li class="list-group-item d-flex justify-content-between align-items-center">Invoice: <span
-                                    class="dark-text">{{form.invoiceRequested}}</span></li>
+                            <li class="list-group-item d-flex justify-content-between align-items-center">Invoice:
+                                <span class="dark-text" v-if="form.invoiceRequested">Yes</span>
+                                <span class="dark-text" v-else>No</span>
+                            </li>
                         </ul>
                     </div>
                 </div>
 
-                <div class="row">
-                    <div class="col-md-12 line-break mt-4"></div>
+        <div class="row">
+            <div class="col-md-12 line-break mt-4"></div>
+        </div>
+        <div class="row mt-5 form-heading mb-3"><h3>Security Fill Out</h3></div>
+        <div class="row mt-3">
+            <div class="col-lg-6">
+                <label for="recvSup">Receiving Security Supervisor: </label>
+                <input class="form-control text-center" id="recvSup" type="text" placeholder="Supervisor" v-model="form.recievingSecuritySupervisor"
+                       required="required">
+            </div>
+            <div class="col-lg-6">
+                <label for="prepBy">Prepared By: </label>
+                <input class="form-control text-center" id="prepBy" type="text" placeholder="Prepared By" v-model="form.preparedBy" required="required">
+            </div>
+        </div>
+        <div class="row">
+            <h3 class="mt-5">Guards</h3>
+        </div>
+        <div v-for="g in form.guards">
+            <div class="row mt-3">
+                <div class="col">
+                    <label for="gID">Dispatch #</label>
+                    <input class="form-control text-center" id="gID" type="text" placeholder="Dispatch #" v-model="g.guardID">
                 </div>
-                <div class="row mt-5 form-heading mb-3"><h3>Security Fill Out</h3></div>
-                <div class="row mt-3">
-                    <div class="col-lg-6">
-                        <label for="recvSup">Receiving Security Supervisor: </label>
-                        <input class="form-control text-center" id="recvSup" type="text" placeholder="Supervisor" v-model="form.recievingSecuritySupervisor"
-                               required="required">
-                    </div>
-                    <div class="col-lg-6">
-                        <label for="prepBy">Prepared By: </label>
-                        <input class="form-control text-center" id="prepBy" type="text" placeholder="Prepared By" v-model="form.preparedBy" required="required">
-                    </div>
+                <div class="col">
+                    <label for="gLoc">Location</label>
+                    <input class="form-control text-center" id="gLoc" type="text" placeholder="Location" v-model="g.location">
                 </div>
-                <div class="row">
-                    <h3 class="mt-5">Guards</h3>
+            </div>
+            <div class="row mt-3">
+                <div class="col">
+                    <label for="gDateStart">Start Date</label>
+                    <input class="form-control text-center" id="gDateStart" type="date" placeholder="Start Date" v-model="g.startDate">
                 </div>
-                <div v-for="g in form.guards">
-                    <div class="row mt-3">
-                        <div class="col">
-                            <label for="gID">Dispatch #</label>
-                            <input class="form-control text-center" id="gID" type="text" placeholder="Dispatch #" v-model="g.guardID">
-                        </div>
-                        <div class="col">
-                            <label for="gLoc">Location</label>
-                            <input class="form-control text-center" id="gLoc" type="text" placeholder="Location" v-model="g.location">
-                        </div>
-                    </div>
-                    <div class="row mt-3">
-                        <div class="col">
-                            <label for="gDateStart">Start Date</label>
-                            <input class="form-control text-center" id="gDateStart" type="date" placeholder="Start Date" v-model="g.startDate">
-                        </div>
-                        <div class="col">
-                            <label for="gDateEnd">End Date</label>
-                            <input class="form-control text-center" id="gDateEnd" type="date" placeholder="End Date" v-model="g.endDate">
-                        </div>
-                    </div>
-                    <div class="row mt-3">
-                        <div class="col">
-                            <label for="gTimeStart">Start Time</label>
-                            <input class="form-control text-center" id="gTimeStart" type="time" placeholder="Start Time" v-model="g.startTime">
-                        </div>
-                        <div class="col">
-                            <label for="gTimeEnd">End Time</label>
-                            <input class="form-control text-center" id="gTimeEnd" type="time" placeholder="End Time" v-model="g.endTime">
-                        </div>
-                    </div>
-                    <div class="row mt-3">
-                        <div class="col">
-                            <label for="gName">Name</label>
-                            <input class="form-control text-center" id="gName" type="text" placeholder="Name" v-model="g.name">
-                        </div>
-                        <div class="col">
-                            <label for="gTel">Telephone</label>
-                            <input class="form-control text-center" id="gTel" type="text" placeholder="Telephone #" v-model="g.telephone">
-                        </div>
-                        <div class="col">
-                            <label for="gType">Type</label>
-                            <select class="form-control text-center" id="gType" v-model="g.type">
-                                <option>Guard</option>
-                                <option>SCSP</option>
-                            </select>
-                        </div>
-                    </div>
-                    <div class="row my-5">
-                        <div class="col-md-3">
-                            <label for="regRate">Regular Rate</label>
-                            <input class="form-control text-center" id="regRate" type="number" step="0.01" min="0"
-                                   v-model="g.regularRate" required="required">
-                        </div>
-                        <div class="col-md-3">
-                            <label for="regHours">Regular Hours</label>
-                            <input class="form-control text-center" id="regHours" type="number" step="0.01" min="0"
-                                   v-model="g.regularHours" required="required">
-                        </div>
-                        <div class="col-md-3">
-                            <label for="overRate">Overtime Rate</label>
-                            <input class="form-control text-center" id="overRate" type="number" step="0.01" min="0"
-                                   v-model="g.overtimeRate" required="required">
-                        </div>
-                        <div class="col-md-3">
-                            <label for="overHours">Overtime Hours</label>
-                            <input class="form-control text-center" id="overHours" type="number" step="0.01" min="0"
-                                   v-model="g.overtimeHours" required="required">
-                        </div>
-                    </div>
-                    <div class="row my-2 text-center">
-                        <div class="col col-md-3"></div>
-                        <div class="col">
-                            <button type="button" class="btn btn-danger mx-2" v-on:click="deleteGuard(g)">Remove Guard</button>
-                            <button type="button" class="btn btn-primary" v-on:click="addGuard">Add Guard</button>
-                        </div>
-                        <div class="col col-md-3"></div>
-                    </div>
+                <div class="col">
+                    <label for="gDateEnd">End Date</label>
+                    <input class="form-control text-center" id="gDateEnd" type="date" placeholder="End Date" v-model="g.endDate">
                 </div>
+            </div>
+            <div class="row mt-3">
+                <div class="col">
+                    <label for="gTimeStart">Start Time</label>
+                    <input class="form-control text-center" id="gTimeStart" type="time" placeholder="Start Time" v-model="g.startTime">
+                </div>
+                <div class="col">
+                    <label for="gTimeEnd">End Time</label>
+                    <input class="form-control text-center" id="gTimeEnd" type="time" placeholder="End Time" v-model="g.endTime">
+                </div>
+            </div>
+            <div class="row mt-3">
+                <div class="col">
+                    <label for="gName">Name</label>
+                    <input class="form-control text-center" id="gName" type="text" placeholder="Name" v-model="g.name">
+                </div>
+                <div class="col">
+                    <label for="gTel">Telephone</label>
+                    <input class="form-control text-center" id="gTel" type="text" placeholder="Telephone #" v-model="g.telephone">
+                </div>
+                <div class="col">
+                    <label for="gType">Type</label>
+                    <select class="form-control text-center" id="gType" v-model="g.type">
+                        <option>Guard</option>
+                        <option>SCSP</option>
+                    </select>
+                </div>
+            </div>
+            <div class="row my-3">
+                <div class="col-md-3">
+                    <label for="regRate">Regular Rate</label>
+                    <input class="form-control text-center" id="regRate" type="number" step="0.01" min="0"
+                           v-model="g.regularRate" required="required">
+                </div>
+                <div class="col-md-3">
+                    <label for="regHours">Regular Hours</label>
+                    <input class="form-control text-center" id="regHours" type="number" step="0.01" min="0"
+                           v-model="g.regularHours" required="required">
+                </div>
+                <div class="col-md-3">
+                    <label for="overRate">Overtime Rate</label>
+                    <input class="form-control text-center" id="overRate" type="number" step="0.01" min="0"
+                           v-model="g.overtimeRate" required="required">
+                </div>
+                <div class="col-md-3">
+                    <label for="overHours">Overtime Hours</label>
+                    <input class="form-control text-center" id="overHours" type="number" step="0.01" min="0"
+                           v-model="g.overtimeHours" required="required">
+                </div>
+            </div>
+            <div class="row my-2 text-center">
+                <div class="col col-md-3"></div>
+                <div class="col">
+                    <button type="button" class="btn btn-danger mx-2" v-on:click="deleteGuard(g)">Remove Guard/SCSP</button>
+                    <button type="button" class="btn" v-on:click="cloneGuard(g)">Duplicate Guard/SCSP</button>
+                </div>
+                <div class="col col-md-3"></div>
+            </div>
+        </div>
 
-                <div class="row my-2 text-center" v-if="form.guards && form.guards.length == 0">
-                    <div class="col col-md-3"></div>
-                    <div class="col">
-                        <button type="button" class="btn btn-primary" v-on:click="addGuard">Add Guard</button>
-                    </div>
-                    <div class="col col-md-3"></div>
-                </div>
+        <div class="row my-3 text-center">
+            <div class="col col-md-3"></div>
+            <div class="col">
+                <button type="button" class="btn btn-primary" v-on:click="addGuard">New Guard/SCSP</button>
+            </div>
+            <div class="col col-md-3"></div>
+        </div>
 
                 <div class="row text-center">
                     <div class="col-md-4">
@@ -257,78 +261,78 @@
                     <textarea class="form-control" rows="4" placeholder="Remarks" v-model="form.securityRemarks" id="remarksField"></textarea>
                 </div>
 
-                <div class="row">
-                    <div class="col-md-12">
-                        <div class="text-center">
-                            <button type="button" class="btn btn-success col-sm-12 col-md-2 mt-3" data-toggle="modal"
-                                    data-target="#emailModal" v-if="canAccept">Accept
-                            </button>
-                            <button class="btn btn-primary col-sm-12 col-md-2 mt-3" v-on:click="submit('update')" v-if="canAccept">
-                                Update
-                            </button>
-                            <button class="btn btn-danger col-sm-12 col-md-2 mt-3" v-on:click="submit('reject')" v-bind:class="{disabled: rejectLoading}">
-                                <div class="loading-icon mr-3" v-if="rejectLoading" style="width: 20px; height: 20px"></div>
-                                Reject
-                            </button>
-                        </div>
-                        <div id="emailModal" class="modal fade" role="dialog">
-                            <div class="modal-dialog">
-                                <div class="modal-content">
-                                    <div class="container mb-4">
-                                        <div class="col-md-10 mt-5 ml-4">
-                                            <div class="row">
-                                                <h3>Distribution</h3>
-                                            </div>
-                                            <div class="row mb-4">
-                                                <p class="modal-title grey-text">Those selected will be notified of this approval.</p>
-                                            </div>
-                                        </div>
-                                        <div class="row">
-                                            <div class="col-md-10 mx-auto">
-                                                <table class="table">
-                                                    <thead>
-                                                        <tr>
-                                                            <th><input type="checkbox" v-model="selectAll"></th>
-                                                            <th>Email</th>
-                                                            <th><!--delete button col--></th>
-                                                        </tr>
-                                                    </thead>
-                                                    <tbody>
-                                                        <tr v-for="email in distEmails" class="tr-delete">
-                                                            <td><input type="checkbox" v-model="selectedEmails" :value="email.id" number></td>
-                                                            <td>{{email.email}}</td>
-                                                            <td><button class="td-delete-button" v-on:click="deleteDistEmail(email.id)">x</button></td>
-                                                        </tr>
-                                                    </tbody>
-                                                </table>
-                                                <div class="row">
-                                                    <p v-if="distEmails.length == 0" class="mx-auto text-center mt-2 grey-text">No Emails Found</p>
-                                                </div>
-                                                <div class="col-md-10 mx-auto input-group">
-                                                    <input type="text" class="form-control" placeholder="Enter full email address" v-model="distEmail_input">
-                                                    <span class="input-group-btn">
-                                                        <button class="btn btn-primary" v-on:click="addDistEmail()">Add</button>
-                                                    </span>
-                                                </div>
-                                            </div>
-                                        </div>
+        <div class="row">
+            <div class="col-md-12">
+                <div class="text-center">
+                    <button type="button" class="btn btn-success col-sm-12 col-md-2 mt-3" data-toggle="modal"
+                            data-target="#emailModal" :disabled=!canAccept>Accept
+                    </button>
+                    <button class="btn btn-primary col-sm-12 col-md-2 mt-3" v-on:click="submit('update')" :disabled=!canAccept>
+                        Update
+                    </button>
+                    <button class="btn btn-danger col-sm-12 col-md-2 mt-3" v-on:click="submit('reject')" v-bind:class="{disabled: rejectLoading}">
+						<div class="loading-icon mr-3" v-if="rejectLoading" style="width: 20px; height: 20px"></div>
+						Reject
+					</button>
+                </div>
+                <div id="emailModal" class="modal fade" role="dialog">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="container mb-4">
+                                <div class="col-md-10 mt-5 ml-4">
+                                    <div class="row">
+                                        <h3>Distribution</h3>
                                     </div>
-                                    <div class="modal-footer">
-                                        <button type="button" class="btn btn-success mx-2" data-dismiss="model"
-                                                v-on:click="submit('accept')" v-if="canAccept">Accept
-                                        </button>
-                                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                                    <div class="row mb-4">
+                                        <p class="modal-title grey-text">Those selected will be notified of this approval.</p>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-10 mx-auto">
+                                        <table class="table">
+                                            <thead>
+                                                <tr>
+                                                    <th><input type="checkbox" v-model="selectAll"></th>
+                                                    <th>Email</th>
+                                                    <th><!--delete button col--></th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr v-for="email in distEmails" class="tr-delete">
+                                                    <td><input type="checkbox" v-model="selectedEmails" :value="email.id" number></td>
+                                                    <td>{{email.email}}</td>
+                                                    <td><button class="td-delete-button" v-on:click="deleteDistEmail(email.id)">x</button></td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                        <div class="row">
+                                            <p v-if="distEmails.length == 0" class="mx-auto text-center mt-2 grey-text">No Emails Found</p>
+                                        </div>
+                                        <div class="col-md-10 mx-auto input-group">
+                                            <input type="text" class="form-control" placeholder="Enter full email address" v-model="distEmail_input">
+                                            <span class="input-group-btn">
+                                                <button class="btn btn-primary" v-on:click="addDistEmail()">Add</button>
+                                            </span>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-success mx-2" data-dismiss="model"
+                                        v-on:click="submit('accept')" v-if="canAccept">Accept
+                                </button>
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                            </div>
                         </div>
                     </div>
-                    <div class="col col-md-3"></div>
-                    <div class="bottom-space"></div>
                 </div>
             </div>
+            <div class="col col-md-3"></div>
+            <div class="bottom-space"></div>
         </div>
     </div>
+</div>
+
 <script src="/js/jquery-3.2.1.min.js"></script>
 <script src="/js/bootstrap.bundle.min.js"></script>
 <script src="/js/tether.min.js"></script>
@@ -398,9 +402,13 @@
                 })
             },
 
+            cloneGuard: function (guard) {
+                this.form.guards.push(guard);
+			},
+
             deleteGuard: function (guard) {
-                let i = this.form.guards.indexOf(guard);
-                this.form.guards.splice(i, 1);
+                let index = this.form.guards.indexOf(guard);
+                this.form.guards.splice(index, 1);
             },
 
             removeNull: function () {
@@ -408,7 +416,6 @@
                     if (this.form[p] === null || this.form[p] === undefined || this.form[p] === '') {
                         this.form[p] = 'not set';
                     }
-                    //console.log("form["+p+"] = "+ this.form[p]);
                 }
 
                 if (this.form.guards === 'not set') {
@@ -446,22 +453,17 @@
             },
 
             getFormData: function () {
-                //TODO change to error page instead
-//                this.requestID = this.getURLParam('id');
-//                if (this.requestID === null) {
-//                    window.location.replace("/requests");
-//                }
-                // get last segment of url (the id hopefully)
-                let urlSegments = window.location.href.split('/');
-                this.requestID = urlSegments.pop() || urlSegments.pop();
+				// get last segment of url (the id hopefully)
+				let urlSegments = window.location.href.split('/');
+				this.requestID = urlSegments.pop() || urlSegments.pop();
 
-                this.$http.get('/api/form/getByRequestID/' + this.requestID).then(function (response) {
-                    if (response.data === null || response.data === undefined || response.data === "") {
-                        window.location.replace("/security/requests");
-                    }
+				this.$http.get('/api/form/getByRequestID/' + this.requestID).then(function (response) {
+					if (response.data === null || response.data === undefined || response.data === "") {
+						// TODO: redirect to error page (404?)
+						window.location.replace("/security/requests");
+					}
 
                     this.form = JSON.parse(JSON.stringify(response.data));
-                    //this.removeNull();
                     this.dates = updateDateTime(this.form.eventDates);
 
                 }, function (error) {
@@ -495,12 +497,17 @@
                         return;
                     }
                 }
+
                 this.rejectLoading = true;
                 this.$http.post('/api/form/saveSecurity', this.form,
                     {params: {additionalMessage: this.additionalMessage}}).then(function (response) {
                     console.log('Successfully sent form');
                     this.rejectLoading = false;
-                    window.location.replace('/security/requests');
+
+                    if (action === 'accept' || action === 'reject')
+                        window.location.replace('/security/requests');
+                    else
+                    	alert('Request has been updated');
                 }, function (error) {
                     alert('Failed to send form!');
                 });
@@ -510,6 +517,9 @@
                     case 'WAITING':
                         return 'badge-warning';
                         break;
+                    case 'AUTHORIZED':
+                    	return 'badge-primary';
+                    	break;
                     case 'APPROVED':
                         return 'badge-success';
                         break;
@@ -552,7 +562,6 @@
         },
 
         created() {
-            // TODO: redirect if user doesn't have security authorization
             this.getFormData();
             this.getDistEmails();
             this.setUserName();
@@ -562,7 +571,6 @@
             canAccept: function () {
                 let goodGuards = true;
 				if (!this.form.guards || this.form.guards.length == 0) {
-					//console.log("No guards, allowing submission");
 					return goodGuards;
 				} else {
 					this.form.guards.forEach(function (g) {
@@ -573,8 +581,8 @@
 							|| g.endTime === '' || g.endTime === undefined || g.name === '' || g.name === undefined
 							|| g.telephone === '' || g.telephone === undefined) {
 
-							console.log("Bad guard data, disallowing");
 							goodGuards = false;
+							return goodGuards;
 						}
 					});
 				}
