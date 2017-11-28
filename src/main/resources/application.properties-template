@@ -1,0 +1,35 @@
+# Do not put sensitive information (e.g. passwords) here if we're going to keep this file in our git history
+# The password and username here are default values that align with the tutorial in README.md
+spring.jpa.hibernate.ddl-auto=none
+spring.datasource.url=jdbc:mysql://localhost:3306/db_example
+spring.datasource.username=springuser
+spring.datasource.password=ThePassword
+spring.thymeleaf.mode=HTML5
+spring.thymeleaf.cache=false
+
+spring.mail.host=smtp.gmail.com
+spring.mail.port=587
+spring.mail.username=teamdelta373@gmail.com
+spring.mail.password=8teammembers
+spring.mail.properties.mail.smtp.auth=true
+spring.mail.properties.mail.smtp.starttls.enable=true
+spring.mail.defaultEncoding=UTF-8
+spring.mail.properties.mail.transport.protocol=smtp
+
+##############################
+# Spring Security Parameters #
+##############################
+spring.mvc.favicon.enabled=false
+
+server.ssl.key-store=<KEYSTORE-FILE-NAME>
+server.ssl.key-store-password=<KEYSTORE-PASSWORD>
+
+# Default https port is 8443 (or 443)
+server.port=8443
+
+# The base URL that the application will be running on (e.g., example.com).
+# By default set to localhost:8443, for running the server locally.
+server.baseUrl=localhost:8443
+
+# This username will be given full access to the application, regardless of whether it's contained in the database
+admin.username=<SFU-USERNAME>

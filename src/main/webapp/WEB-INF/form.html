@@ -1,0 +1,519 @@
+<!DOCTYPE html>
+<!--suppress HtmlUnknownTarget -->
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Security Service Request</title>
+	<link rel="stylesheet" href="/css/bootstrap.min.css">
+	<link rel="stylesheet" href="/css/font-awesome.min.css">
+	<link rel="stylesheet" href="/css/jquery.datetimepicker.min.css">
+	<link rel="stylesheet" href="/css/style.css">
+	<link rel="stylesheet" href="/css/modal.css">
+    <link rel="icon" href="img/favicon.ico" type="image/x-icon"/>
+</head>
+<body class="red-background">
+	<header>
+        <a href="http://www.sfu.ca/srs.html">
+		    <img class="logo" src="/img/sfu-logo@2x.png" alt="sfu-logo"/>
+        </a>
+	</header>
+	<div id="app">
+		<form method="post" v-on:submit.prevent="submitForm()">
+			<div class="container col-md-10 offset-md-1 wrapper mb-5 col-lg-10">
+				<div class="row mt-5">
+				</div>
+				<div class="container col-md-10 mt-4">
+					<div class="row">
+						<h1 class="text-center form-heading">Security Service Request</h1>
+					</div>
+					<div class="row mt-3">
+						<div class="form-group col-md-4">
+							<label for="requested-by-input">Requested By</label>
+							<input type="text" id="requested-by-input" v-model="formData.requesterName" class="form-control" required="required"/>
+						</div>
+						<div class="form-group col-md-4">
+							<label for="department-input">Department</label>
+                            <select required class="form-control" id="department-input" v-model="formData.department">
+                                <option value="" disabled selected>Choose...</option>
+                                <option :value="department" v-for="department in departments">{{department}}</option>
+                            </select>
+						</div>
+						<div class="form-group col-md-4">
+							<label for="sfu-id-input">SFU ID</label>
+							<input type="text" id="sfu-id-input" v-model="formData.requesterID" class="form-control"/>
+						</div>
+					</div>
+					<div class="row">
+						<div class="form-group col-md-4">
+							<label for="phone-input">Phone</label>
+							<input type="text" id="phone-input" class="form-control" required="required"/>
+						</div>
+						<div class="form-group col-md-4">
+							<label for="email-input">Email</label>
+							<input type="email" id="email-input" class="form-control" v-model="formData.emailAddress" placeholder="example@sfu.ca" required="required"/>
+						</div>
+						<div class="form-group col-md-4">
+							<label for="fax-input">Fax (optional)</label>
+							<input type="text" id="fax-input" v-model="formData.faxNumber" class="form-control"/>
+						</div>
+					</div>
+					<div class="row">
+						<div class="form-group col-md-4">
+							<label for="type-name-of-event-input">Type/Name of Event</label>
+							<input type="text" id="type-name-of-event-input" v-model="formData.eventName" class="form-control" required="required"/>
+						</div>
+						<div class="form-group col-md-4">
+							<label for="location-input">Location</label>
+							<select required class="form-control" id="location-input" v-model="formData.eventLocation">
+                                <option value="" disabled selected>Choose...</option>
+								<option value="Burnaby">Burnaby</option>
+								<option value="Surrey">Surrey</option>
+								<option value="Vancouver">Vancouver</option>
+								<option value="Other">Other</option>
+							</select>
+						</div>
+						<div class="form-group col-md-4">
+							<label for="number-of-attendees-input"># of Attendees</label>
+							<input type="number" min="1" value="1" id="number-of-attendees-input" v-model="formData.numAttendees" class="form-control" required="required"/>
+						</div>
+					</div>
+					<div class="row">
+						<div class="form-group col-md-12">
+							<label for="details-input" placeholder="">Details</label>
+							<textarea rows="5" id="details-input" v-model="formData.eventDetails" class="form-control"></textarea>
+						</div>
+					</div>
+					<div class="row">
+						<div class="form-group col-md-12">
+							<input type="checkbox" id="licensed-input" v-model="formData.isLicensed" class="mr-1 mt-4"/>
+							<label for="licensed-input">Licensed</label>
+                            <i class="fa fa-question-circle" data-toggle="tooltip" title="Is your event licensed?"></i>
+						</div>
+					</div>
+					<div class="row">
+						<div class="form-group col-md-4">
+							<label for="number-of-guards-input"># of Guards Requested</label>
+							<input type="number" min="1" value="1" id="number-of-guards-input" v-model="formData.numGuards" class="form-control" required="required"/>
+						</div>
+						<div class="form-group col-md-4">
+							<label for="guard-type-input">Type of Guard Requested</label>
+							<select required class="form-control" id="guard-type-input" v-model="formData.guardType">
+								<option value="" disabled selected>Choose...</option>
+								<option :value="guardType" v-for="guardType in guardTypes">{{guardType}}</option>
+							</select>
+						</div>
+					</div>
+					<div>
+						<div class="row">
+							<div class="form-group col-md-12">
+
+							</div>
+						</div>
+					</div>
+					<div class="row mt-4">
+						<table class="table table-hover text-centered date-table">
+							<thead>
+							<tr>
+								<th>Start Time</th>
+								<th>End Time</th>
+								<th></th>
+							</tr>
+							<tr>
+								<th class="col-xs-3">
+									<div id="chooseStartDateTime" class ="input-group" onChange="setDateTime(this,'startdatetime')">
+									<span class="input-group-addon">
+										<i class="fa fa-calendar calendar-icon"></i>
+									</span>
+										<input type="text" id="startdatetime" class="form-control" required="required"/>
+									</div>
+								</th>
+
+								<th class="col-xs-3">
+									<div id="chooseEndDateTime" class ="input-group" onChange="setDateTime(this,'enddatetime')">
+									<span class="input-group-addon">
+										<i class="fa fa-calendar calendar-icon"></i>
+									</span>
+										<input type="text" id="enddatetime" class="form-control diabled" required="required"/>
+									</div>
+								</th>
+
+								<th class="col-xs-1">
+									<button v-on:click="addDatetime" id="addDateTime" type="button" class="btn btn-danger ml-1">add</button>
+								</th>
+							</tr>
+
+							</thead>
+							<tbody v-for="dt in datetimelist">
+							<tr>
+								<td>
+									<span class="ml-2">{{dt.start}}</span>
+								</td>
+								<td>
+									<span class="ml-2">{{dt.end}}</span>
+								</td>
+								<td>
+									<i v-on:click="deleteDatetime(dt)" class="fa fa-trash-o trash-icon ml-1" style="cursor: pointer"></i>
+								</td>
+							</tr>
+							</tbody>
+						</table>
+					</div>
+					<div>
+						<h3 class="auth-heading mt-4">Authorization</h3>
+                        <p>Your request has to be authorized before it can be approved.</p>
+					</div>
+                    <div class="row">
+                        <div class="btn-group mx-auto mt-3 mb-4" data-toggle="buttons">
+                            <div class="btn-group">
+                                <button class="btn toggle-button" v-bind:class="{active_toggle: authOption == 'authOwn'}" v-on:click="authOption = 'authOwn'">Authorize own request</button>
+                                <button class="btn toggle-button" v-bind:class="{active_toggle: authOption == 'passAuth'}" v-on:click="authOption = 'passAuth'">Send Authorization to someone else</button>
+                            </div>
+
+                        </div>
+                    </div>
+                    <div class="row">
+                        <!--OPTION 1 -- AUTH OWN-->
+                        <div v-if="authOption == 'authOwn'" class="col-md-12">
+                            <div class="form-group add-space-top">
+                                <!--https://cas.sfu.ca/cas/login?service=https%3A%2F%2Flocalhost%3A8443%2Fj_spring_cas_security_check&redirect%3D%2F"-->
+                                <button type="button" id="sign-in" class="btn btn-danger" v-on:click="signedIn = true">Login SFU CAS</button>
+                            </div>
+                            <div class="row">
+                                <div class="form-group col-md-6">
+                                    <label for="account-code-input">Account code</label>
+                                    <input type="text" id="account-code-input" v-model="formData.paymentAccountCode" class="form-control" required="required"/>
+                                </div>
+                            </div>
+                        </div>
+                        <!--OPTION 2 -- PASS AUTH-->
+                        <div v-if="authOption == 'passAuth'" class="form-group col-md-4">
+                            <label for="authorizer-email-input">Email of Authorizer</label>
+                            <input type="email" id="authorizer-email-input" class="form-control" v-model="formData.authorizerEmailAddress" placeholder="example@sfu.ca" required/>
+                        </div>
+                    </div>
+					<div v-if="signedIn == 'passAuth'" class="form-group col-md-12">
+						<input type="checkbox" id="invoice-input" class="mr-1"/>
+						<label for="invoice-input">Please Invoice</label>
+					</div>
+				</div>
+					<div class="row mt-8">
+					</div>
+					<div class="row mt-5">
+						<div class="col-md-12 text-center">
+							<button id="submit" class="btn btn-danger btn-lg col-md-8" v-bind:class="{disabled: !isValid | loading}">
+                                <div class="loading-icon mr-3" v-if="loading"></div>
+                                {{this.submitText}}
+                            </button>
+						</div>
+
+					</div>
+					<div class="bottom-space"></div>
+				</div>
+		</form>
+
+		<modal v-if="showModal" @close="showModal = false">
+			<h3 slot="header">{{submittedFormHeader}}</h3>
+			<span slot="body">{{submittedFormMessage}}</span>
+			<a v-if="submittedFormLink" v-bind:href="submittedFormLink" slot="link">Click here to view your submission.</a>
+		</modal>
+	</div>
+	<script src="/js/jquery-3.2.1.min.js"></script>
+    <script src="/js/bootstrap.bundle.min.js"></script>
+	<script src="/js/vue.js"></script>
+	<script src="/js/vue-resource.min.js"></script>
+	<script src="/js/jquery.datetimepicker.full.js"></script>
+	<script src="/js/jquery.datetimepicker.js"></script>
+	<script src="/js/datetimefeature.js"></script>
+    <script src="/js/datetime.js"></script>
+    <script src="/js/jquery.maskedinput.min.js"></script>
+	<script type="text/x-template" id="modal-template">
+		<transition name="modal">
+			<div class="modal-mask">
+				<div class="modal-wrapper">
+					<div class="modal-container">
+						<div class="modal-header">
+							<slot name="header"></slot>
+						</div>
+						<div class="modal-body">
+							<slot name="body"></slot>
+						</div>
+						<div class="modal-body">
+							<slot name="link"></slot>
+						</div>
+						<div class="modal-footer">
+							<slot name="footer">
+								<button class="modal-default-button btn btn-danger btn-lg" v-on:click="close">
+									OK
+								</button>
+							</slot>
+						</div>
+					</div>
+				</div>
+			</div>
+		</transition>
+	</script>
+    <script src="/js/constants.js"></script>
+	<script>
+        const emailValid = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+		const formSaveAPI = 'api/form/save';
+		const formGetAPI = 'updateform?token=';
+
+        const submitSuccessHeader = "Request Submitted";
+        const submitSuccessMessage = "Thank you, the Security Service Request has been submitted.";
+
+        const requestSuccessHeader = "Request Sent";
+        const requestSuccessMessage = "Thank you, the Security Service Request has been sent.";
+
+        const errorHeader = "Something went wrong";
+        const errorMessage = "Sorry, there was an error. Your form was not submitted. Please try again later.";
+
+        const signInMessage = "Sign In";
+        const signOutMessage = "Sign Out";
+
+        const submitTexts = {
+            LOGGED_IN: 'Submit',
+            LOGGED_IN_LOAD: 'Submitting Form',
+            NOT_LOGGED_IN: 'Request Authorization',
+            NOT_LOGGED_IN_LOAD: 'Requesting Authorization'
+        }
+
+        const guardTypes = [
+            "Guard",
+            "SCSP"
+        ];
+
+        $(document).ready(function(){
+            //initialize tooltips
+            $(function () {
+                $('[data-toggle="tooltip"]').tooltip();
+                //init input masks
+                $('#phone-input').mask("(999) 999-9999");
+            });
+        });
+
+        //persisting data on reload
+        window.onbeforeunload = function() {
+
+        }
+
+        var Modal = Vue.component('modal', {
+            template: '#modal-template',
+
+            methods: {
+                close: function () {
+                    form.closeModal();
+                    this.$emit('close');
+                }
+            }
+        });
+
+        const FormApp = Vue.extend({
+
+            http: {
+                root: '/',
+                headers: {
+                    Authorization: 'Basic YXBpOnBhc3N3b3Jk'
+                }
+            },
+
+			data: () => ({
+				 signedIn: false,
+				 signedInButtonMessage: signInMessage,
+
+				 submittedFormHeader:'',
+				 submittedFormMessage: '',
+				 submittedFormLink: '',
+
+				 showAuthFields: true,
+
+				 submitting: false,
+				 showModal: false,
+                formData: {
+                    department: '',
+                    requesterName: '',
+                    phoneNumber: '',
+                    requestedOnDate: '',
+                    requesterID: '',
+                    authorizationDate: '',
+                    paymentAccountCode: '',
+                    emailAddress: '',
+                    times: '',
+                    eventName: '',
+                    isLicensed: '',
+                    numAttendees: '0',
+                    authorizerId: '',
+                    authorizerPhoneNumber: '',
+                    serviceRequestNumber: '',
+                    eventLocation: '',
+                    authorizerName: '',
+                    eventDates: '',
+                    eventDetails: '',
+                    faxNumber: '',
+                    requestID: '',
+                    authorizerEmailAddress: '',
+	                guardType: '',
+	                numGuards: '0'
+                },
+                startdatetime: '',
+				enddatetime: '',
+				datetimelist: [],
+                departments: departments,
+	            guardTypes: guardTypes,
+				datetimelistsize: '0',
+                loading: false,
+                authOption: 'authOwn'
+            }),
+
+			computed: {
+				validation: function () {
+                    return {
+                        authorizerEmailAddress: this.signedIn || emailValid.test(this.formData.authorizerEmailAddress),
+                        emailAddress: emailValid.test(this.formData.emailAddress)
+                    }
+				},
+				isValid: function () {
+					var validation = this.validation;
+					return Object.keys(validation).every(function (key) {
+						return validation[key]
+					})
+				},
+				submitText: function() {
+				    if (this.signedIn && !this.loading) {
+				        return submitTexts.LOGGED_IN;
+                    } else if (this.signedIn && this.loading) {
+				        return submitTexts.LOGGED_IN_LOAD;
+                    } else if (!this.signedIn && !this.loading) {
+				        return submitTexts.NOT_LOGGED_IN;
+                    } else if (!this.signedIn && this.loading) {
+				        return submitTexts.NOT_LOGGED_IN_LOAD;
+                    } else {
+				        return 'Submit';
+                    }
+                }
+			},
+
+            methods: {
+                signInOut : function() {
+                    this.signedIn = !this.signedIn;
+                    this.showAuthFields = this.signedIn;
+                    this.updateSignInStatus();
+                },
+
+                updateSignInStatus : function() {
+                    if(this.signedIn) {
+                        this.signedInButtonMessage = signOutMessage;
+                    }else{
+                        this.signedInButtonMessage = signInMessage;
+                    }
+                },
+
+                setSubmittedFormHeader(header) {
+                    this.submittedFormHeader=header;
+                },
+
+                setSubmittedFormMessage(message) {
+                    this.submittedFormMessage=message;
+                },
+
+                setSubmittedFormLink(link) {
+                    this.submittedFormLink=link;
+                },
+
+                displaySubmitSuccessModal : function (formLink) {
+                    this.setSubmittedFormHeader(submitSuccessHeader);
+                    this.setSubmittedFormMessage(submitSuccessMessage);
+                    this.setSubmittedFormLink(formLink);
+                    this.showModal = true;
+                },
+
+                displayRequestSuccessModal : function (formLink) {
+                    this.setSubmittedFormHeader(requestSuccessHeader);
+                    this.setSubmittedFormMessage(requestSuccessMessage);
+                    this.setSubmittedFormLink(formLink);
+                    this.showModal = true;
+                },
+
+                displayErrorModal : function () {
+                    this.setSubmittedFormHeader(errorHeader);
+                    this.setSubmittedFormMessage(errorMessage);
+                    this.showModal = true;
+                },
+
+                closeModal : function () {
+                    this.resetFields();
+                },
+
+                resetFields : function () {
+                    Object.assign(this.$data, this.$options.data.call(this));
+                },
+
+                submitForm: function () {
+                    let self = this;
+                    this.loading = true;
+                    function successCallback(response) {
+                        if(response.ok) {
+                            if(self.signedIn)
+                                self.displaySubmitSuccessModal(formGetAPI + response.body);
+                            else
+                                self.displayRequestSuccessModal(formGetAPI + response.body);
+                        } else {
+                            errorCallback();
+                        }
+                    }
+
+                    function errorCallback() {
+                        self.displayErrorModal();
+                    }
+
+                    if (this.isValid && !this.submitting) {
+                        this.submitting = true;
+                        <!-- guarantee that authorizer email address is empty -->
+                        if(this.signedIn) {
+                            this.formData.authorizerEmailAddress='';
+                        }
+                        this.formData.phoneNumber = $("#phone-input").val();
+
+                        this.$http.post(formSaveAPI, this.formData).then(function (response) {
+	                        successCallback(response);
+	                        this.loading = false;
+	                    }, function () {
+	                        errorCallback();
+	                    });
+                    }
+                },
+
+                addDatetime: function(){
+            		this.startdatetime = getDateTime("chooseStartDateTime","startdatetime");
+            		this.enddatetime = getDateTime("chooseEndDateTime","enddatetime");
+            		if(this.startdatetime!='' && this.enddatetime!=''){
+						if(this.datetimelist.length==0){
+							this.formData.eventDates += this.startdatetime +"-"+ this.enddatetime;
+						}else{
+							this.formData.eventDates += ", "+this.startdatetime +"-"+ this.enddatetime;
+						}
+						this.datetimelist.push( {start: this.startdatetime, end: this.enddatetime} );
+						disableDateInput(true);
+						this.datetimelistsize++;
+						this.startdatetime = '';
+						this.enddatetime = '';
+            		}
+            	},
+            	deleteDatetime: function(dt){
+            		var index = this.datetimelist.indexOf(dt);
+            		this.formData.eventDates = deleteEventDate(dt.start,dt.end,this.formData.eventDates, index,this.datetimelist.length);
+            		this.datetimelist.splice(index,1);
+            		if(this.datetimelist.length==0){
+            			disableDateInput(false);
+            		}
+            	},
+            },
+
+            components: {Modal}
+        });
+
+        form = new FormApp({
+            el: '#app'
+        });
+	</script>
+</body>
+</html>

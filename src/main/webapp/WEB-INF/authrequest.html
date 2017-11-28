@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Auth Request</title>
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/css/style.css">
+
+</head>
+<body>
+<header>
+    <img class="logo" src="/img/sfu-logo@2x.png" alt="sfu-logo"/>
+</header>
+<div class="container col-md-10 offset-md-1 wrapper mb-5 col-lg-10" id="app">
+    <div class="container col-md-10">
+        <div class="row mt-5">
+            <h1 class="mt-5">Authorize Event</h1>
+        </div>
+        <div class="row mt-5">
+            <h1>TODO REQUEST DETAILS</h1>
+        </div>
+        <div class="row mt-5">
+            <div class="form-group col-md-4">
+                <label for="account-code-input">Account Code</label>
+                <input type="text" id="account-code-input" class="form-control"/>
+            </div>
+            <div class="form-group col-md-4">
+                <label for="phone-input">Phone</label>
+                <input type="text" id="phone-input" class="form-control"/>
+            </div>
+        </div>
+        <div class="row mt-3">
+            <a href="" class="btn btn-primary mx-auto">Authorize Event</a>
+        </div>
+    </div>
+    <div class="bottom-space"></div>
+    <script src="/js/jquery.min.js"></script>
+    <script src="/js/vue.js"></script>
+    <script>
+        var app = new Vue({
+            el: '#app',
+            data: {
+            }
+        });
+    </script>
+</div>
+</body>
+</html>
