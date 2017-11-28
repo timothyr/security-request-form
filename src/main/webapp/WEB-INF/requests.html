@@ -6,102 +6,107 @@
     <link rel="stylesheet" href="/css/bootstrap.min.css">
     <link rel="stylesheet" href="/css/font-awesome.min.css">
     <link rel="stylesheet" href="/css/style.css">
+    <link rel="icon" href="img/favicon.ico" type="image/x-icon"/>
 </head>
 <body>
-    <header>
-        <a href="/security/requests">
-            <img class="logo" src="/img/sfu-logo@2x.png" alt="sfu-logo"/>
-        </a>
-        <!--TODO HARDCODED LOGGED USER-->
-        <div style="display: inline-block; float: right; margin-right: 10%; margin-top: 20px;">
-            <div class="dropdown" style="">
-                <div class="dropdown-toggle" id="" data-toggle="dropdown">
-                    <span class="blue-text"><span>Logged in as</span> Bob</span>
-                </div>
-                <ul class="dropdown-menu">
-                    <li class="dropdown-item">Logout from CAS</li>
-                </ul>
-            </div>
-        </div>
-    </header>
-    <div class="container col-md-10 offset-md-1 wrapper mb-5 col-lg-10" id="app">
-        <div class="container col-md-10">
-            <div class="row mt-5">
-                <h1 class="mt-5">Requests</h1>
-            </div>
-            <div class="row pull-right">
-                <div class="dropdown">
-                    <div class="dropdown-toggle" id="dropdownMenuButton" data-toggle="dropdown"><i class="fa fa-cog"></i></div>
+    <div id="app">
+        <header>
+            <a href="/security/requests">
+                <img class="logo" src="/img/sfu-logo@2x.png" alt="sfu-logo"/>
+            </a>
+            <div style="display: inline-block; float: right; margin-right: 10%; margin-top: 20px;">
+                <div class="dropdown" style="">
+                    <div class="dropdown-toggle" id="" data-toggle="dropdown">
+                        <span>Logged in as </span><div class="username" v-cloak>{{userName}}</div>
+                    </div>
                     <ul class="dropdown-menu">
-                        <li class="dropdown-item" v-on:click="exportAllCSV()">Export All to CSV</li>
+                        <a href="https://cas.sfu.ca/cas/logout">
+                            <li class="dropdown-item">Logout from CAS</li>
+                        </a>
                     </ul>
                 </div>
             </div>
-            <div class="row mt-5">
-                <div class="input-group search-group">
-                    <span class="fa fa-search"></span>
-                    <input type="text" class="form-control" id="search-bar" v-model="searchTerm" placeholder="search"/>
-                    <div class="error"></div>
+        </header>
+        <div class="container col-md-10 offset-md-1 wrapper mb-5 col-lg-10">
+            <div class="container col-md-10">
+                <div class="row mt-5">
+                    <h1 class="mt-5">Requests</h1>
+                </div>
+                <div class="row pull-right">
+                    <div class="dropdown">
+                        <div class="dropdown-toggle" id="dropdownMenuButton" data-toggle="dropdown"><i class="fa fa-cog"></i></div>
+                        <ul class="dropdown-menu">
+                            <li class="dropdown-item" v-on:click="exportAllCSV()">Export All to CSV</li>
+                            <li class="dropdown-item" v-on:click="exportSelectedCSV()">Export Selected to CSV</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="row mt-5">
+                    <div class="input-group search-group">
+                        <span class="fa fa-search"></span>
+                        <input type="text" class="form-control" id="search-bar" v-model="searchTerm" placeholder="search"/>
+                        <div class="error"></div>
+                    </div>
+                </div>
+                <div class="row mt-3">
+                    <div class="col-md-8 mx-auto">
+                        <ul class="nav nav-pills nav-fill">
+                            <li class="nav-item"><a href="" v-on:click.stop.prevent="activeStatus='ALL'" v-bind:class="{'active': isActive('ALL')}" class="nav-link">All</a></li>
+                            <li class="nav-item"><a href="" v-on:click.stop.prevent="activeStatus='WAITING'" v-bind:class="{'active': isActive('WAITING')}"class="nav-link">Waiting</a></li>
+                            <li class="nav-item"><a href="" v-on:click.stop.prevent="activeStatus='APPROVED'" v-bind:class="{'active': isActive('APPROVED')}"class="nav-link">Approved</a></li>
+                            <li class="nav-item"><a href="" v-on:click.stop.prevent="activeStatus='REJECTED'" v-bind:class="{'active': isActive('REJECTED')}"class="nav-link">Rejected</a></li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="row mt-4">
+                    <div class="table-responsive">
+                        <table class="table table-striped">
+                            <thead>
+                                <tr>
+                                    <th v-for="column in columns" v-on:click="sortBy(column)" class="clickable" v-cloak>{{column}}
+                                        <i v-if="reversed" class="fa fa-sort-desc ml-2"></i>
+                                        <i v-if="!reversed" class="fa fa-sort-asc ml-2"></i>
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr v-for="request in filteredRequests" v-on:click="goToRequest(request.requestID)"v-cloak>
+                                    <!--<td v-for="value in request" class="clickable" v-on:click="goToRequest(request.requestID)">{{value}}</td>-->
+                                    <td class="clickable text-primary">{{request.requestID}}</td>
+                                    <td class="clickable">
+                                        <span class="badge white-text" v-bind:class="getBadgeClassName(request.requestStatus)">{{request.requestStatus}}</span>
+                                    </td>
+                                    <td class="clickable">{{request.requesterName}}</td>
+                                    <td class="clickable">{{request.requestedOnDate}}</td>
+                                    <td class="clickable">{{request.emailAddress}}</td>
+                                    <td class="clickable">{{request.phoneNumber}}</td>
+                                    <td class="clickable">{{request.eventName}}</td>
+                                    <td class="clickable">{{request.eventLocation}}</td>
+                                    <td class="clickable" v-if="request.eventDates[0]">{{request.eventDates[0].start}} to {{request.eventDates[0].end}}</td>
+                                    <td class="clickable">{{request.requesterID}}</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <span class="text-muted mx-auto" v-if="showNoResults()">No results.</span>
+                    <div class="loader loader--style3 mx-auto" title="2" v-if="loading">
+                        <svg version="1.1" id="loader-1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+                         width="40px" height="40px" viewBox="0 0 50 50" style="enable-background:new 0 0 50 50;" xml:space="preserve">
+                        <path fill="#000" d="M43.935,25.145c0-10.318-8.364-18.683-18.683-18.683c-10.318,0-18.683,8.365-18.683,18.683h4.068c0-8.071,6.543-14.615,14.615-14.615c8.072,0,14.615,6.543,14.615,14.615H43.935z">
+                            <animateTransform attributeType="xml"
+                              attributeName="transform"
+                              type="rotate"
+                              from="0 25 25"
+                              to="360 25 25"
+                              dur="0.6s"
+                              repeatCount="indefinite"/>
+                        </path>
+                      </svg>
+                    </div>
                 </div>
             </div>
-            <div class="row mt-3">
-                <div class="col-md-8 mx-auto">
-                    <ul class="nav nav-pills nav-fill">
-                        <li class="nav-item"><a href="" v-on:click.stop.prevent="activeStatus='ALL'" v-bind:class="{'active': isActive('ALL')}" class="nav-link">All</a></li>
-                        <li class="nav-item"><a href="" v-on:click.stop.prevent="activeStatus='WAITING'" v-bind:class="{'active': isActive('WAITING')}"class="nav-link">Waiting</a></li>
-                        <li class="nav-item"><a href="" v-on:click.stop.prevent="activeStatus='APPROVED'" v-bind:class="{'active': isActive('APPROVED')}"class="nav-link">Approved</a></li>
-                        <li class="nav-item"><a href="" v-on:click.stop.prevent="activeStatus='REJECTED'" v-bind:class="{'active': isActive('REJECTED')}"class="nav-link">Rejected</a></li>
-                    </ul>
-                </div>
-            </div>
-            <div class="row mt-4">
-                <div class="table-responsive">
-                    <table class="table table-striped">
-                        <thead>
-                            <tr>
-                                <th v-for="column in columns" v-on:click="sortBy(column)" class="clickable" v-cloak>{{column}}
-                                    <i v-if="reversed" class="fa fa-sort-desc ml-2"></i>
-                                    <i v-if="!reversed" class="fa fa-sort-asc ml-2"></i>
-                                </th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr v-for="request in filteredRequests" v-on:click="goToRequest(request.requestID)"v-cloak>
-                                <!--<td v-for="value in request" class="clickable" v-on:click="goToRequest(request.requestID)">{{value}}</td>-->
-                                <td class="clickable text-primary">{{request.requestID}}</td>
-                                <td class="clickable">{{request.requesterName}}</td>
-                                <td class="clickable">{{request.requesterID}}</td>
-                                <td class="clickable">{{request.requestedOnDate}}</td>
-                                <td class="clickable">{{request.emailAddress}}</td>
-                                <td class="clickable">{{request.phoneNumber}}</td>
-                                <td class="clickable">{{request.eventName}}</td>
-                                <td class="clickable">{{request.eventLocation}}</td>
-                                <td class="clickable" v-if="request.eventDates[0]">{{request.eventDates[0].start}} to {{request.eventDates[0].end}}</td>
-                                <td class="clickable">
-                                    <span class="badge white-text" v-bind:class="getBadgeClassName(request.requestStatus)">{{request.requestStatus}}</span>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-                <span class="text-muted mx-auto" v-if="showNoResults()">No results.</span>
-                <div class="loader loader--style3 mx-auto" title="2" v-if="loading">
-                    <svg version="1.1" id="loader-1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
-                     width="40px" height="40px" viewBox="0 0 50 50" style="enable-background:new 0 0 50 50;" xml:space="preserve">
-                    <path fill="#000" d="M43.935,25.145c0-10.318-8.364-18.683-18.683-18.683c-10.318,0-18.683,8.365-18.683,18.683h4.068c0-8.071,6.543-14.615,14.615-14.615c8.072,0,14.615,6.543,14.615,14.615H43.935z">
-                        <animateTransform attributeType="xml"
-                          attributeName="transform"
-                          type="rotate"
-                          from="0 25 25"
-                          to="360 25 25"
-                          dur="0.6s"
-                          repeatCount="indefinite"/>
-                    </path>
-                  </svg>
-                </div>
-            </div>
+            <div class="bottom-space"></div>
         </div>
-        <div class="bottom-space"></div>
     </div>
 </body>
 <script src="/js/jquery-3.2.1.min.js"></script>
@@ -135,15 +140,14 @@
         el: '#app',
         data: {
             loading: true,
-            columns: ["Request ID", "Name", "ID", "Request Date", "Email",
-                        "Phone", "Event Name", "Location", "Date", "Status"],
+            columns: ["Request ID", "Status", "Name", "Request Date", "Email",
+                        "Phone", "Event Name", "Location", "Date", "Requester ID"],
             activeStatus: "ALL",
             searchTerm: "",
             sortKey: "",
             reversed: true,
-            requests: [
-
-            ]
+            requests: [],
+            userName: "",
         },
         methods: {
             changeDates: function() {
@@ -163,7 +167,7 @@
                     // value: columnName
                     requestID: "Request ID",
                     requesterName: "Name",
-                    requesterID: "ID",
+                    requesterID: "Requester ID",
                     requestedOnDate: "Request Date",
                     emailAddress: "Email",
                     phoneNumber: "Phone",
@@ -183,6 +187,17 @@
             exportAllCSV: function() {
                 window.location.assign("/api/csv/form/all.csv");
             },
+            exportSelectedCSV: function() {
+                //TODO ADD ENPOINT AND LINK
+                let visibleRequests = this.getFilteredRequests().map(request => {
+                    return request.requestID;
+                });
+                this.$http.post('ENDPOINT HERE', visibleRequests).then(function(response) {
+                    if (response == 200) {
+                        //REDIRECT TO CSV
+                    }
+                });
+            },
             getBadgeClassName: function(status) {
                 switch (status) {
                     case 'WAITING':
@@ -198,32 +213,40 @@
                         return 'badge-default';
                         break;
                 }
-            }
+            },
+            getFilteredRequests: function() {
+                return this.requests.filter(request => {
+                    return isTermInObject(request, this.searchTerm);
+                }).sort((requestA, requestB) => {
+                    if (this.reversed) {
+                        return requestA[this.getColumnValue(this.sortKey)] > requestB[this.getColumnValue(this.sortKey)]
+                    } else {
+                        return requestA[this.getColumnValue(this.sortKey)] < requestB[this.getColumnValue(this.sortKey)]
+                    }
+                }).filter(request => {
+                    if(this.activeStatus == "ALL") {
+                        return true;
+                    } else {
+                        if (request.requestStatus == "") {
+                            return false;
+                        }
+                        return request.requestStatus.toLowerCase() == this.activeStatus.toLowerCase();
+                    }
+                });
+            },
+            setUserName: function() {
+                this.$http.get("/api/user/get").then(function(response) {
+                    if (response.status == 200) {
+                        this.userName = response.data.username;
+                    }
+                });
+            },
         },
         computed: {
             filteredRequests: {
                 cache: false,
                 get: function() {
-                    console.log(this.reversed + " " + this.sortKey + " helloo this is reversed/sortKey");
-                    return this.requests.filter(request => {
-                        return isTermInObject(request, this.searchTerm);
-                    }).sort((requestA, requestB) => {
-                        if (this.reversed) {
-                            return requestA[this.getColumnValue(this.sortKey)] > requestB[this.getColumnValue(this.sortKey)]
-                        } else {
-                            return requestA[this.getColumnValue(this.sortKey)] < requestB[this.getColumnValue(this.sortKey)]
-                        }
-                    }).filter(request => {
-                        if(this.activeStatus == "ALL") {
-                            return true;
-                        } else {
-                            if (request.requestStatus == "") {
-                                return false;
-                            }
-                            return request.requestStatus.toLowerCase() == this.activeStatus.toLowerCase();
-                        }
-                    });
-
+                    return this.getFilteredRequests();
                 }
             }
         },
@@ -236,8 +259,8 @@
                 this.changeDates();
                 this.loading = false;
             });
+            this.setUserName();
         }
-
     });
 </script>
 </html>

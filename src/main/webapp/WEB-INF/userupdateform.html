@@ -8,6 +8,7 @@
     <link rel="stylesheet" href="/css/jquery.datetimepicker.min.css">
     <link rel="stylesheet" href="/css/style.css">
     <link rel="stylesheet" href="/css/modal.css">
+    <link rel="icon" href="img/favicon.ico" type="image/x-icon"/>
 </head>
 <body class="red-background">
 <header>
@@ -48,7 +49,7 @@
                 <div class="row">
                     <div class="form-group col-md-4">
                         <label for="phone-input">Phone</label>
-                        <input type="text" placeholder="xxx-xxx-xxxx" id="phone-input" v-model="formData.phoneNumber" class="form-control masked" pattern="[0-9]{3}[ |-][0-9]{3}[ |-][0-9]{4}" data-valid-example="000-000-0000" required="required"/>
+                        <input type="text" id="phone-input" class="form-control" required="required"/>
                     </div>
                     <div class="form-group col-md-4">
                         <label for="email-input">Email</label>
@@ -90,6 +91,19 @@
                     <div class="form-group col-md-12">
                         <input type="checkbox" id="licensed-input" v-model="formData.isLicensed" class="mr-1 mt-4"/>
                         <label for="licensed-input">Licensed</label>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="form-group col-md-4">
+                        <label for="number-of-guards-input"># of Guards Requested</label>
+                        <input type="number" min="1" value="1" id="number-of-guards-input" v-model="formData.numGuards" class="form-control" required="required"/>
+                    </div>
+                    <div class="form-group col-md-4">
+                        <label for="guard-type-input">Type of Guard Requested</label>
+                        <select required class="form-control" id="guard-type-input" v-model="formData.guardType">
+                            <option value="" disabled selected>Choose...</option>
+                            <option :value="guardType" v-for="guardType in guardTypes">{{guardType}}</option>
+                        </select>
                     </div>
                 </div>
                 <div>
@@ -206,6 +220,7 @@
 <script src="/js/jquery.datetimepicker.js"></script>
 <script src="/js/datetimefeature.js"></script>
 <script src="/js/datetime.js"></script>
+<script src="/js/jquery.maskedinput.min.js"></script>
 <script type="text/x-template" id="modal-template">
     <transition name="modal">
         <div class="modal-mask">
@@ -232,6 +247,7 @@
         </div>
     </transition>
 </script>
+<script src="/js/constants.js"></script>
 <script>
     var getUrlParams = function (url) {
         var params = {};
@@ -256,16 +272,10 @@
         APPROVED: 'APPROVED',
         REJECTED: 'REJECTED'
     };
-    // TODO more specific? https://www.sfu.ca/dean-gradstudies/blog/departments.html
-    const departments = [
-        "Faculty of Applied Sciences",
-        "Faculty of Arts and Social Sciences",
-        "Beedie School of Business",
-        "Faculty of Communication, Art and Technology",
-        "Faculty of Education",
-        "Faculty of Environment",
-        "Faculty of Health Sciences",
-        "Faculty of Science"
+
+    const guardTypes = [
+	    "Guard",
+	    "SCSP"
     ];
 
     var Modal = Vue.component('modal', {
@@ -279,8 +289,8 @@
         }
     });
 
-    const FormApp = Vue.extend({
-        el: '#app',
+        const FormApp = Vue.extend({
+            el: '#app',
         http: {
             root: '/',
             headers: {
@@ -314,12 +324,15 @@
                 eventDetails: '',
                 faxNumber: '',
                 requestID: '',
+	            guardType: '',
+	            numGuards: '0'
             },
             startdatetime: '',
 			enddatetime: '',
 			datetimelist: [],
             departments: departments,
-            signedIn: false,
+	        guardTypes: guardTypes,
+	        signedIn: false
         }),
 
         computed: {
@@ -378,37 +391,19 @@
                 function errorCallback() {
                     self.displayErrorModal();
                 }
-
-                if (this.isValid) {
-                    this.$http.put('api/form/update/' + this.formData.id, {
-                        department: this.formData.department,
-                        requesterName: this.formData.requesterName,
-                        phoneNumber: this.formData.phoneNumber,
-                        requestedOnDate: this.formData.requestedOnDate,
-                        requesterID: this.formData.requesterID,
-                        authorizationDate: this.formData.authorizationDate,
-                        paymentAccountCode: this.formData.paymentAccountCode,
-                        emailAddress: this.formData.emailAddress,
-                        times: this.formData.times,
-                        eventName: this.formData.eventName,
-                        isLicensed: this.formData.isLicensed,
-                        numAttendees: this.formData.numAttendees,
-                        authorizerId: this.formData.authorizerId,
-                        authorizerPhoneNumber: this.formData.authorizerPhoneNumber,
-                        serviceRequestNumber: this.formData.serviceRequestNumber,
-                        eventLocation: this.formData.eventLocation,
-                        authorizerName: this.formData.authorizerName,
-                        eventDates: this.formData.eventDates,
-                        eventDetails: this.formData.eventDetails,
-                        faxNumber: this.formData.faxNumber
-
-                    }).then(response => {
-                        successCallback(response)
-                    }, response => {
-                        errorCallback();
-                    });
-                }
+                //get value from phone-input
+                this.formData.phoneNumber = $("#phone-input").val();
+	            if (this.isValid) {
+                    console.log("FUCK " + this.formData.id);
+		            this.$http.put("/api/form/update/" + this.formData.id, this.formData).then(function (response) {
+			            successCallback(response);
+			            this.loading = false;
+		            }, function () {
+			            errorCallback();
+		            });
+	            }
             },
+
             addDatetime: function(){
             	this.startdatetime = getDateTime("chooseStartDateTime","startdatetime");
             	this.enddatetime = getDateTime("chooseEndDateTime","enddatetime");
@@ -449,11 +444,23 @@
             let urlParams = getUrlParams(window.location);
             this.$http.get("/api/form/get/user/" + urlParams.token, {
             }).then(response  => {
-                if (response.status == 200) {
+                if (response.status >= 200 && response.status <=300) {
+                    let phoneNumber = response.data.phoneNumber;
+                    $(document).ready(function(){
+                        //initialize tooltips
+                        $(function () {
+                            //init input masks
+                            $('#phone-input').mask("(999) 999-9999");
+                            $('#phone-input').val(phoneNumber);
+                        });
+                    });
                     this.formData = response.data;
                     this.datetimelist = updateDateTime(this.formData.eventDates);
+                } else {
+                    console.log(response.status);
                 }
             });
+
         },
 
         components: {Modal}

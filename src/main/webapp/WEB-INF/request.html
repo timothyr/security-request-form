@@ -7,111 +7,129 @@
     <link rel="stylesheet" href="/css/bootstrap.min.css">
     <link rel="stylesheet" href="/css/font-awesome.min.css">
     <link rel="stylesheet" href="/css/style.css">
+    <link rel="icon" href="img/favicon.ico" type="image/x-icon"/>
 </head>
 
 <body>
-<header>
-    <a href="/security/requests"><img class="logo" src="/img/sfu-logo@2x.png" alt="sfu-logo"/></a>
-</header>
-<div class="container col-md-10 offset-md-1 wrapper mb-5 col-lg-10" id="app">
-    <div class="row mt-5"></div>
-    <div class="container col-md-10" v-cloak>
-        <div class="row mt-4">
-            <h3 class="mt-5">Request #{{requestID}}</h3>
-        </div>
-        <div class="row">
-            <div class="" v-if="form.requestStatus !== null">
-                <span class="badge white-text badge-med" v-bind:class="getBadgeClassName(form.requestStatus)">{{form.requestStatus}}</span>
-            </div>
-        </div>
-        <div class="row pull-right">
-            <div class="dropdown">
-                <div class="dropdown-toggle" id="dropdownMenuButton" data-toggle="dropdown"><i class="fa fa-cog"></i>
+    <div id="app">
+        <header>
+            <a href="/security/requests"><img class="logo" src="/img/sfu-logo@2x.png" alt="sfu-logo"/></a>
+            <div style="display: inline-block; float: right; margin-right: 10%; margin-top: 20px;">
+                <div class="dropdown" style="">
+                    <div class="dropdown-toggle" id="" data-toggle="dropdown">
+                        <span>Logged in as </span><div class="username" v-cloak>{{userName}}</div>
+                    </div>
+                    <ul class="dropdown-menu">
+                        <a href="https://cas.sfu.ca/cas/logout">
+                            <li class="dropdown-item">Logout from CAS</li>
+                        </a>
+                    </ul>
                 </div>
-                <ul class="dropdown-menu">
-                    <li class="dropdown-item" v-on:click="exportRequestCSV()">Export Request to CSV</li>
-                    <li class="dropdown-item" v-on:click="exportRequestGuardsCSV()">Export Guard list to CSV</li>
-                    <li class="dropdown-item" v-on:click="exportInvoicePDF()">Generate Invoice</li>
-                </ul>
             </div>
-        </div>
-        <div class="row mt-5">
-            <div class="col-lg-6">
-                <ul class="list-group">
-                    <li class="list-group-item d-flex justify-content-between align-items-center">Requested By: <span
-                            class="dark-text">{{form.requesterName}}</span></li>
-                    <li class="list-group-item d-flex justify-content-between align-items-center">Phone: <span
-                            class="dark-text">{{form.phoneNumber}}</span></li>
-                    <li class="list-group-item d-flex justify-content-between align-items-center">Email: <span
-                            class="dark-text">{{form.emailAddress}}</span></li>
-                    <li class="list-group-item d-flex justify-content-between align-items-center">Type/Name of Event:
-                        <span class="dark-text">{{form.eventName}}</span></li>
-                    <li class="list-group-item d-flex justify-content-between align-items-center">Location: <span
-                            class="dark-text">{{form.eventLocation}}</span></li>
+        </header>
+        <div class="container col-md-10 offset-md-1 wrapper mb-5 col-lg-10">
+            <div class="row mt-5"></div>
+            <div class="container col-md-10" v-cloak>
+                <div class="row mt-4">
+                    <h3 class="mt-5">Request #{{requestID}}</h3>
+                </div>
+                <div class="row">
+                    <div class="" v-if="form.requestStatus !== null">
+                        <span class="badge white-text badge-med" v-bind:class="getBadgeClassName(form.requestStatus)">{{form.requestStatus}}</span>
+                    </div>
+                </div>
+                <div class="row pull-right">
+                    <div class="dropdown">
+                        <div class="dropdown-toggle" id="dropdownMenuButton" data-toggle="dropdown"><i class="fa fa-cog"></i>
+                        </div>
+                        <ul class="dropdown-menu">
+                            <li class="dropdown-item" v-on:click="exportRequestCSV()">Export Request to CSV</li>
+                            <li class="dropdown-item" v-on:click="exportRequestGuardsCSV()">Export Guard list to CSV</li>
+                            <li class="dropdown-item" v-on:click="exportInvoicePDF()">Generate Invoice</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="row mt-5">
+                    <div class="col-lg-6">
+                        <ul class="list-group">
+                            <li class="list-group-item d-flex justify-content-between align-items-center">Requested By: <span
+                                    class="dark-text">{{form.requesterName}}</span></li>
+                            <li class="list-group-item d-flex justify-content-between align-items-center">Phone: <span
+                                    class="dark-text">{{form.phoneNumber}}</span></li>
+                            <li class="list-group-item d-flex justify-content-between align-items-center">Email: <span
+                                    class="dark-text">{{form.emailAddress}}</span></li>
+                            <li class="list-group-item d-flex justify-content-between align-items-center">Type/Name of Event:
+                                <span class="dark-text">{{form.eventName}}</span></li>
+                            <li class="list-group-item d-flex justify-content-between align-items-center">Location: <span
+                                    class="dark-text">{{form.eventLocation}}</span></li>
 
-                </ul>
-            </div>
-            <div class="col-lg-6">
-                <ul class="list-group">
-                    <li class="list-group-item d-flex justify-content-between align-items-center">SFU ID: <span
-                            class="dark-text">{{form.requesterID}}</span></li>
-                    <li class="list-group-item d-flex justify-content-between align-items-center">Fax: <span
-                            class="dark-text">{{form.faxNumber}}</span></li>
-                    <li class="list-group-item d-flex justify-content-between align-items-center"># of Attendees: <span
-                            class="dark-text">{{form.numAttendees}}</span></li>
-                    <li class="list-group-item d-flex justify-content-between align-items-center">Licensed: <span
-                            class="dark-text">{{form.isLicensed}}</span></li>
-                </ul>
-            </div>
-        </div>
-        <div class="row mt-4">
-            <span class="ml-3 mb-1 grey-text">Details:</span>
-            <ul class="list-group col-md-12 mt-1" style="margin-left: 15px">
-                <li class="list-group-item">
-                    <span class="dark-text">{{form.eventDetails}}</span>
-                </li>
-            </ul>
-        </div>
+                        </ul>
+                    </div>
+                    <div class="col-lg-6">
+                        <ul class="list-group">
+                            <li class="list-group-item d-flex justify-content-between align-items-center">SFU ID: <span
+                                    class="dark-text">{{form.requesterID}}</span></li>
+                            <li class="list-group-item d-flex justify-content-between align-items-center">Fax: <span
+                                    class="dark-text">{{form.faxNumber}}</span></li>
+                            <li class="list-group-item d-flex justify-content-between align-items-center"># of Attendees: <span
+                                    class="dark-text">{{form.numAttendees}}</span></li>
+                            <li class="list-group-item d-flex justify-content-between align-items-center">Licensed: <span
+                                    class="dark-text">{{form.isLicensed}}</span></li>
+                            <li class="list-group-item d-flex justify-content-between align-items-center"># of Guards Requested: <span
+                                    class="dark-text">{{form.numGuards}}</span></li>
+                            <li class="list-group-item d-flex justify-content-between align-items-center">Type of Guard Requested: <span
+                                    class="dark-text">{{form.guardType}}</span></li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="row mt-4">
+                    <span class="ml-3 mb-1 grey-text">Details:</span>
+                    <ul class="list-group col-md-12 mt-1" style="margin-left: 15px">
+                        <li class="list-group-item">
+                            <span class="dark-text">{{form.eventDetails}}</span>
+                        </li>
+                    </ul>
+                </div>
 
-        <div class="row my-4">
-            <table class="table table-striped">
-                <thead>
-                <tr>
-                    <th class="text-center">Start Time</th>
-                    <th class="text-center">End Time</th>
-                    <th class="text-center">Hours</th>
-                </tr>
-                </thead>
-                <tbody>
-                <tr v-for="d in dates">
-                    <td class="text-center">{{d.start}}</td>
-                    <td class="text-center">{{d.end}}</td>
-                    <td class="text-center">{{d.hours}}</td>
-                </tr>
-                </tbody>
-            </table>
-        </div>
+                <div class="row my-4">
+                    <table class="table table-striped">
+                        <thead>
+                        <tr>
+                            <th class="text-center">Start Time</th>
+                            <th class="text-center">End Time</th>
+                            <th class="text-center">Hours</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr v-for="d in dates">
+                            <td class="text-center">{{d.start}}</td>
+                            <td class="text-center">{{d.end}}</td>
+                            <td class="text-center">{{d.hours}}</td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
 
-        <div class="row">
-            <div class="col-lg-6">
-                <ul class="list-group">
-                    <li class="list-group-item d-flex justify-content-between align-items-center">Authorized By: <span
-                            class="dark-text">{{form.authorizerName}}</span></li>
-                    <li class="list-group-item d-flex justify-content-between align-items-center">Account Code: <span
-                            class="dark-text">{{form.paymentAccountCode}}</span></li>
-                    <li class="list-group-item d-flex justify-content-between align-items-center">Authorizer ID: <span
-                            class="dark-text">{{form.authorizerID}}</span></li>
-                </ul>
-            </div>
-            <div class="col-lg-6">
-                <ul class="list-group">
-                    <li class="list-group-item d-flex justify-content-between align-items-center">Authorizer Phone:
-                        <span class="dark-text">{{form.authorizerPhoneNumber}}</span></li>
-                    <li class="list-group-item d-flex justify-content-between align-items-center">Invoice: <span
-                            class="dark-text">{{form.invoiceRequested}}</span></li>
-                </ul>
-            </div>
-        </div>
+                <div class="row">
+                    <div class="col-lg-6">
+                        <ul class="list-group">
+                            <li class="list-group-item d-flex justify-content-between align-items-center">Authorized By: <span
+                                    class="dark-text">{{form.authorizerName}}</span></li>
+                            <li class="list-group-item d-flex justify-content-between align-items-center">Account Code: <span
+                                    class="dark-text">{{form.paymentAccountCode}}</span></li>
+                            <li class="list-group-item d-flex justify-content-between align-items-center">Authorizer ID: <span
+                                    class="dark-text">{{form.authorizerID}}</span></li>
+                        </ul>
+                    </div>
+                    <div class="col-lg-6">
+                        <ul class="list-group">
+                            <li class="list-group-item d-flex justify-content-between align-items-center">Authorizer Phone:
+                                <span class="dark-text">{{form.authorizerPhoneNumber}}</span></li>
+                            <li class="list-group-item d-flex justify-content-between align-items-center">Invoice: <span
+                                    class="dark-text">{{form.invoiceRequested}}</span></li>
+                        </ul>
+                    </div>
+                </div>
 
         <div class="row">
             <div class="col-md-12 line-break mt-4"></div>
@@ -219,25 +237,25 @@
             <div class="col col-md-3"></div>
         </div>
 
-        <div class="row text-center">
-            <div class="col-md-4">
-                <p class="d-block">Estimated Personnel Cost:</p>
-                <span class="money-style d-block">${{cost}}</span>
-            </div>
-            <div class="col-md-4">
-                <p class="d-block">Total Hours:</p>
-                <span class="money-style d-block">{{totalHours}} Hours</span>
-            </div>
-            <div class="col-md-4">
-                <p class="d-block">Hours per Guard/SCSP:</p>
-                <span class="money-style d-block">{{avgHours}} Hours</span>
-            </div>
-        </div>
+                <div class="row text-center">
+                    <div class="col-md-4">
+                        <p class="d-block">Estimated Personnel Cost:</p>
+                        <span class="money-style d-block">${{cost}}</span>
+                    </div>
+                    <div class="col-md-4">
+                        <p class="d-block">Total Hours:</p>
+                        <span class="money-style d-block">{{totalHours}} Hours</span>
+                    </div>
+                    <div class="col-md-4">
+                        <p class="d-block">Hours per Guard/SCSP:</p>
+                        <span class="money-style d-block">{{avgHours}} Hours</span>
+                    </div>
+                </div>
 
-        <div class="form-group my-5">
-            <label for="remarksField">Security Remarks</label>
-            <textarea class="form-control" rows="4" placeholder="Remarks" v-model="form.securityRemarks" id="remarksField"></textarea>
-        </div>
+                <div class="form-group my-5">
+                    <label for="remarksField">Security Remarks</label>
+                    <textarea class="form-control" rows="4" placeholder="Remarks" v-model="form.securityRemarks" id="remarksField"></textarea>
+                </div>
 
         <div class="row">
             <div class="col-md-12">
@@ -248,7 +266,10 @@
                     <button class="btn btn-primary col-sm-12 col-md-2 mt-3" v-on:click="submit('update')" :disabled=!canAccept>
                         Update
                     </button>
-                    <button class="btn btn-danger col-sm-12 col-md-2 mt-3" v-on:click="submit('reject')">Reject</button>
+                    <button class="btn btn-danger col-sm-12 col-md-2 mt-3" v-on:click="submit('reject')" v-bind:class="{disabled: rejectLoading}">
+						<div class="loading-icon mr-3" v-if="rejectLoading" style="width: 20px; height: 20px"></div>
+						Reject
+					</button>
                 </div>
                 <div id="emailModal" class="modal fade" role="dialog">
                     <div class="modal-dialog">
@@ -344,7 +365,8 @@
             selectedEmails: [],
             additionalMessage: '',
             distEmails: [],
-            distEmail_input: ""
+            distEmail_input: "",
+            rejectLoading: false,
         },
 
         methods: {
@@ -478,9 +500,11 @@
                     }
                 }
 
+                this.rejectLoading = true;
                 this.$http.post('/api/form/saveSecurity', this.form,
                     {params: {additionalMessage: this.additionalMessage}}).then(function (response) {
                     console.log('Successfully sent form');
+                    this.rejectLoading = false;
 
                     if (action === 'accept')
                         window.location.replace('/security/requests');
@@ -526,14 +550,21 @@
                 this.$http.delete('/api/dist/delete/' + id).then(function(response){
                    this.getDistEmails();
                 });
-            }
-
+            },
+            setUserName: function() {
+                this.$http.get("/api/user/get").then(function(response) {
+                    if (response.status == 200) {
+                        this.userName = response.data.username;
+                    }
+                });
+            },
         },
 
         created() {
             // TODO: redirect if user doesn't have security authorization
             this.getFormData();
             this.getDistEmails();
+            this.setUserName();
         },
 
         computed: {
