@@ -128,7 +128,7 @@
 									<span class="input-group-addon">
 										<i class="fa fa-calendar calendar-icon"></i>
 									</span>
-                                    <input type="text" id="startdatetime" class="form-control" disabled="disabled"/>
+                                    <input type="text" id="startdatetime" class="form-control" required="required"/>
                                 </div>
                             </th>
 
@@ -137,7 +137,7 @@
 									<span class="input-group-addon">
 										<i class="fa fa-calendar calendar-icon"></i>
 									</span>
-                                    <input type="text" id="enddatetime" class="form-control" disabled="disabled"/>
+                                    <input type="text" id="enddatetime" class="form-control" required="required"/>
                                 </div>
                             </th>
 
@@ -395,6 +395,7 @@
                 }
                 //get value from phone-input
                 this.formData.phoneNumber = $("#phone-input").val();
+                this.formData.eventDates = generateEventDates(this.formData.eventDates);
 	            if (this.isValid) {
 		            this.$http.put("/api/form/update/" + this.formData.id, this.formData, {params : {
 			            loggedOn : this.signedIn
@@ -417,6 +418,7 @@
 						this.formData.eventDates += ", "+this.startdatetime +"-"+ this.enddatetime;
 					}
 					this.datetimelist.push( {start: this.startdatetime, end: this.enddatetime} );
+					disableDateInput(true);
 					this.startdatetime = '';
 					this.enddatetime = '';
             	}
@@ -426,6 +428,9 @@
             	var index = this.datetimelist.indexOf(dt);
             	this.formData.eventDates = deleteEventDate(dt.start,dt.end,this.formData.eventDates,index,this.datetimelist.length);
             	this.datetimelist.splice(index,1);
+            	if(this.datetimelist.length==0){
+            		disableDateInput(false);
+            	}
             },
 
             getBadgeClassName: function(status) {
@@ -464,6 +469,7 @@
                     });
                     this.formData = response.data;
                     this.datetimelist = updateDateTime(this.formData.eventDates);
+                    disableDateInput(true);
                 } else {
                     console.log(response.status);
                 }

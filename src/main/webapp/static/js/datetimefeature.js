@@ -1,10 +1,6 @@
 $(document).ready(function(){
             var tmp = generateAllowingTimes();
 
-			$("#startdatetime").keyup(function () {
-                this.setCustomValidity('You should add at least one event dates.');
-            });
-
 			$("#chooseStartDateTime").datetimepicker({
             	dayOfWeekStart:0,
             	lang: 'en',
@@ -81,7 +77,7 @@ $(document).ready(function(){
 		function generateAllowingTimes(){
 		    var allowingTimes = [];
 		    var minutes = ["00","15","30","45"];
-		    for(i = 0 ; i < 12 ; i++){
+		    for(i = 0 ; i < 24 ; i++){
 		        for(j = 0 ; j < 4 ; j++){
 		            allowingTimes.push(i+":"+minutes[j]);
 		        }
