@@ -77,6 +77,7 @@ public class SendEmail {
 		input.put("trackingID", trackingID);
 		input.put("requestURL", requestURL);
 
+
 		String htmlEmailBody = makeEmailFromHtml("emailAuthorizerRequestConfirmation.html", input);
 
 		sendMail(sendToEmailAddress, subject, htmlEmailBody);
