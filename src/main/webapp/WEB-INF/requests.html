@@ -53,7 +53,8 @@
                         <ul class="nav nav-pills nav-fill">
                             <li class="nav-item"><a href="" v-on:click.stop.prevent="activeStatus='ALL'" v-bind:class="{'active': isActive('ALL')}" class="nav-link">All</a></li>
                             <li class="nav-item"><a href="" v-on:click.stop.prevent="activeStatus='WAITING'" v-bind:class="{'active': isActive('WAITING')}"class="nav-link">Waiting</a></li>
-                            <li class="nav-item"><a href="" v-on:click.stop.prevent="activeStatus='APPROVED'" v-bind:class="{'active': isActive('APPROVED')}"class="nav-link">Approved</a></li>
+                            <li class="nav-item"><a href="" v-on:click.stop.prevent="activeStatus='AUTHORIZED'" v-bind:class="{'active': isActive('AUTHORIZED')}"class="nav-link">Authorized</a></li>
+                        <li class="nav-item"><a href="" v-on:click.stop.prevent="activeStatus='APPROVED'" v-bind:class="{'active': isActive('APPROVED')}"class="nav-link">Approved</a></li>
                             <li class="nav-item"><a href="" v-on:click.stop.prevent="activeStatus='REJECTED'" v-bind:class="{'active': isActive('REJECTED')}"class="nav-link">Rejected</a></li>
                         </ul>
                     </div>
@@ -132,6 +133,7 @@
     }
     const status = {
         WAITING: 'WAITING',
+	    AUTHORIZED: 'AUTHORIZED',
         APPROVED: 'APPROVED',
         REJECTED: 'REJECTED'
     }
@@ -203,6 +205,9 @@
                     case 'WAITING':
                         return 'badge-warning';
                         break;
+	                case 'AUTHORIZED':
+		                return 'badge-primary';
+		                break;
                     case 'APPROVED':
                         return 'badge-success';
                         break;
