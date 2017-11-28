@@ -25,7 +25,7 @@ $(document).ready(function(){
 			document.getElementById("startdatetime").value = '';
 			document.getElementById("chooseEndDateTime").value = '';
 			document.getElementById("enddatetime").value = '';
-		});
+});
 
 		function setDateTime(e, inputId){
 			document.getElementById(inputId).value = e.value;
@@ -73,7 +73,6 @@ $(document).ready(function(){
                 var min = time.split(":")[1];
                 $( '#chooseStartDateTime' ).datetimepicker( {
                     defaultDate: new Date(year,month-1,day,hour,min,00),
-                    //minDateTime: new Date(year,month-1,day,hour,min,00),
                 } );
             }
         }
@@ -91,6 +90,32 @@ $(document).ready(function(){
 			newString = list.replace(tobermvd,"");
 			return newString;
 		}
+
+//        function setEndMinDate(root){
+//		    var target = root=='#chooseStartDateTime'?'#chooseEndDateTime':'#chooseStartDateTime';
+//            var x=$(root).val();
+//            if(x!=""){
+//                var date = x.split(" ")[0];
+//                var time = x.split(" ")[1];
+//                var year = date.split("/")[0];
+//                var month = date.split("/")[1];
+//                var day = date.split("/")[2];
+//                var hour = time.split(":")[0];
+//                var min = time.split(":")[1];
+//
+//                if(target=='#chooseEndDateTime'){
+//                   $( target ).datetimepicker( {
+//                      defaultDate: new Date(year,month-1,day,hour,min,00),
+//                      minDateTime: new Date(year,month-1,day,hour,min,00),
+//                   });
+//                }else{
+//                    $( target ).datetimepicker( {
+//                        defaultDate: new Date(year,month-1,day,hour,min,00),
+//                    });
+//                }
+//
+//            }
+//        }
 
 		function generateAllowingTimes(){
 		    var allowingTimes = [];

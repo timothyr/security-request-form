@@ -403,7 +403,8 @@
 			            successCallback(response);
 			            this.loading = false;
 		            }, function () {
-			            errorCallback();
+		                //prevent showing errorCallBack modal when form is not validated.
+			            //errorCallback();
 		            });
 	            }
             },
