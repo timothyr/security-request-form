@@ -490,6 +490,7 @@
                             this.formData.authorizerEmailAddress='';
                         }
                         this.formData.phoneNumber = $("#phone-input").val();
+                        this.formData.eventDates = generateEventDates(this.formData.eventDates);
 
                         this.$http.post(formSaveAPI, this.formData, {params : {
 	                        loggedOn : this.signedIn

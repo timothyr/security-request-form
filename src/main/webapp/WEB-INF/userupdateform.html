@@ -395,6 +395,7 @@
                 }
                 //get value from phone-input
                 this.formData.phoneNumber = $("#phone-input").val();
+                this.formData.eventDates = generateEventDates(this.formData.eventDates);
 	            if (this.isValid) {
 		            this.$http.put("/api/form/update/" + this.formData.id, this.formData, {params : {
 			            loggedOn : this.signedIn
@@ -468,6 +469,7 @@
                     });
                     this.formData = response.data;
                     this.datetimelist = updateDateTime(this.formData.eventDates);
+                    disableDateInput(true);
                 } else {
                     console.log(response.status);
                 }
