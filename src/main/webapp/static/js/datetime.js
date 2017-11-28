@@ -43,4 +43,22 @@ function updateDateTime(aString){
     return dates;
 }
 
+function generateEventDates(eventDates){
+    var newEventDates = eventDates;
+    var start = document.getElementById("chooseStartDateTime").value;
+    var end = document.getElementById("chooseEndDateTime").value;
+    if(start!=''&&end!=''){
+        if(newEventDates==''){
+            newEventDates += start +"-"+ end;
+        }else{
+        	newEventDates += ", "+start +"-"+ end;
+        }
+    }
+    document.getElementById("chooseStartDateTime").value = '';
+    document.getElementById("startdatetime").value = '';
+    document.getElementById("chooseEndDateTime").value = '';
+    document.getElementById("enddatetime").value = '';
+    return newEventDates;
+}
+
 
