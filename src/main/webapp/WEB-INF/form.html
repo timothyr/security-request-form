@@ -73,7 +73,7 @@
 							</select>
 						</div>
 						<div class="form-group col-md-4">
-							<label for="number-of-attendees-input"># of Attendees</label>
+							<label for="number-of-attendees-input">Approx. # of Attendees</label>
 							<input type="number" min="1" value="1" id="number-of-attendees-input" v-model="formData.numAttendees" class="form-control" required="required"/>
 						</div>
 					</div>
@@ -161,7 +161,7 @@
 					<div>
 						<h3 class="auth-heading mt-4">Authorization</h3>
                         <p><i class="fa fa-info-circle mr-1 ml-2 dark-text"></i>
-                            Your request has to be authorized before it can be approved.</p>
+                            Your request has to be authorized before it can be approved by security.</p>
 					</div>
                     <div class="card card-block">
                         <div class="row">
@@ -180,7 +180,7 @@
                                     <a href="https://cas.sfu.ca/cas/login?service=https%3A%2F%2Flocalhost%3A8443%2Fj_spring_cas_security_check&redirect%3D%2F"
                                         role="button" id="sign-in" class="btn btn-danger">Authorize through SFU CAS
                                     </a>
-                                        <p class="mt-3" v-if="userName != null">Authorized as <span class="blue-text">
+                                        <p class="mt-3" v-if="!userName">Authorized as <span class="blue-text">
                                                 {{userName}}@sfu.ca
                                             <i class="fa fa-check green-text" aria-hidden="true"></i>
                                             </span>
@@ -557,14 +557,14 @@
             	},
                 setUserName: function() {
                     this.$http.get("/api/user/get").then(function(response) {
-                        if (response.status == 200 && response.data.username) {
+                        if (response.status == 200 && response.data && response.data.username) {
                             this.userName = response.data.username;
                         }
-                    });
+                    }).catch(error => console.log(error));
                 },
             },
             mounted: function() {
-                this.formData = persistModule.getData()();
+                //this.formData = persistModule.getData()();
                 this.setUserName();
                 console.log("got data");
             },

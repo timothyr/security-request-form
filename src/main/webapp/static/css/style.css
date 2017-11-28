@@ -155,6 +155,10 @@ th {
 	left: -50px;
 }
 
+.back-arrow:hover {
+    color: #00aeff !important;
+}
+
 @media(min-width: 1400px) {
     .back-arrow {
         position: static;

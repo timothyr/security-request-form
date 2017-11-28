@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
@@ -273,10 +274,11 @@ public class FormServiceRequestController extends WebMvcConfigurerAdapter {
     }
 
     @RequestMapping(value = "/api/form/save", method = RequestMethod.POST, produces = "text/plain")
-    public @ResponseBody ResponseEntity addForm(@RequestBody FormData form, HttpServletRequest request) {
+    public @ResponseBody ResponseEntity addForm(Authentication p, @RequestBody FormData form, HttpServletRequest request) {
 	    if (form == null) {
 		    return ResponseEntity.status(HttpStatus.NOT_FOUND).body("ERROR: form didn't save");
 	    }
+	    p.getName();
 
         //Set requestedOnDate to current date
         DateFormat dateFormat = new SimpleDateFormat("MM/dd/yyyy");
