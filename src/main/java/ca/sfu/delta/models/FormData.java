@@ -7,7 +7,8 @@ import org.apache.pdfbox.pdmodel.font.PDType1Font;
 import org.hibernate.validator.constraints.NotEmpty;
 
 import javax.persistence.*;
-import javax.validation.constraints.NotNull;
+import javax.validation.Constraint;
+import javax.validation.constraints.*;
 import java.io.File;
 import java.io.IOException;
 import java.io.StringWriter;
@@ -28,19 +29,50 @@ public class FormData {
 
     // TODO: ensure all fields are saved in csv
 
-    //Specified by user
+    @NotNull(message = "Department field must be filled out")
+    @NotEmpty(message = "Department field must be filled out")
     private String department = null;
 
-    @NotNull(message = "Requester name must be filled out") @NotEmpty(message = "Requester name must be filled out")
+    @NotNull(message = "Requester field name must be filled out")
+    @NotEmpty(message = "Requester field name must be filled out")
     private String requesterName = null;
+
+    //Regex for matching phone numbers from https://regex101.com/library/kQ5xQ6
+    @NotNull(message = "Phone number field must be filled out")
+    @NotEmpty(message = "Phone number field name must be filled out")
+    @Pattern(message="Phone number must be in format (123)-456-7890", regexp="\\d{3}([ .-])?\\d{3}([ .-])?\\d{4}|\\(\\d{3}\\)([ ])?\\d{3}([.-])?\\d{4}|\\(\\d{3}\\)([ ])?\\d{3}([ ])?\\d{4}|\\(\\d{3}\\)([.-])?\\d{3}([.-])?\\d{4}|\\d{3}([ ])?\\d{3}([ .-])?\\d{4}")
     private String phoneNumber = null;
+
+    // Not required
     private String faxNumber = null;
+
+    //Regex for matching valid emails from https://regex101.com/library/kQ5xQ6
+    @NotNull(message = "Email field must be filled out")
+    @NotEmpty(message = "Email field must be filled out")
+    @Pattern(message="Email must be valid", regexp="^([a-zA-Z0-9_\\-\\.]+)@((\\[[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\.)|(([a-zA-Z0-9\\-]+\\.)+))([a-zA-Z]{2,4}|[0-9]{1,3})(\\]?)$")
     private String emailAddress = null;
+
+    @NotNull(message = "Event name field name must be filled out")
+    @NotEmpty(message = "Event name field name must be filled out")
     private String eventName = null;
+
+    // Not required
     private String requesterID = null; //SFU ID
+
+    @NotNull(message = "Event location field name must be filled out")
+    @NotEmpty(message = "Event location field name must be filled out")
     private String eventLocation = null; //String for now, until we have full list of possible locations.
+
+    // Not required
     private Boolean isLicensed = false;
+
+    //@NotNull(message = "Num attendees field name must be filled out")
+    //@NotEmpty(message = "Num attendees field name must be filled out")
+    @Min(value = 1, message = "Minimum number of attendees is 1")
+    @Max(value = 5000, message = "Exceeded maximum number of attendees")
     private int numAttendees = 0;
+
+
     private String times = null; //Unsure of how we want to store times, String for now.
 	//Todo: these will need to be changed back to arrays of dates once the front end supports dates
     private String eventDates = null;
