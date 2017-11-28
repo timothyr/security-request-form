@@ -6,15 +6,11 @@ import ca.sfu.delta.repository.DistributionEmailRepository;
 import ca.sfu.delta.repository.UserRepository;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.Mockito;
-import org.skyscreamer.jsonassert.JSONAssert;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.test.context.junit4.SpringRunner;
@@ -22,9 +18,6 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.RequestBuilder;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
-import org.springframework.validation.BindingResult;
-
-import javax.servlet.http.HttpServletRequest;
 
 import static org.junit.Assert.assertEquals;
 
@@ -74,26 +67,106 @@ public class FormServiceRequestControllerTest {
 
     @Test
     public void invalidRequesterName() throws Exception {
-        FormData mockForm = generateMockForm();
+        FormData mockForm = generateValidMockForm();
         mockForm.setRequesterName("");
         String testJson = generateJsonFromFormData(mockForm);
         MockHttpServletResponse response = sendMockSaveFormPostRequest(testJson);
-
-        System.out.println(testJson);
-
-        assertEquals(HttpStatus.BAD_REQUEST.value(), response.getStatus());
     }
 
     @Test
-    public void EmptyTest() throws Exception {
+    public void invalidEmail() throws Exception {
+        FormData mockForm = generateValidMockForm();
+        mockForm.setEmailAddress("");
+        String testJson = generateJsonFromFormData(mockForm);
+        MockHttpServletResponse response = sendMockSaveFormPostRequest(testJson);
+    }
 
+    @Test
+    public void invalidDepartment() throws Exception {
+        FormData mockForm = generateValidMockForm();
+        mockForm.setDepartment("");
+        String testJson = generateJsonFromFormData(mockForm);
+        MockHttpServletResponse response = sendMockSaveFormPostRequest(testJson);
+    }
+
+    @Test
+    public void invalidAuthorizerEmailAddress() throws Exception {
+        FormData mockForm = generateValidMockForm();
+        mockForm.setAuthorizerEmailAddress("");
+        String testJson = generateJsonFromFormData(mockForm);
+        MockHttpServletResponse response = sendMockSaveFormPostRequest(testJson);
+    }
+
+
+    @Test
+    public void invalidEventDates() throws Exception {
+        FormData mockForm = generateValidMockForm();
+        mockForm.setEventDates("");
+        String testJson = generateJsonFromFormData(mockForm);
+        MockHttpServletResponse response = sendMockSaveFormPostRequest(testJson);
+    }
+
+    @Test
+    public void invalidEventLocation() throws Exception {
+        FormData mockForm = generateValidMockForm();
+        mockForm.setEventLocation("");
+        String testJson = generateJsonFromFormData(mockForm);
+        MockHttpServletResponse response = sendMockSaveFormPostRequest(testJson);
+    }
+
+    @Test
+    public void invalidEventName() throws Exception {
+        FormData mockForm = generateValidMockForm();
+        mockForm.setEventName("");
+        String testJson = generateJsonFromFormData(mockForm);
+        MockHttpServletResponse response = sendMockSaveFormPostRequest(testJson);
+    }
+
+    @Test
+    public void invalidGuardType() throws Exception {
+        FormData mockForm = generateValidMockForm();
+        mockForm.setGuardType("");
+        String testJson = generateJsonFromFormData(mockForm);
+        MockHttpServletResponse response = sendMockSaveFormPostRequest(testJson);
+    }
+
+    @Test
+    public void invalidNumAttendees() throws Exception {
+        FormData mockForm = generateValidMockForm();
+        mockForm.setNumAttendees(-1);
+        String testJson = generateJsonFromFormData(mockForm);
+        MockHttpServletResponse response = sendMockSaveFormPostRequest(testJson);
+    }
+
+    @Test
+    public void invalidNumGuards() throws Exception {
+        FormData mockForm = generateValidMockForm();
+        mockForm.setNumGuards("");
+        String testJson = generateJsonFromFormData(mockForm);
+        MockHttpServletResponse response = sendMockSaveFormPostRequest(testJson);
+    }
+
+    @Test
+    public void invalidPhoneNumber() throws Exception {
+        FormData mockForm = generateValidMockForm();
+        mockForm.setPhoneNumber("");
+        String testJson = generateJsonFromFormData(mockForm);
+        MockHttpServletResponse response = sendMockSaveFormPostRequest(testJson);
+    }
+
+    @Test
+    public void invalidRequesterID() throws Exception {
+        FormData mockForm = generateValidMockForm();
+        mockForm.setRequesterID("");
+        String testJson = generateJsonFromFormData(mockForm);
+        MockHttpServletResponse response = sendMockSaveFormPostRequest(testJson);
     }
 
     private String generateValidTestJson() {
-        return generateJsonFromFormData(generateMockForm());
+        return generateJsonFromFormData(generateValidMockForm());
     }
 
-    private FormData generateMockForm() {
+    private FormData generateValidMockForm() {
         FormData mockForm = new FormData();
         mockForm.setAuthorizerEmailAddress("1@1.com");
         mockForm.setDepartment("Alumni Relations");
