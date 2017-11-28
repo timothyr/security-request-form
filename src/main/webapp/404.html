@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Error</title>
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="icon" href="../static/img/favicon.ico" type="image/x-icon"/>
+</head>
+<body>
+<header>
+    <a href="/">
+        <img class="logo" src="/img/sfu-logo@2x.png" alt="sfu-logo"/>
+    </a>
+</header>
+<div class="container col-md-10 offset-md-1 wrapper wrapper-sm mt-5 mb-5 col-lg-10" id="app">
+    <div class="row mb-2 text-center">
+        <div class="col-md-12 mt-5">
+            <img class="mt-5" style="width: 175px; height: 197px" src="/img/errorcry.png" alt="error icon">
+        </div>
+    </div>
+    <div class="row">
+        <h1 class="mt-2 mx-auto">404. Page Not Found</h1>
+    </div>
+    <div class="row">
+        <span class="text-muted mx-auto">We could not find what you've requested</span>
+    </div>
+    <div class="bottom-space"></div>
+    <script src="/js/vue.js"></script>
+    <script>
+        var app = new Vue({
+            el: '#app',
+            data: {
+            }
+        });
+    </script>
+</div>
+</body>
+</html>

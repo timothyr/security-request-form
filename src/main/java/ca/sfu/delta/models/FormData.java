@@ -1,77 +1,129 @@
 package ca.sfu.delta.models;
 
+import org.apache.pdfbox.pdmodel.PDDocument;
+import org.apache.pdfbox.pdmodel.PDPage;
+import org.apache.pdfbox.pdmodel.PDPageContentStream;
+import org.apache.pdfbox.pdmodel.font.PDType1Font;
+import org.hibernate.validator.constraints.NotEmpty;
+
 import javax.persistence.*;
-import java.lang.String;
+import javax.validation.Constraint;
+import javax.validation.constraints.*;
+import java.io.File;
+import java.io.IOException;
+import java.io.StringWriter;
 import java.lang.reflect.Field;
+import java.nio.file.Files;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.io.BufferedWriter;
-import java.io.StringWriter;
-import java.io.File; 
-import java.nio.file.Files; 
-import java.io.IOException;
-import java.util.Date;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import org.apache.pdfbox.pdmodel.PDDocument;
-import org.apache.pdfbox.pdmodel.PDPage;
-import org.apache.pdfbox.pdmodel.PDPageContentStream; 
-import org.apache.pdfbox.pdmodel.font.PDType1Font;
 
 @Entity
 public class FormData {
     @Id
-    @GeneratedValue(strategy= GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
     // TODO: ensure all fields are saved in csv
 
-    //Specified by user
-    private String department;
-    private String requesterName;
-    private String phoneNumber;
-    private String faxNumber;
-    private String emailAddress;
-    private String eventName;
-    private String requesterID; //SFU ID
-    private String eventLocation; //String for now, until we have full list of possible locations.
-    private Boolean isLicensed;
-    private int numAttendees;
-    private String times; //Unsure of how we want to store times, String for now.
-	//Todo: these will need to be changed back to arrays of dates once the front end supports dates
-    private String eventDates;
-    private String requestedOnDate;
+    @NotNull(message = "Department field must be filled out")
+    @NotEmpty(message = "Department field must be filled out")
+    private String department = null;
 
-    private String paymentAccountCode;
-    private Boolean invoiceRequested;
+    @NotNull(message = "Requester name field must be filled out")
+    @NotEmpty(message = "Requester name field must be filled out")
+    private String requesterName = null;
+
+    //Regex for matching phone numbers from https://regex101.com/library/kQ5xQ6
+    @NotNull(message = "Phone number field must be filled out")
+    @NotEmpty(message = "Phone number field must be filled out")
+    @Pattern(message="Phone number must be in format (123)-456-7890", regexp="\\d{3}([ .-])?\\d{3}([ .-])?\\d{4}|\\(\\d{3}\\)([ ])?\\d{3}([.-])?\\d{4}|\\(\\d{3}\\)([ ])?\\d{3}([ ])?\\d{4}|\\(\\d{3}\\)([.-])?\\d{3}([.-])?\\d{4}|\\d{3}([ ])?\\d{3}([ .-])?\\d{4}")
+    private String phoneNumber = null;
+
+    // Optional
+    private String faxNumber = null;
+
+    //Regex for matching valid emails from https://regex101.com/library/kQ5xQ6
+    @NotNull(message = "Email field must be filled out")
+    @NotEmpty(message = "Email field must be filled out")
+    @Pattern(message="Email must be valid", regexp="^([a-zA-Z0-9_\\-\\.]+)@((\\[[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\.)|(([a-zA-Z0-9\\-]+\\.)+))([a-zA-Z]{2,4}|[0-9]{1,3})(\\]?)$")
+    private String emailAddress = null;
+
+    @NotNull(message = "Event name field must be filled out")
+    @NotEmpty(message = "Event name field must be filled out")
+    private String eventName = null;
+
+    // Optional
+    private String requesterID = null; //SFU ID
+
+    @NotNull(message = "Event location field must be filled out")
+    @NotEmpty(message = "Event location field must be filled out")
+    private String eventLocation = null; //String for now, until we have full list of possible locations.
+
+    // Optional
+    private Boolean isLicensed = false;
+
+    @Min(value = 1, message = "Minimum number of attendees is 1")
+    @Max(value = 5000, message = "Exceeded maximum number of attendees")
+    private int numAttendees = 0;
+
+    // Currently not actually used
+    private String times = null; //Unsure of how we want to store times, String for now.
+	//Todo: these will need to be changed back to arrays of dates once the front end supports dates
+
+    @NotNull(message = "Date times field must be filled out")
+    @NotEmpty(message = "Date times field must be filled out")
+    private String eventDates = null;
+
+    // Not part of submission
+    private String requestedOnDate = null;
+
+    // Optional
+    private String paymentAccountCode = null;
+
+    // Optional
+    private Boolean invoiceRequested = false;
+
+    // Optional
     private String eventDetails = null;
-    private String serviceRequestNumber; //Generated automatically, pre-populate.
-    private String recievingSecuritySupervisor;
+
+    //Generated automatically, pre-populate.
+    private String serviceRequestNumber = null;
+
+    // Not part of submission
+    private String recievingSecuritySupervisor = null;
+
+    @NotNull(message = "Number of Guards field must be filled out")
+    @NotEmpty(message = "Number of Guards field must be filled out")
+    private String numGuards = null;
+
+    @NotNull(message = "Guard Type field must be filled out")
+    @NotEmpty(message = "Guard Type field must be filled out")
+    private String guardType = null;
 
     @ElementCollection
     private List<Guard> guards; //Things like total billable and grand total can be calculated from these
     @ElementCollection
     private List<String> distributionList;
-    private String preparedBy;
+
+    private String preparedBy = null;
     private String securityRemarks = null;
-    private String requestStatus;
-
-	private String requestID;
-
-    public FormData() {
-
-    }
+    private String requestStatus = null;
+	private String requestID = null;
 
     //Specified by Authorizer
-    private String authorizerName;
-    private String authorizerID; //SFU ID
+    private String authorizerName = null;
+    private String authorizerID = null; //SFU ID
 	//Todo: this will need to be changed back to a date once the front end supports dates
-    private String authorizationDate;
-    private String authorizerPhoneNumber;
-    private Boolean isAuthorized;
-    private String authorizerEmailAddress;
+    private String authorizationDate = null;
+    private String authorizerPhoneNumber = null;
+    private Boolean isAuthorized = null;
+    private String authorizerEmailAddress = null;
 
+    public FormData() {}
 
     //Constructor takes all info that a requester can provide (optional or no)
     public FormData(
@@ -91,21 +143,21 @@ public class FormData {
             Boolean invoiceRequested,
             String eventDetails
     ){
-        this.department = department;
-    	this.eventDates = dates;
-        this.requesterName = requestorName;
-        this.phoneNumber = phoneNumber;
-        this.faxNumber = faxNumber;
-        this.emailAddress = emailAddress;
-        this.requestedOnDate = requestedOnDate;
-        this.eventName = eventName;
-        this.requesterID = requesterID;
-        this.isLicensed = isLicensed;
-        this.numAttendees = numAttendees;
-        this.times = times;
-        this.paymentAccountCode = paymentAccountCode;
-        this.invoiceRequested = invoiceRequested;
-        this.eventDetails = eventDetails;
+        this.setDepartment(department);
+    	this.setEventDates(dates);
+        this.setRequesterName(requestorName);
+        this.setPhoneNumber(phoneNumber);
+        this.setFaxNumber(faxNumber);
+        this.setEmailAddress(emailAddress);
+        this.setRequestedOnDate(requestedOnDate);
+        this.setEventName(eventName);
+        this.setRequesterID(requesterID);
+        this.setIsLicensed(isLicensed);
+        this.setNumAttendees(numAttendees);
+        this.setTimes(times);
+        this.setPaymentAccountCode(paymentAccountCode);
+        this.setInvoiceRequested(invoiceRequested);
+        this.setEventDetails(eventDetails);
     }
 
     public Long getId() {
@@ -131,7 +183,7 @@ public class FormData {
     }
 
     public void setDepartment(String newDepartment) {
-    	department = newDepartment;
+        this.department = newDepartment;
     }
 
     public String getRequesterName() {
@@ -143,11 +195,7 @@ public class FormData {
     }
 
     public String getPhoneNumber() {
-		if (phoneNumber == null) {
-			return "";
-		} else {
-        	return phoneNumber;
-		}
+		return phoneNumber;
     }
 
     public void setPhoneNumber(String newNumber) {
@@ -155,11 +203,7 @@ public class FormData {
     }
 
     public String getFaxNumber() {
-		if (faxNumber == null) {
-			return "";
-		} else {
-			return faxNumber;
-		}
+		return faxNumber;
     }
 
     public void setFaxNumber(String newNumber) {
@@ -357,6 +401,22 @@ public class FormData {
 		this.requestStatus = requestStatus;
 	}
 
+    public String getGuardType() {
+        return guardType;
+    }
+
+    public void setGuardType(String guardType) {
+        this.guardType = guardType;
+    }
+
+    public String getNumGuards() {
+        return numGuards;
+    }
+
+    public void setNumGuards(String numGuards) {
+        this.numGuards = numGuards;
+    }
+
     public void setSecurityFields(
             String recievingSecuritySupervisor,
             List<Guard> guards,
@@ -364,7 +424,8 @@ public class FormData {
             String preparedBy,
             String securityRemarks
     ){
-    	this.recievingSecuritySupervisor = recievingSecuritySupervisor;
+
+        this.recievingSecuritySupervisor = recievingSecuritySupervisor;
     	this.guards = guards;
     	this.distributionList = distributionList;
     	this.preparedBy = preparedBy;
@@ -380,9 +441,6 @@ public class FormData {
                 e.printStackTrace();
             }
         }
-
-        //for (String s : map.keySet())
-        //	System.out.println(s +"->"+map.get(s));
 
         return map;
     }
@@ -426,8 +484,15 @@ public class FormData {
      * Writes the contents of this formdata to a csv file specified by fileName. fileName should
      * probably be the requestID of the form, and NOT user input. If the file being written to already exists
      * (in the case of writing multiple forms to a csv), a new row is appended to it; Otherwise the file is created.
-     * @param fileName - If this does not have the .csv extension it will be added.
      */
+    private String getObjectOrNotSpecified(Object o) {
+        if(o == null) {
+            return "Not Specified";
+        } else {
+            return o.toString();
+        }
+    }
+
     public String getAsCSV(Boolean needHeader) {
             StringWriter csvWriter = new StringWriter();
             //Only add first row with field names if we need the header (in case that we are creating a new CSV
@@ -461,45 +526,35 @@ public class FormData {
                                   "Authorized?" + "\n";
                 csvWriter.append(firstRow);
             }
-            //Append fields to csv, strip out commas from places they could be present
-            //Avoid null pointer exceptions if certain fields are blank
 
-            if(eventDetails == null){
-                eventDetails = new String("null");
-            }
-            if(securityRemarks == null){
-                securityRemarks = new String("null");
-            }
-
-            String nextRow = requestID + ", " +
-                             department + ", " +
-                             requesterName + ", " +
-                             phoneNumber + ", " +
-                             faxNumber + ", " +
-                             emailAddress + ", " +
-                             eventName + ", " +
-                             requesterID + ", " +
-                             eventLocation + ", " +
-                             isLicensed + ", " +
-                             numAttendees + ", " +
-                             times + ", " +
-                             eventDates + ", " +
-                             requestedOnDate + ", " +
-                             paymentAccountCode + ", " +
-                             invoiceRequested + ", " +
-                             eventDetails.replace(",", "") + ", " +
-                             serviceRequestNumber + ", " +
-                             recievingSecuritySupervisor + ", " +
-                             preparedBy + ", " +
-                             securityRemarks.replace(",", "") + ", " +
-                             authorizerName + ", " +
-                             authorizerID + ", " +
-                             authorizationDate + ", " +
-                             authorizerPhoneNumber + ", " +
-                             isAuthorized + "\n";
+            String nextRow = getObjectOrNotSpecified(requestID) + ", " +
+                        getObjectOrNotSpecified(department) + ", " +
+                        getObjectOrNotSpecified(requesterName) + ", " +
+                        getObjectOrNotSpecified(phoneNumber) + ", " +
+                        getObjectOrNotSpecified(faxNumber) + ", " +
+                        getObjectOrNotSpecified(emailAddress) + ", " +
+                        getObjectOrNotSpecified(eventName) + ", " +
+                        getObjectOrNotSpecified(requesterID) + ", " +
+                        getObjectOrNotSpecified(eventLocation) + ", " +
+                        getObjectOrNotSpecified(isLicensed) + ", " +
+                        getObjectOrNotSpecified(numAttendees) + ", " +
+                        getObjectOrNotSpecified(times) + ", " +
+                        getObjectOrNotSpecified(eventDates) + ", " +
+                        getObjectOrNotSpecified(requestedOnDate) + ", " +
+                        getObjectOrNotSpecified(paymentAccountCode) + ", " +
+                        getObjectOrNotSpecified(invoiceRequested) + ", " +
+                        getObjectOrNotSpecified(eventDetails).replace(",", "") + ", " +
+                        getObjectOrNotSpecified(serviceRequestNumber) + ", " +
+                        getObjectOrNotSpecified(recievingSecuritySupervisor) + ", " +
+                        getObjectOrNotSpecified(preparedBy) + ", " +
+                        getObjectOrNotSpecified(securityRemarks).replace(",", "") + ", " +
+                        getObjectOrNotSpecified(authorizerName) + ", " +
+                        getObjectOrNotSpecified(authorizerID) + ", " +
+                        getObjectOrNotSpecified(authorizationDate) + ", " +
+                        getObjectOrNotSpecified(authorizerPhoneNumber) + ", " +
+                        getObjectOrNotSpecified(isAuthorized) + "\n";
 
             //Do some prettying up
-            nextRow = nextRow.replace("null", "Not specified");
             nextRow = nextRow.replace("false", "No");
             nextRow = nextRow.replace("true", "Yes");
             csvWriter.append(nextRow);

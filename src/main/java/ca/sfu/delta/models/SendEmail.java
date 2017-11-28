@@ -8,15 +8,17 @@ import org.springframework.mail.MailException;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 
+import javax.activation.DataHandler;
+import javax.activation.DataSource;
+import javax.activation.URLDataSource;
 import javax.mail.*;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeBodyPart;
 import javax.mail.internet.MimeMessage;
 import javax.mail.internet.MimeMultipart;
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
-import java.io.IOException;
+import javax.servlet.ServletContext;
+import javax.servlet.http.HttpServlet;
+import java.io.*;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -28,6 +30,9 @@ public class SendEmail {
 
     private JavaMailSender javaMailSender;
 
+	@Autowired
+	private ServletContext servletContext;
+
     @Value("${spring.mail.host}")
     private String mailHost;
     @Value("${spring.mail.username}")
@@ -36,10 +41,11 @@ public class SendEmail {
     private String smtpSenderEmailPassword;
     @Value("${spring.mail.port}")
     private String smtpPort;
-    @Value("${spring.mail.properties.mail.smtp.auth}")
-    private Boolean IsAuthorized;
     @Value("{spring.mail.properties.mail.smtp.starttls.enable}")
     private String IsTtlsEnabled;
+    @Value ("{spring.mail.properties.mail.transport.protocol}")
+	private String transportProtocol;
+
 
     @Autowired
     public SendEmail(JavaMailSender javaMailSender){
@@ -55,7 +61,7 @@ public class SendEmail {
 		input.put("trackingID", trackingID);
 		input.put("requestURL", requestURL);
 
-		String htmlEmailBody = makeEmailFromHtml("src/main/resources/static/emailUserRequestConfirmation.html", input);
+		String htmlEmailBody = makeEmailFromHtml("emailUserRequestConfirmation.html", input);
 
 		sendMail(sendToEmailAddress, subject, htmlEmailBody);
 	}
@@ -69,7 +75,8 @@ public class SendEmail {
 		input.put("trackingID", trackingID);
 		input.put("requestURL", requestURL);
 
-		String htmlEmailBody = makeEmailFromHtml("src/main/resources/static/emailAuthorizerRequestConfirmation.html", input);
+
+		String htmlEmailBody = makeEmailFromHtml("emailAuthorizerRequestConfirmation.html", input);
 
 		sendMail(sendToEmailAddress, subject, htmlEmailBody);
 	}
@@ -83,7 +90,7 @@ public class SendEmail {
 		input.put("trackingID", trackingID);
 		input.put("rejectionMessage", rejectionMessage);
 
-		String htmlEmailBody = makeEmailFromHtml("src/main/resources/static/emailRequestRejected.html", input);
+		String htmlEmailBody = makeEmailFromHtml("emailRequestRejected.html", input);
 
 		sendMail(sendToEmailAddress, subject, htmlEmailBody);
 	}
@@ -96,7 +103,7 @@ public class SendEmail {
 		input.put("Greeting", getGreeting(personName));
 		input.put("trackingID", trackingID);
 
-		String htmlEmailBody = makeEmailFromHtml("src/main/resources/static/emailRequestApproved.html", input);
+		String htmlEmailBody = makeEmailFromHtml("emailRequestApproved.html", input);
 
 		sendMail(sendToEmailAddress, subject, htmlEmailBody);
 	}
@@ -139,12 +146,13 @@ public class SendEmail {
 	private Properties setSmtpProperties(){
 		//Mail Properties
 		properties = System.getProperties();
-		properties.put("mail.smtp.starttls.enable", "true");
+		properties.put("mail.smtp.starttls.enable", "false");
+		properties.put("mail.smtp.ssl.enable", IsTtlsEnabled);
 		properties.put("mail.smtp.host", mailHost);
+		properties.put("mail.smtp.port", smtpPort);
+		properties.put("mail.transport.protocol", transportProtocol);
 		properties.put("mail.smtp.user", smtpSenderEmail);
 		properties.put("mail.smtp.password", smtpSenderEmailPassword);
-		properties.put("mail.smtp.port", smtpPort);
-		properties.put("mail.smtp.auth", IsAuthorized);
 
 		return properties;
 	}
@@ -162,7 +170,7 @@ public class SendEmail {
 	private void sendMail(Session session, MimeMessage message){
 		Transport transport = null;
 		try {
-			transport = session.getTransport("smtp");
+			transport = session.getTransport("smtps");
 			transport.connect(mailHost, smtpSenderEmail, smtpSenderEmailPassword);
 			transport.sendMessage(message, message.getAllRecipients());
 			transport.close();
@@ -174,14 +182,9 @@ public class SendEmail {
 	}
 
     //**      Helper Functions     **//
-    private String makeEmailFromHtml(String filePathName, Map<String, String> input)
+    private String makeEmailFromHtml(String fileName, Map<String, String> input)
     {
-	    //Get file path of HTML file to be embedded in the email
-	    String filePath;
-	    File resourcesDirectory = new File(filePathName);
-	    filePath = resourcesDirectory.getPath();
-
-        String emailMessage = readContentFromFile(filePath);
+		String emailMessage = readContentFromFile(fileName);
         try
         {
             Set<Entry<String, String>> entries = input.entrySet();
@@ -199,26 +202,18 @@ public class SendEmail {
     //Method to read HTML file as a String
     private String readContentFromFile(String fileName)
     {
-        StringBuffer htmlContentFile = new StringBuffer();
-
-        try {
-            //use buffering, reading one line at a time
-            BufferedReader reader =  new BufferedReader(new FileReader(fileName));
-            try {
-                String line = null;
-                while (( line = reader.readLine()) != null){
-                    htmlContentFile.append(line);
-                    htmlContentFile.append(System.getProperty("line.separator"));
-                }
-            }
-            finally {
-                reader.close();
-            }
-        }
-        catch (IOException ex){
-            ex.printStackTrace();
-        }
-        return htmlContentFile.toString();
+		String emailMessage = "";
+		try {
+			InputStream stream = servletContext.getResourceAsStream("/WEB-INF/"+fileName);
+			BufferedReader br = new BufferedReader(new InputStreamReader(stream));
+			String line;
+			while ((line = br.readLine()) != null) {
+				emailMessage += line;
+			}
+		} catch (IOException e) {
+			throw new RuntimeException(e);
+		}
+		return emailMessage;
     }
 }
 
