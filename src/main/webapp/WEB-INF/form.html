@@ -279,10 +279,6 @@
                     if (typeof(Storage) !== "undefined") {
                         // store data
                         sessionStorage.setItem("storedData", JSON.stringify(form.formData));
-                        // store dates
-                        if (form && form.formData) {
-                            sessionStorage.setItem("storedDates", form.formData.eventDates);
-                        }
                     }
                 }
                 var getData = function() {
@@ -293,15 +289,6 @@
                         }
                     }
                 }
-                var getStoredDates = function() {
-                    if (typeof (Storage) !== "undefined") {
-                        let data = sessionStorage.getItem("storedDates");
-                        if (data) {
-                            // return string of dates
-                            return data;
-                        }
-                    }
-                };
                 //persisting data on reload
                 window.onbeforeunload = function() {
                     console.log(form.formData.requesterName);
@@ -583,6 +570,7 @@
             },
             mounted: function() {
                 this.formData = persistModule.getData()();
+                updateDateTime();
                 this.setUserName();
                 console.log("got data");
             },
