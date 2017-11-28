@@ -18,6 +18,7 @@ $(document).ready(function(){
                 formatTime: 'g:i a',
                 defaultDate: (new Date()).setMinutes(generateSetMin( (new Date()).getMinutes() ) ),
                 minDateTime: new Date(),
+                onClose: setStartMaxDate,
             });
 
 			document.getElementById("chooseStartDateTime").value = '';
@@ -56,6 +57,23 @@ $(document).ready(function(){
                 $( '#chooseEndDateTime' ).datetimepicker( {
                     defaultDate: new Date(year,month-1,day,hour,min,00),
                     minDateTime: new Date(year,month-1,day,hour,min,00),
+                } );
+            }
+        }
+
+        function setStartMaxDate(){
+            var x=$('#chooseEndDateTime').val();
+            if(x!=""){
+                var date = x.split(" ")[0];
+                var time = x.split(" ")[1];
+                var year = date.split("/")[0];
+                var month = date.split("/")[1];
+                var day = date.split("/")[2];
+                var hour = time.split(":")[0];
+                var min = time.split(":")[1];
+                $( '#chooseStartDateTime' ).datetimepicker( {
+                    defaultDate: new Date(year,month-1,day,hour,min,00),
+                    //minDateTime: new Date(year,month-1,day,hour,min,00),
                 } );
             }
         }
