@@ -248,8 +248,8 @@ public class FormServiceRequestController extends WebMvcConfigurerAdapter {
 		requestID.setYear(year);
 		requestID.setDigits(formDigit);
 		requestIDRepository.save(requestID);
-
-		return String.format("%02d", year) + "-" + String.format("%04d", formDigit);
+        System.out.println("reserving requestID" + String.format("%02d", year) + "-" + String.format("%04d", formDigit) );
+        return String.format("%02d", year) + "-" + String.format("%04d", formDigit);
 	}
 
 	private String createURLToken(Long formDataID) {
