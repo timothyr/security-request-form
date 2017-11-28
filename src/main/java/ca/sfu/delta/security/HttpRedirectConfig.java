@@ -38,7 +38,7 @@ public class HttpRedirectConfig {
 
         Connector connector = new Connector(PROTOCOL);
         connector.setScheme("http");
-        connector.setPort(80);
+        connector.setPort(8080);
         connector.setSecure(false);
         connector.setRedirectPort(PORT);
 
