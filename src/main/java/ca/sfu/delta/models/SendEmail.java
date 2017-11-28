@@ -8,6 +8,9 @@ import org.springframework.mail.MailException;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 
+import javax.activation.DataHandler;
+import javax.activation.DataSource;
+import javax.activation.URLDataSource;
 import javax.mail.*;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeBodyPart;
@@ -146,7 +149,6 @@ public class SendEmail {
 		properties = System.getProperties();
 		properties.put("mail.smtp.starttls.enable", "false");
 		properties.put("mail.smtp.ssl.enable", IsTtlsEnabled);
-
 		properties.put("mail.smtp.host", mailHost);
 		properties.put("mail.smtp.port", smtpPort);
 		properties.put("mail.transport.protocol", transportProtocol);
