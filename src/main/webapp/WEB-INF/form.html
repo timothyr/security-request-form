@@ -266,6 +266,7 @@
 
         const errorHeader = "Something went wrong";
         const errorMessage = "Sorry, there was an error. Your form was not submitted. Please try again later.";
+        const errorMessageWithReason = "Sorry, there was an error. Your form was not submitted. The reason: ";
 
         const signInMessage = "Sign In";
         const signOutMessage = "Sign Out";
@@ -275,7 +276,7 @@
             LOGGED_IN_LOAD: 'Submitting Form',
             NOT_LOGGED_IN: 'Request Authorization',
             NOT_LOGGED_IN_LOAD: 'Requesting Authorization'
-        }
+        };
 
         const guardTypes = [
             "Guard",
@@ -328,6 +329,7 @@
 
 				 submitting: false,
 				 showModal: false,
+				 successfulSubmit: false,
                 formData: {
                     department: '',
                     requesterName: '',
@@ -433,6 +435,12 @@
                     this.showModal = true;
                 },
 
+                displayErrorModalWithReason : function (reason) {
+                    this.setSubmittedFormHeader(errorHeader);
+                    this.setSubmittedFormMessage(errorMessageWithReason + reason);
+                    this.showModal = true;
+                },
+
                 displayErrorModal : function () {
                     this.setSubmittedFormHeader(errorHeader);
                     this.setSubmittedFormMessage(errorMessage);
@@ -440,11 +448,16 @@
                 },
 
                 closeModal : function () {
-                    this.resetFields();
+                    if(this.successfulSubmit) {
+                        this.resetFields();
+					}
+					this.loading = false;
+                    this.submitting = false;
                 },
 
                 resetFields : function () {
                     Object.assign(this.$data, this.$options.data.call(this));
+                    $("#phone-input").set("");
                 },
 
                 submitForm: function () {
@@ -452,17 +465,22 @@
                     this.loading = true;
                     function successCallback(response) {
                         if(response.ok) {
+                            self.successfulSubmit = true;
                             if(self.signedIn)
                                 self.displaySubmitSuccessModal(formGetAPI + response.body);
                             else
                                 self.displayRequestSuccessModal(formGetAPI + response.body);
                         } else {
-                            errorCallback();
+                            errorCallback(response);
                         }
                     }
 
-                    function errorCallback() {
-                        self.displayErrorModal();
+                    function errorCallback(response) {
+                        if(response.status == 400) {
+							self.displayErrorModalWithReason(response.body)
+						} else {
+                            self.displayErrorModal();
+						}
                     }
 
                     if (this.isValid && !this.submitting) {
@@ -476,8 +494,8 @@
                         this.$http.post(formSaveAPI, this.formData).then(function (response) {
 	                        successCallback(response);
 	                        this.loading = false;
-	                    }, function () {
-	                        errorCallback();
+	                    }, response => {
+	                        errorCallback(response);
 	                    });
                     }
                 },
