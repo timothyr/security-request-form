@@ -73,8 +73,10 @@
                                     class="dark-text">{{form.faxNumber}}</span></li>
                             <li class="list-group-item d-flex justify-content-between align-items-center"># of Attendees: <span
                                     class="dark-text">{{form.numAttendees}}</span></li>
-                            <li class="list-group-item d-flex justify-content-between align-items-center">Licensed: <span
-                                    class="dark-text">{{form.isLicensed}}</span></li>
+                            <li class="list-group-item d-flex justify-content-between align-items-center">Licensed:
+                                <span class="dark-text" v-if="form.isLicensed">Yes</span>
+                                <span class="dark-text" v-else>No</span>
+                            </li>
                             <li class="list-group-item d-flex justify-content-between align-items-center"># of Guards Requested: <span
                                     class="dark-text">{{form.numGuards}}</span></li>
                             <li class="list-group-item d-flex justify-content-between align-items-center">Type of Guard Requested: <span
@@ -125,8 +127,10 @@
                         <ul class="list-group">
                             <li class="list-group-item d-flex justify-content-between align-items-center">Authorizer Phone:
                                 <span class="dark-text">{{form.authorizerPhoneNumber}}</span></li>
-                            <li class="list-group-item d-flex justify-content-between align-items-center">Invoice: <span
-                                    class="dark-text">{{form.invoiceRequested}}</span></li>
+                            <li class="list-group-item d-flex justify-content-between align-items-center">Invoice:
+                                <span class="dark-text" v-if="form.invoiceRequested">Yes</span>
+                                <span class="dark-text" v-else>No</span>
+                            </li>
                         </ul>
                     </div>
                 </div>
