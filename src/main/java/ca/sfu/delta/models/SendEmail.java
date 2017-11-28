@@ -41,8 +41,6 @@ public class SendEmail {
     private String smtpSenderEmailPassword;
     @Value("${spring.mail.port}")
     private String smtpPort;
-    @Value("${spring.mail.properties.mail.smtp.auth}")
-    private Boolean IsAuthorized;
     @Value("{spring.mail.properties.mail.smtp.starttls.enable}")
     private String IsTtlsEnabled;
     @Value ("{spring.mail.properties.mail.transport.protocol}")
@@ -155,8 +153,6 @@ public class SendEmail {
 		properties.put("mail.transport.protocol", transportProtocol);
 		properties.put("mail.smtp.user", smtpSenderEmail);
 		properties.put("mail.smtp.password", smtpSenderEmailPassword);
-		properties.put("mail.smtp.auth", IsAuthorized);
-
 
 		return properties;
 	}

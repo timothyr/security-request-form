@@ -10,6 +10,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
+import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.config.annotation.ViewControllerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
@@ -92,9 +93,15 @@ public class FormServiceRequestController extends WebMvcConfigurerAdapter {
     }
 
 	@RequestMapping(value = "/api/form/saveSecurity", method = RequestMethod.POST)
-	public @ResponseBody ResponseEntity saveSecurity(@RequestBody FormData form,
-	                                         @RequestParam(required = false) String additionalMessage)
-								throws MessagingException {
+	public @ResponseBody ResponseEntity saveSecurity(@RequestBody @Valid FormData form,
+                                                     BindingResult result,
+                                                     @RequestParam(required = false) String additionalMessage)
+            throws MessagingException {
+
+        if(result.hasErrors()) {
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("ERROR: Form was invalid");
+        }
+
 		String userName = form.getRequesterName();
 		String userEmailAddress = form.getEmailAddress();
 		String authEmailAddress = form.getAuthorizerEmailAddress();
@@ -145,8 +152,7 @@ public class FormServiceRequestController extends WebMvcConfigurerAdapter {
     @RequestMapping(value = "/api/csv/guards/{id}-guards.csv", method = RequestMethod.GET, produces = "text/csv")
     @ResponseBody
     public String getGuardCSV(@PathVariable("id") String id) {
-        String csvString = new String();
-        FormData correctForm =  new FormData();
+        FormData correctForm = null;
         for (FormData form : formRepository.findAll()) {
 
             if(form.getRequestID().equals(id))
@@ -155,6 +161,11 @@ public class FormServiceRequestController extends WebMvcConfigurerAdapter {
                 break;
             }
         }
+
+        if(correctForm == null) {
+            return null;
+        }
+
         List<Guard> correctFormGuards = correctForm.getGuards();
 
         Boolean first = true;
@@ -272,12 +283,32 @@ public class FormServiceRequestController extends WebMvcConfigurerAdapter {
 		return token;
     }
 
-    @RequestMapping(value = "/api/form/save", method = RequestMethod.POST, produces = "text/plain")
-    public @ResponseBody ResponseEntity addForm(@RequestBody FormData form, @RequestParam boolean loggedOn,
+    @PostMapping(value = "/api/form/save", produces = "text/plain")
+    public @ResponseBody ResponseEntity addForm(@RequestBody @Valid FormData form,
+                                                BindingResult result,
+                                                @RequestParam boolean loggedOn,
                                                 HttpServletRequest request) {
 	    if (form == null) {
-		    return ResponseEntity.status(HttpStatus.NOT_FOUND).body("ERROR: form didn't save");
+            System.out.println("A Null Form was not saved.");
+		    return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("ERROR: Form is null");
 	    }
+
+	    if(result.hasErrors()) {
+            System.out.println("An invalid Form was not saved. Here's why:");
+            ObjectError errorToDisplay = null;
+            int errorCount = 1;
+	        for(ObjectError e : result.getAllErrors()) {
+	            errorToDisplay = e;
+	            System.out.println(errorCount + ") " + e.getDefaultMessage());
+	            errorCount++;
+            }
+
+            if(errorToDisplay != null) {
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorToDisplay.getDefaultMessage());
+            } else {
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("ERROR: Form was invalid");
+            }
+        }
 
         //Set requestedOnDate to current date
         DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
@@ -331,12 +362,18 @@ public class FormServiceRequestController extends WebMvcConfigurerAdapter {
 
 
     @RequestMapping(value = "/api/form/update/{id}", method = RequestMethod.PUT)
-    public ResponseEntity<FormData> updateForm(@PathVariable("id") long id, @RequestBody FormData data,
+    public ResponseEntity<FormData> updateForm(@PathVariable("id") long id,
+                                               @RequestBody @Valid FormData data,
+                                               BindingResult result,
                                                @RequestParam boolean loggedOn) {
         FormData form = formRepository.findOne(id);
         if (form == null) {
             System.out.println("User with id " + id + " not found");
             return new ResponseEntity<FormData>(HttpStatus.NOT_FOUND);
+        }
+
+        if(result.hasErrors()) {
+            return new ResponseEntity<FormData>(form, HttpStatus.BAD_REQUEST);
         }
 
         if (loggedOn && data.getRequestStatus().equals(GlobalConstants.WAITING)) {
