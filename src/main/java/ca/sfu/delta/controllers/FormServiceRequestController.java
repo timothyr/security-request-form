@@ -103,20 +103,20 @@ public class FormServiceRequestController extends WebMvcConfigurerAdapter {
 
 		try {
 			//send email to User
-			if (userEmailAddress != null && form.getRequestStatus().compareTo("REJECTED") == 0) {
+			if (userEmailAddress != null && form.getRequestStatus().equals(GlobalConstants.REJECTED)) {
 				sendEmail.sendEventRequestRejection(userEmailAddress, userName,
 						trackingID, additionalMessage);
 			}
-			else if (userEmailAddress != null && form.getRequestStatus().compareTo("ACCEPTED") == 0) {
+			else if (userEmailAddress != null && form.getRequestStatus().equals(GlobalConstants.ACCEPTED)) {
 				sendEmail.sendEventRequestApproved(userEmailAddress, userName, trackingID);
 			}
 
 			//send email to Authorizer
-			if (authEmailAddress != null && form.getRequestStatus().compareTo("REJECTED") == 0) {
+			if (authEmailAddress != null && form.getRequestStatus().equals(GlobalConstants.REJECTED)) {
 				sendEmail.sendEventRequestRejection(authEmailAddress, null,
 						trackingID, additionalMessage);
 			}
-			else if (authEmailAddress != null && form.getRequestStatus().compareTo("ACCEPTED") == 0) {
+			else if (authEmailAddress != null && form.getRequestStatus().equals(GlobalConstants.ACCEPTED)) {
 				sendEmail.sendEventRequestApproved(authEmailAddress, null, trackingID);
 			}
 		} catch (Exception e) {
@@ -280,6 +280,7 @@ public class FormServiceRequestController extends WebMvcConfigurerAdapter {
     @PostMapping(value = "/api/form/save", produces = "text/plain")
     public @ResponseBody ResponseEntity addForm(@RequestBody @Valid FormData form,
                                                 BindingResult result,
+                                                @RequestParam boolean loggedOn,
                                                 HttpServletRequest request) {
 	    if (form == null) {
             System.out.println("A Null Form was not saved.");
@@ -308,7 +309,12 @@ public class FormServiceRequestController extends WebMvcConfigurerAdapter {
         Date date = new Date();
         form.setRequestedOnDate(dateFormat.format(date));
 
-        form.setRequestStatus("WAITING");
+        if (loggedOn) {
+        	form.setRequestStatus(GlobalConstants.AUTHORIZED);
+        }
+        else {
+	        form.setRequestStatus(GlobalConstants.WAITING);
+        }
 
         if (form.getRequestID() == null || form.getRequestID().isEmpty()) {
             // Need to reserve a request id for this form
@@ -350,12 +356,18 @@ public class FormServiceRequestController extends WebMvcConfigurerAdapter {
 
 
     @RequestMapping(value = "/api/form/update/{id}", method = RequestMethod.PUT)
-    public ResponseEntity<FormData> updateForm(@PathVariable("id") long id, @RequestBody FormData data) {
+    public ResponseEntity<FormData> updateForm(@PathVariable("id") long id, @RequestBody FormData data,
+                                               @RequestParam boolean loggedOn) {
         FormData form = formRepository.findOne(id);
-        if (form==null) {
+        if (form == null) {
             System.out.println("User with id " + id + " not found");
             return new ResponseEntity<FormData>(HttpStatus.NOT_FOUND);
         }
+
+        if (loggedOn && data.getRequestStatus().equals(GlobalConstants.WAITING)) {
+        	data.setRequestStatus(GlobalConstants.AUTHORIZED);
+        }
+
         formRepository.save(data);
         return new ResponseEntity<FormData>(form, HttpStatus.OK);
     }
@@ -365,8 +377,6 @@ public class FormServiceRequestController extends WebMvcConfigurerAdapter {
             @RequestParam(value = "ticket", required = false) String ticket,
             @RequestParam(value = "gateway", required = false) String gateway,
             HttpServletRequest request) {
-
-
         return "form";
     }
 
@@ -374,7 +384,6 @@ public class FormServiceRequestController extends WebMvcConfigurerAdapter {
     public String formRequest() {
         return "form";
     }
-
 
     @PostMapping("/")
     public String checkFormRequest(@Valid FormData serviceRequestForm, BindingResult bindingResult) {
@@ -389,15 +398,12 @@ public class FormServiceRequestController extends WebMvcConfigurerAdapter {
     }
 
     private void saveFormToDatabase(FormData formData) {
-    	System.out.println("Saving");
         if (formData.getRequestID() == null || formData.getRequestID().isEmpty()) {
     		// Need to reserve a request id
 		    formData.setRequestID(reserveNextRequestID());
 	    }
 
-
         formRepository.save(formData);
-
     }
 
     @ModelAttribute("FormData")

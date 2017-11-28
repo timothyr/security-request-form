@@ -318,52 +318,52 @@
             },
 
 			data: () => ({
-				 signedIn: false,
-				 signedInButtonMessage: signInMessage,
+		        signedIn: false,
+		        signedInButtonMessage: signInMessage,
 
-				 submittedFormHeader:'',
-				 submittedFormMessage: '',
-				 submittedFormLink: '',
+		        submittedFormHeader:'',
+		        submittedFormMessage: '',
+		        submittedFormLink: '',
 
-				 showAuthFields: true,
+		        showAuthFields: true,
 
-				 submitting: false,
-				 showModal: false,
-				 successfulSubmit: false,
-                formData: {
-                    department: '',
-                    requesterName: '',
-                    phoneNumber: '',
-                    requestedOnDate: '',
-                    requesterID: '',
-                    authorizationDate: '',
-                    paymentAccountCode: '',
-                    emailAddress: '',
-                    times: '',
-                    eventName: '',
-                    isLicensed: '',
-                    numAttendees: '0',
-                    authorizerId: '',
-                    authorizerPhoneNumber: '',
-                    serviceRequestNumber: '',
-                    eventLocation: '',
-                    authorizerName: '',
-                    eventDates: '',
-                    eventDetails: '',
-                    faxNumber: '',
-                    requestID: '',
-                    authorizerEmailAddress: '',
-	                guardType: '',
-	                numGuards: '0'
-                },
-                startdatetime: '',
-				enddatetime: '',
-				datetimelist: [],
-                departments: departments,
-	            guardTypes: guardTypes,
-				datetimelistsize: '0',
-                loading: false,
-                authOption: 'authOwn'
+		        submitting: false,
+		        showModal: false,
+                successfulSubmit: false,
+		        formData: {
+			        department: '',
+			        requesterName: '',
+			        phoneNumber: '',
+			        requestedOnDate: '',
+			        requesterID: '',
+			        authorizationDate: '',
+			        paymentAccountCode: '',
+			        emailAddress: '',
+			        times: '',
+			        eventName: '',
+			        isLicensed: '',
+			        numAttendees: '0',
+			        authorizerId: '',
+			        authorizerPhoneNumber: '',
+			        serviceRequestNumber: '',
+			        eventLocation: '',
+			        authorizerName: '',
+			        eventDates: '',
+			        eventDetails: '',
+			        faxNumber: '',
+			        requestID: '',
+			        authorizerEmailAddress: '',
+			        guardType: '',
+			        numGuards: '0'
+		        },
+		        startdatetime: '',
+		        enddatetime: '',
+		        datetimelist: [],
+		        departments: departments,
+		        guardTypes: guardTypes,
+		        datetimelistsize: '0',
+		        loading: false,
+		        authOption: 'authOwn'
             }),
 
 			computed: {
@@ -491,7 +491,9 @@
                         }
                         this.formData.phoneNumber = $("#phone-input").val();
 
-                        this.$http.post(formSaveAPI, this.formData).then(function (response) {
+                        this.$http.post(formSaveAPI, this.formData, {params : {
+	                        loggedOn : this.signedIn
+                        }}).then(function (response) {
 	                        successCallback(response);
 	                        this.loading = false;
 	                    }, response => {
@@ -516,6 +518,7 @@
 						this.enddatetime = '';
             		}
             	},
+
             	deleteDatetime: function(dt){
             		var index = this.datetimelist.indexOf(dt);
             		this.formData.eventDates = deleteEventDate(dt.start,dt.end,this.formData.eventDates, index,this.datetimelist.length);
