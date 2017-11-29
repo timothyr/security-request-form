@@ -602,10 +602,6 @@ public class FormData {
 
             //Add revelant information
             addLineToPDF(contentStream, 145, 635, this.getRequesterName());
-            addLineToPDF(contentStream, 145, 620, "This is where we'd put the rest of the information from the");
-            addLineToPDF(contentStream, 145, 610, "template, if we had it.");
-            addLineToPDF(contentStream, 145, 600, "What do you think, Jason? Is just the name okay,");
-            addLineToPDF(contentStream, 145, 590, "or should the app ask you for this info when you press generate?");
 
             //Generate Invoice number and date
             DateFormat workOrderNumberDateFormat = new SimpleDateFormat("yyyy");
