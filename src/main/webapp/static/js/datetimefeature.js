@@ -38,8 +38,12 @@ $(document).ready(function(){
 		}
 
 		function disableDateInput(val){
-		    document.getElementById("startdatetime").disabled = val;
-		    document.getElementById("enddatetime").disabled = val;
+		    var start =  document.getElementById("startdatetime");
+		    var end =  document.getElementById("enddatetime");
+		    if(start!=null && end!= null){
+		        start.disabled = val;
+		        end.disabled = val;
+		    }
 		}
 
 

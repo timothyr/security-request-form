@@ -124,7 +124,7 @@
                             <th>End Time<sup style="color: red">*</sup></th>
                             <th></th>
                         </tr>
-                        <tr v-if="isEditable()">
+                        <tr id="picker_div">
                             <th class="col-xs-3">
                                 <div id="chooseStartDateTime" class ="input-group" onChange="setDateTime(this,'startdatetime')">
 										<span class="input-group-addon">
@@ -358,7 +358,9 @@
 	methods: {
 
 		isEditable: function () {
-			return this.formData.requestStatus === status.WAITING;
+			var truth =  this.formData.requestStatus === status.WAITING;
+			hidePickerDiv(!truth);
+			return truth;
 		},
 
 		setSubmittedFormHeader(header) {
@@ -426,7 +428,8 @@
 						this.formData.eventDates += ", "+this.startdatetime +"-"+ this.enddatetime;
 					}
 					this.datetimelist.push( {start: this.startdatetime, end: this.enddatetime} );
-					disableDateInput(true);this.startdatetime = '';
+					disableDateInput(true);
+					this.startdatetime = '';
 					this.enddatetime = '';
             	}
             },
@@ -475,7 +478,8 @@
                         });
                     });
                     this.formData = response.data;
-                    this.datetimelist = updateDateTime(this.formData.eventDates);disableDateInput(true);
+                    this.datetimelist = updateDateTime(this.formData.eventDates);
+                    disableDateInput(true);
                 } else {
                     console.log(response.status);
                 }

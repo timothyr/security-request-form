@@ -591,12 +591,14 @@
                 },
                 setRequiredDate: function() {
                     if (this.datetimelist && this.datetimelist.length != 0) {
-                        $('#startdatetime').removeAttr("required");
-                        $('#enddatetime').removeAttr("required");
+                        //$('#startdatetime').removeAttr("required");
+                        //$('#enddatetime').removeAttr("required");
+                        disableDateInput(true);
                         console.log("DATE IS NOT EMPTY, NOT REQUIRING DATE");
                     } else {
-                        $('#startdatetime').attr("required");
-                        $('#enddatetime').attr("required");
+                        //$('#startdatetime').attr("required");
+                        //$('#enddatetime').attr("required");
+                        disableDateInput(false);
                     }
                 }
             },
