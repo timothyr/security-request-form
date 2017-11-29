@@ -636,6 +636,13 @@ public class FormData {
             document.close();
             byte[] fileAsBytes = Files.readAllBytes(new File("Invoice.pdf").toPath());
 
+            try {
+                Files.delete(new File("Invoice.pdf").toPath());
+            } catch (Exception e)
+            {
+                //If this fails we have bigger problems than catching this exception.
+            }
+
             return fileAsBytes;
 
         } catch (IOException e) {
