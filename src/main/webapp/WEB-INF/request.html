@@ -241,37 +241,38 @@
             </div>
             <hr/>
         </div>
-
-        <div class="row my-3 text-center">
-            <div class="col col-md-3"></div>
-            <div class="col col-md-12">
-                <button type="button" class="btn btn-primary mr-2" v-on:click="addGuard">Add Guard/SCSP</button>
-                # to add:
-                <input id="numGuards" type="number" step="1" min="1" v-model="guardsToAdd">
-                <button type="button" class="btn btn-danger ml-4" v-on:click="deleteAllGuards">Remove All Guards/SCSPs</button>
+        <div class="row mb-5 mt-3 text-center">
+            <div class="col col-lg-6">
+                <div class="input-group">
+                    <span class="input-group-addon"># of Guard/SCSP</span>
+                    <input id="numGuards" class="form-control" type="number" step="1" min="1" v-model="guardsToAdd"/>
+                    <span class="input-group-btn">
+                        <button type="button" class="btn btn-primary" v-on:click="addGuard">Add</button>
+                    </span>
+                </div>
             </div>
-            <div class="col col-md-3"></div>
+            <div class="col col-lg-6">
+                <button type="button" class="btn btn-danger" v-on:click="deleteAllGuards">Remove All Guards/SCSPs</button>
+            </div>
         </div>
-
-                <div class="row text-center">
-                    <div class="col-md-4">
-                        <p class="d-block">Estimated Personnel Cost:</p>
-                        <span class="money-style d-block">${{cost}}</span>
-                    </div>
-                    <div class="col-md-4">
-                        <p class="d-block">Total Hours:</p>
-                        <span class="money-style d-block">{{totalHours}} Hours</span>
-                    </div>
-                    <div class="col-md-4">
-                        <p class="d-block">Hours per Guard/SCSP:</p>
-                        <span class="money-style d-block">{{avgHours}} Hours</span>
-                    </div>
-                </div>
-
-                <div class="form-group my-5">
-                    <label for="remarksField">Security Remarks</label>
-                    <textarea class="form-control" rows="4" placeholder="Remarks" v-model="form.securityRemarks" id="remarksField"></textarea>
-                </div>
+        <div class="row text-center">
+            <div class="col-md-4">
+                <p class="d-block">Estimated Personnel Cost:</p>
+                <span class="money-style d-block">${{cost}}</span>
+            </div>
+            <div class="col-md-4">
+                <p class="d-block">Total Hours:</p>
+                <span class="money-style d-block">{{totalHours}} Hours</span>
+            </div>
+            <div class="col-md-4">
+                <p class="d-block">Hours per Guard/SCSP:</p>
+                <span class="money-style d-block">{{avgHours}} Hours</span>
+            </div>
+        </div>
+        <div class="form-group my-5">
+            <label for="remarksField">Security Remarks</label>
+            <textarea class="form-control" rows="4" placeholder="Remarks" v-model="form.securityRemarks" id="remarksField"></textarea>
+        </div>
 
         <div class="row">
             <div class="col-md-12">
