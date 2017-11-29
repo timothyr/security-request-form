@@ -125,7 +125,7 @@
                             <th>End Time<sup style="color: red">*</sup></th>
                             <th></th>
                         </tr>
-                        <tr v-if="isEditable()" >
+                        <tr id="hide_picker">
                             <th class="col-xs-3">
                                 <div id="chooseStartDateTime" class ="input-group" onChange="setDateTime(this,'startdatetime')">
 									<span class="input-group-addon">
@@ -357,7 +357,9 @@
 
         methods: {
             isEditable: function () {
-            	return this.formData.requestStatus === status.WAITING;
+            	var truth =  this.formData.requestStatus === status.WAITING;
+			    hidePickerDiv(!truth);
+			    return truth;
             },
 
             setSubmittedFormHeader(header) {

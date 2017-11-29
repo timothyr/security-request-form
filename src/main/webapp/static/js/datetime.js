@@ -61,4 +61,3 @@ function generateEventDates(eventDates){
     return newEventDates;
 }
 
-
