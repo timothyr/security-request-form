@@ -107,6 +107,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 					AuthorizedUser.Privilege.SECURITY.toString()
 				)
 
+				.antMatchers("/login").authenticated()
+
 				// Everything else is publicly accessible
 				.antMatchers("/**").permitAll();
 	}
