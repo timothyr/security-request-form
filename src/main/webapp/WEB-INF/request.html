@@ -299,6 +299,11 @@
                                                 </tr>
                                             </thead>
                                             <tbody>
+                                                <tr v-for="email in defaultEmails">
+                                                    <td><input type="checkbox" checked disabled></td>
+                                                    <td><p class="grey-color">{{email.email}} ({{email.type}})</p></td>
+
+                                                </tr>
                                                 <tr v-for="email in distEmails" class="tr-delete">
                                                     <td><input type="checkbox" v-model="selectedEmails" :value="email.id" number></td>
                                                     <td>{{email.email}}</td>
@@ -333,7 +338,7 @@
         </div>
     </div>
 </div>
-
+    </div>
 <script src="/js/jquery-3.2.1.min.js"></script>
 <script src="/js/bootstrap.bundle.min.js"></script>
 <script src="/js/tether.min.js"></script>
@@ -369,9 +374,12 @@
 
             selectedEmails: [],
             additionalMessage: '',
+            // contain requester and authorizee email, inserted by setDefaultEmails
+            defaultEmails: [],
             distEmails: [],
             distEmail_input: "",
             rejectLoading: false,
+            userName: '',
         },
 
         methods: {
@@ -466,14 +474,15 @@
 
                     this.form = JSON.parse(JSON.stringify(response.data));
                     this.dates = updateDateTime(this.form.eventDates);
+                    //requester/authorizee emails into a list
+                    this.setDefaultEmails();
 
                 }, function (error) {
                     console.log(error.statusText);
                 });
-
             },
             setSecFields: function () {
-                this.form.distributionList = this.emails;
+                this.form.distributionList = this.selectedEmails;
 
                 let i, len;
                 len = this.form.guards.length || 0;
@@ -491,6 +500,8 @@
 						return;
 					}
 					this.form.requestStatus = "APPROVED";
+					//send emails
+                    sendDistEmails();
                 } else if (action === 'reject') {
                     this.form.requestStatus = 'REJECTED';
                 } else {
@@ -560,6 +571,12 @@
                     }
                 });
             },
+            setDefaultEmails: function() {
+                this.defaultEmails.push({email: this.form.emailAddress, type: 'Requester'});
+                if (this.form.authorizerEmailAddress) {
+                    this.defaultEmails.push({email: this.form.authorizerEmailAddress, type: 'Authorizer'});
+                }
+            }
         },
 
         created() {
