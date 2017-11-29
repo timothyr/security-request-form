@@ -260,6 +260,41 @@
 </script>
 <script src="/js/constants.js"></script>
 <script>
+    var persistModule;
+    (function () {
+        persistModule = (function() {
+            var storeData = function() {
+                if (typeof(Storage) !== "undefined") {
+                    // store data
+                    sessionStorage.setItem("updateData", JSON.stringify(form.formData));
+                }
+            }
+            var getData = function() {
+                if (typeof (Storage) !== "undefined") {
+                    let data = sessionStorage.getItem("updateData");
+                    if (data != null || data != "") {
+                        return JSON.parse(data);
+                    }
+                }
+            }
+            //persisting data on reload
+            window.onbeforeunload = function() {
+                console.log("unloading");
+                form.formData.phoneNumber = $("#phone-input").val();
+                storeData();
+            };
+
+            return {
+                storeData: function() {
+                    return storeData;
+                },
+                getData: function() {
+                    return getData;
+                }
+            }
+        })();
+    }());
+
 	var getUrlParams = function (url) {
 		var params = {};
 		(url + '?').split('?')[1].split('&').forEach(function (pair) {
@@ -481,6 +516,18 @@
                     }
                 }).catch(error => console.log(error));
             },
+            setRequiredDate: function() {
+                if (this.datetimelist && this.datetimelist.length != 0) {
+                    //$('#startdatetime').removeAttr("required");
+                    //$('#enddatetime').removeAttr("required");
+                    disableDateInput(true);
+                    console.log("DATE IS NOT EMPTY, NOT REQUIRING DATE");
+                } else {
+                    //$('#startdatetime').attr("required");
+                    //$('#enddatetime').attr("required");
+                    disableDateInput(false);
+                }
+            }
         },
         mounted: function() {
 
@@ -496,13 +543,27 @@
                             $('[data-toggle="tooltip"]').tooltip();//init input masks
                             $('#phone-input').mask("(999) 999-9999");
                             $('#phone-of-authorizee-input').mask("(999) 999-9999");
-                            $('#phone-input').val(phoneNumber);
                             $('#phone-of-authorizee-input').val(authNumber);
                         });
                     });
+                    $('#phone-input').val(phoneNumber);
                     this.formData = response.data;
                     this.datetimelist = updateDateTime(this.formData.eventDates);
                     disableDateInput(true);
+
+                    //replace data with stored if exists
+                    if (sessionStorage.getItem('updateData')) {
+                        this.formData = persistModule.getData()();
+                        console.log(this.formData);
+
+                        this.datetimelist = updateDateTime(this.formData.eventDates);
+                        // since it these are required fields and have to be non empty, but already loaded dates
+                        this.setRequiredDate();
+                        this.setUserName();
+                        console.log("got data");
+                        //manually restore phone-number..
+                        $('#phone-input').val(this.formData.phoneNumber);
+                    }
                 } else {
                     console.log(response.status);
                 }
