@@ -69,8 +69,10 @@
                         <ul class="list-group">
                             <li class="list-group-item d-flex justify-content-between align-items-center">SFU ID: <span
                                     class="dark-text">{{form.requesterID}}</span></li>
-                            <li class="list-group-item d-flex justify-content-between align-items-center">Fax: <span
-                                    class="dark-text">{{form.faxNumber}}</span></li>
+                            <li class="list-group-item d-flex justify-content-between align-items-center">Fax:
+                                <span class="dark-text" v-if="!form.faxNumber">n/a</span>
+                                <span class="dark-text" v-else>{{form.faxNumber}}</span>
+                            </li>
                             <li class="list-group-item d-flex justify-content-between align-items-center"># of Attendees: <span
                                     class="dark-text">{{form.numAttendees}}</span></li>
                             <li class="list-group-item d-flex justify-content-between align-items-center">Licensed:
@@ -115,18 +117,24 @@
                 <div class="row">
                     <div class="col-lg-6">
                         <ul class="list-group">
-                            <li class="list-group-item d-flex justify-content-between align-items-center">Authorized By: <span
-                                    class="dark-text">{{form.authorizerName}}</span></li>
-                            <li class="list-group-item d-flex justify-content-between align-items-center">Account Code: <span
-                                    class="dark-text">{{form.paymentAccountCode}}</span></li>
-                            <li class="list-group-item d-flex justify-content-between align-items-center">Authorizer ID: <span
-                                    class="dark-text">{{form.authorizerID}}</span></li>
+                            <li class="list-group-item d-flex justify-content-between align-items-center">Authorized By:
+                                <span class="dark-text" v-if="!form.authorizerName">n/a</span>
+                                <span class="dark-text" v-else>{{form.authorizerName}}</span>
+                            </li>
+                            <li class="list-group-item d-flex justify-content-between align-items-center">Account Code:
+                                <span class="dark-text" v-if="!form.paymentAccountCode">n/a</span>
+                                <span class="dark-text" v-else>{{form.paymentAccountCode}}</span>
+                            </li>
+                            <li class="list-group-item d-flex justify-content-between align-items-center">Authorizer ID:
+                                <span class="dark-text" v-if="!form.authorizerID">n/a</span>
+                                <span class="dark-text" v-else>{{form.authorizerID}}</span></li>
                         </ul>
                     </div>
                     <div class="col-lg-6">
                         <ul class="list-group">
                             <li class="list-group-item d-flex justify-content-between align-items-center">Authorizer Phone:
-                                <span class="dark-text">{{form.authorizerPhoneNumber}}</span></li>
+                                <span class="dark-text" v-if="!form.authorizerPhoneNumber">n/a</span>
+                                <span class="dark-text" v-else>{{form.authorizerPhoneNumber}}</span></li>
                             <li class="list-group-item d-flex justify-content-between align-items-center">Invoice:
                                 <span class="dark-text" v-if="form.invoiceRequested">Yes</span>
                                 <span class="dark-text" v-else>No</span>
@@ -203,7 +211,7 @@
             </div>
             <div class="row my-3">
                 <div class="col-md-3">
-                    <label for="regRate">Regular Rate</label>
+                    <label for="regRate">Regular Rate ($)</label>
                     <input class="form-control text-center" id="regRate" type="number" step="0.01" min="0"
                            v-model="g.regularRate" required="required">
                 </div>
@@ -213,7 +221,7 @@
                            v-model="g.regularHours" required="required">
                 </div>
                 <div class="col-md-3">
-                    <label for="overRate">Overtime Rate</label>
+                    <label for="overRate">Overtime Rate ($)</label>
                     <input class="form-control text-center" id="overRate" type="number" step="0.01" min="0"
                            v-model="g.overtimeRate" required="required">
                 </div>
@@ -236,8 +244,11 @@
 
         <div class="row my-3 text-center">
             <div class="col col-md-3"></div>
-            <div class="col">
-                <button type="button" class="btn btn-primary" v-on:click="addGuard">New Guard/SCSP</button>
+            <div class="col col-md-12">
+                <button type="button" class="btn btn-primary mr-2" v-on:click="addGuard">Add Guard/SCSP</button>
+                # to add:
+                <input id="numGuards" type="number" step="1" min="1" v-model="guardsToAdd">
+                <button type="button" class="btn btn-danger ml-4" v-on:click="deleteAllGuards">Remove All Guards/SCSPs</button>
             </div>
             <div class="col col-md-3"></div>
         </div>
@@ -372,6 +383,8 @@
             distEmails: [],
             distEmail_input: "",
             rejectLoading: false,
+
+            guardsToAdd: 1,
         },
 
         methods: {
@@ -386,21 +399,25 @@
             },
 
             addGuard: function () {
-                this.form.guards.push({
-                    guardID: '',
-                    location: '',
-                    startDate: '',
-                    endDate: '',
-                    startTime: '',
-                    endTime: '',
-                    name: '',
-                    telephone: '',
-                    type: 'Guard',
-                    regularHours: null,
-                    overtimeHours: null,
-                    regularRate: null,
-                    overtimeRate: null
-                })
+            	for (let i = 0; i < this.guardsToAdd; ++i) {
+					this.form.guards.push({
+						guardID: '',
+						location: '',
+						startDate: '',
+						endDate: '',
+						startTime: '',
+						endTime: '',
+						name: '',
+						telephone: '',
+						type: 'Guard',
+						regularHours: null,
+						overtimeHours: null,
+						regularRate: null,
+						overtimeRate: null
+					})
+				}
+
+				this.guardsToAdd = 1;
             },
 
             cloneGuard: function (guard) {
@@ -411,6 +428,10 @@
                 let index = this.form.guards.indexOf(guard);
                 this.form.guards.splice(index, 1);
             },
+
+            deleteAllGuards: function () {
+                this.form.guards = [];
+			},
 
             removeNull: function () {
                 for (let p in this.form) {
@@ -570,6 +591,10 @@
 
         computed: {
             canAccept: function () {
+            	if (!this.form.recievingSecuritySupervisor || this.form.recievingSecuritySupervisor === ''
+                    || !this.form.preparedBy || this.form.preparedBy === '')
+            		return false;
+
                 let goodGuards = true;
 				if (!this.form.guards || this.form.guards.length == 0) {
 					return goodGuards;

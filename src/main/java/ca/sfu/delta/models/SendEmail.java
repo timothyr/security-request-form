@@ -95,6 +95,20 @@ public class SendEmail {
 		sendMail(sendToEmailAddress, subject, htmlEmailBody);
 	}
 
+	public void sendDistributionEmail(String sendToEmailAddress,
+	                                  String eventName, String requestURL) throws MessagingException {
+		String subject = "SFU Security: Notification of event";
+
+		Map<String, String> input = new HashMap<>();
+		input.put("Greeting", getGreeting("")); //These will go out in bulk and we won't always know name
+		input.put("eventName", eventName);
+		input.put("requestURL", requestURL);
+
+		String htmlEmailBody = makeEmailFromHtml("emailDistribution.html", input);
+
+		sendMail(sendToEmailAddress, subject, htmlEmailBody);
+	}
+
 	public void sendEventRequestApproved(String sendToEmailAddress, String personName,
 	                                     String trackingID) throws MessagingException {
 		String subject = "SFU: Event Security Approved";
