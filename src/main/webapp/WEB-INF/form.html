@@ -596,7 +596,7 @@
                     //manually restore phone-number..
                     $('#phone-input').val(this.formData.phoneNumber);
 
-                    //updateDateTime();
+                    this.datetimelist = updateDateTime(this.formData.eventDates);
                     this.setUserName();
                     console.log("got data");
                 }

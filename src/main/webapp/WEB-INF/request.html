@@ -224,13 +224,14 @@
                 </div>
             </div>
             <div class="row my-2 text-center">
-                <div class="col col-md-3"></div>
-                <div class="col">
-                    <button type="button" class="btn btn-danger mx-2" v-on:click="deleteGuard(g)">Remove Guard/SCSP</button>
-                    <button type="button" class="btn" v-on:click="cloneGuard(g)">Duplicate Guard/SCSP</button>
+                <div class="col col-md-2"></div>
+                <div class="col col-md-12">
+                    <button type="button" class="btn mb-2" v-on:click="cloneGuard(g)">Duplicate Guard/SCSP</button>
+                    <button type="button" class="btn btn-danger mx-2 mb-2" v-on:click="deleteGuard(g)">Remove Guard/SCSP</button>
                 </div>
-                <div class="col col-md-3"></div>
+                <div class="col col-md-2"></div>
             </div>
+            <hr/>
         </div>
 
         <div class="row my-3 text-center">
@@ -600,7 +601,7 @@
 					cost += (Number(g.regularHours) * Number(g.regularRate)) + (Number(g.overtimeHours) * Number(g.overtimeRate));
 				}
 
-				return Math.round(cost * 100) / 100;
+				return cost.toFixed(2);
             },
 
             totalHours: function () {
