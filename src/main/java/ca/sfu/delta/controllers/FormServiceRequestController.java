@@ -344,6 +344,8 @@ public class FormServiceRequestController extends WebMvcConfigurerAdapter {
 
         if (loggedOn) {
         	form.setRequestStatus(GlobalConstants.AUTHORIZED);
+        	form.setAuthorizerID(user.getName());
+        	form.setAuthorizerEmailAddress(user.getName() + "@sfu.ca");
         }
         else {
 	        form.setRequestStatus(GlobalConstants.WAITING);
