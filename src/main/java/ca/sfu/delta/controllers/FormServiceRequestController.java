@@ -313,8 +313,6 @@ public class FormServiceRequestController extends WebMvcConfigurerAdapter {
             HttpServletRequest request
     ) {
 
-        boolean loggedOn = user != null;
-
 	    if (form == null) {
             System.out.println("A Null Form was not saved.");
 		    return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("ERROR: Form is null");
@@ -342,6 +340,7 @@ public class FormServiceRequestController extends WebMvcConfigurerAdapter {
         Date date = new Date();
         form.setRequestedOnDate(dateFormat.format(date));
 
+        boolean loggedOn = user != null;
         if (loggedOn) {
         	form.setRequestStatus(GlobalConstants.AUTHORIZED);
         	form.setAuthorizerID(user.getName());
