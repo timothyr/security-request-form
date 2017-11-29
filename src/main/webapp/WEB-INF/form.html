@@ -26,13 +26,14 @@
 					<div class="row">
 						<h1 class="text-center form-heading">Security Service Request</h1>
 					</div>
+                    <p class="text-right"><sup><span style="color: red">*</span> : required</sup></p>
 					<div class="row mt-3">
 						<div class="form-group col-md-4">
-							<label for="requested-by-input">Requested By</label>
+							<label for="requested-by-input">Requested By<sup style="color: red">*</sup></label>
 							<input type="text" id="requested-by-input" v-model="formData.requesterName" class="form-control" required="required"/>
 						</div>
 						<div class="form-group col-md-4">
-							<label for="department-input">Department</label>
+							<label for="department-input">Department<sup style="color: red">*</sup></label>
                             <select required class="form-control" id="department-input" v-model="formData.department">
                                 <option value="" disabled selected>Choose...</option>
                                 <option :value="department" v-for="department in departments">{{department}}</option>
@@ -45,25 +46,25 @@
 					</div>
 					<div class="row">
 						<div class="form-group col-md-4">
-							<label for="phone-input">Phone</label>
+							<label for="phone-input">Phone<sup style="color: red">*</sup></label>
 							<input type="text" id="phone-input" class="form-control" required="required"/>
 						</div>
 						<div class="form-group col-md-4">
-							<label for="email-input">Email</label>
+							<label for="email-input">Email<sup style="color: red">*</sup></label>
 							<input type="email" id="email-input" class="form-control" v-model="formData.emailAddress" placeholder="example@sfu.ca" required="required"/>
 						</div>
 						<div class="form-group col-md-4">
-							<label for="fax-input">Fax (optional)</label>
+							<label for="fax-input">Fax</label>
 							<input type="text" id="fax-input" v-model="formData.faxNumber" class="form-control"/>
 						</div>
 					</div>
 					<div class="row">
 						<div class="form-group col-md-4">
-							<label for="type-name-of-event-input">Type/Name of Event</label>
+							<label for="type-name-of-event-input">Type/Name of Event<sup style="color: red">*</sup></label>
 							<input type="text" id="type-name-of-event-input" v-model="formData.eventName" class="form-control" required="required"/>
 						</div>
 						<div class="form-group col-md-4">
-							<label for="location-input">Location</label>
+							<label for="location-input">Location<sup style="color: red">*</sup></label>
 							<select required class="form-control" id="location-input" v-model="formData.eventLocation">
                                 <option value="" disabled selected>Choose...</option>
 								<option value="Burnaby">Burnaby</option>
@@ -73,7 +74,7 @@
 							</select>
 						</div>
 						<div class="form-group col-md-4">
-							<label for="number-of-attendees-input"># of Attendees</label>
+							<label for="number-of-attendees-input"># of Attendees<sup style="color: red">*</sup></label>
 							<input type="number" min="1" value="1" id="number-of-attendees-input" v-model="formData.numAttendees" class="form-control" required="required"/>
 						</div>
 					</div>
@@ -92,11 +93,11 @@
 					</div>
 					<div class="row">
 						<div class="form-group col-md-4">
-							<label for="number-of-guards-input"># of Guards Requested</label>
+							<label for="number-of-guards-input"># of Guards Requested<sup style="color: red">*</sup></label>
 							<input type="number" min="1" value="1" id="number-of-guards-input" v-model="formData.numGuards" class="form-control" required="required"/>
 						</div>
 						<div class="form-group col-md-4">
-							<label for="guard-type-input">Type of Guard Requested</label>
+							<label for="guard-type-input">Type of Guard Requested<sup style="color: red">*</sup></label>
 							<select required class="form-control" id="guard-type-input" v-model="formData.guardType">
 								<option value="" disabled selected>Choose...</option>
 								<option :value="guardType" v-for="guardType in guardTypes">{{guardType}}</option>
@@ -114,15 +115,15 @@
 						<table class="table table-hover text-centered date-table">
 							<thead>
 							<tr>
-								<th>Start Time</th>
-								<th>End Time</th>
+								<th>Start Time<sup style="color: red">*</sup></th>
+								<th>End Time<sup style="color: red">*</sup></th>
 								<th></th>
 							</tr>
 							<tr>
 								<th class="col-xs-3">
 									<div id="chooseStartDateTime" class ="input-group" onChange="setDateTime(this,'startdatetime')">
 									<span class="input-group-addon">
-										<i class="fa fa-calendar calendar-icon"></i>
+										<i class="fa fa-calendar calendar-icon" style="cursor: pointer"></i>
 									</span>
 										<input type="text" id="startdatetime" class="form-control" required="required"/>
 									</div>
@@ -131,7 +132,7 @@
 								<th class="col-xs-3">
 									<div id="chooseEndDateTime" class ="input-group" onChange="setDateTime(this,'enddatetime')">
 									<span class="input-group-addon">
-										<i class="fa fa-calendar calendar-icon"></i>
+										<i class="fa fa-calendar calendar-icon" style="cursor: pointer"></i>
 									</span>
 										<input type="text" id="enddatetime" class="form-control diabled" required="required"/>
 									</div>
@@ -180,14 +181,14 @@
                             </div>
                             <div class="row">
                                 <div class="form-group col-md-6">
-                                    <label for="account-code-input">Account code</label>
+                                    <label for="account-code-input">Account code<sup style="color: red">*</sup></label>
                                     <input type="text" id="account-code-input" v-model="formData.paymentAccountCode" class="form-control" required="required"/>
                                 </div>
                             </div>
                         </div>
                         <!--OPTION 2 -- PASS AUTH-->
                         <div v-if="authOption == 'passAuth'" class="form-group col-md-4">
-                            <label for="authorizer-email-input">Email of Authorizer</label>
+                            <label for="authorizer-email-input">Email of Authorizer<sup style="color: red">*</sup></label>
                             <input type="email" id="authorizer-email-input" class="form-control" v-model="formData.authorizerEmailAddress" placeholder="example@sfu.ca" required/>
                         </div>
                     </div>
@@ -457,7 +458,8 @@
 
                 resetFields : function () {
                     Object.assign(this.$data, this.$options.data.call(this));
-                    // TODO reset phone number field somehow
+                    //reset phone number field
+                    $("#phone-input").val("");
                 },
 
                 submitForm: function () {
@@ -490,6 +492,7 @@
                             this.formData.authorizerEmailAddress='';
                         }
                         this.formData.phoneNumber = $("#phone-input").val();
+                        this.formData.eventDates = generateEventDates(this.formData.eventDates);
 
                         this.$http.post(formSaveAPI, this.formData, {params : {
 	                        loggedOn : this.signedIn

@@ -30,13 +30,14 @@
                 <div class="row mb-4">
                     <span class="badge white-text badge-med" v-bind:class="getBadgeClassName(formData.requestStatus)">{{formData.requestStatus}}</span>
                 </div>
+                <p class="text-right"><sup><span style="color: red">*</span> : required</sup></p>
                 <div class="row">
                     <div class="form-group col-md-4">
-                        <label for="requested-by-input">Requested By</label>
+                        <label for="requested-by-input">Requested By<sup style="color: red">*</sup></label>
                         <input type="text" id="requested-by-input" v-model="formData.requesterName" class="form-control" required="required"/>
                     </div>
                     <div class="form-group col-md-4">
-                        <label for="department-input">Department</label>
+                        <label for="department-input">Department<sup style="color: red">*</sup></label>
                         <select required class="form-control" id="department-input" v-model="formData.department">
                             <option value="" disabled selected>Choose...</option>
                             <option :value="department" v-for="department in departments">{{department}}</option>
@@ -44,30 +45,30 @@
                     </div>
                     <div class="form-group col-md-4">
                         <label for="sfu-id-input">SFU ID</label>
-                        <input type="text" id="sfu-id-input" v-model="formData.requesterID" class="form-control" required="required"/>
+                        <input type="text" id="sfu-id-input" v-model="formData.requesterID" class="form-control"/>
                     </div>
                 </div>
                 <div class="row">
                     <div class="form-group col-md-4">
-                        <label for="phone-input">Phone</label>
+                        <label for="phone-input">Phone<sup style="color: red">*</sup></label>
                         <input type="text" id="phone-input" class="form-control" required="required"/>
                     </div>
                     <div class="form-group col-md-4">
-                        <label for="email-input">Email</label>
+                        <label for="email-input">Email<sup style="color: red">*</sup></label>
                         <input type="email" id="email-input" class="form-control" v-model="formData.emailAddress" placeholder="example@sfu.ca" required="required"/>
                     </div>
                     <div class="form-group col-md-4">
-                        <label for="fax-input">Fax (optional)</label>
+                        <label for="fax-input">Fax</label>
                         <input type="text" id="fax-input" v-model="formData.faxNumber" class="form-control"/>
                     </div>
                 </div>
                 <div class="row">
                     <div class="form-group col-md-4">
-                        <label for="type-name-of-event-input">Type/Name of Event</label>
+                        <label for="type-name-of-event-input">Type/Name of Event<sup style="color: red">*</sup></label>
                         <input type="text" id="type-name-of-event-input" v-model="formData.eventName" class="form-control" required="required"/>
                     </div>
                     <div class="form-group col-md-4">
-                        <label for="location-input">Location</label>
+                        <label for="location-input">Location<sup style="color: red">*</sup></label>
                         <select required class="form-control" id="location-input" v-model="formData.eventLocation">
                             <option value="" disabled selected>Choose...</option>
                             <option value="Burnaby">Burnaby</option>
@@ -77,7 +78,7 @@
                         </select>
                     </div>
                     <div class="form-group col-md-4">
-                        <label for="number-of-attendees-input"># of Attendees</label>
+                        <label for="number-of-attendees-input"># of Attendees<sup style="color: red">*</sup></label>
                         <input type="number" min="1" value="1" id="number-of-attendees-input" v-model="formData.numAttendees" class="form-control" required="required"/>
                     </div>
                 </div>
@@ -91,15 +92,16 @@
                     <div class="form-group col-md-12">
                         <input type="checkbox" id="licensed-input" v-model="formData.isLicensed" class="mr-1 mt-4"/>
                         <label for="licensed-input">Licensed</label>
+                        <i class="fa fa-question-circle" data-toggle="tooltip" title="Is your event licensed?"></i>
                     </div>
                 </div>
                 <div class="row">
                     <div class="form-group col-md-4">
-                        <label for="number-of-guards-input"># of Guards Requested</label>
+                        <label for="number-of-guards-input"># of Guards Requested<sup style="color: red">*</sup></label>
                         <input type="number" min="1" value="1" id="number-of-guards-input" v-model="formData.numGuards" class="form-control" required="required"/>
                     </div>
                     <div class="form-group col-md-4">
-                        <label for="guard-type-input">Type of Guard Requested</label>
+                        <label for="guard-type-input">Type of Guard Requested<sup style="color: red">*</sup></label>
                         <select required class="form-control" id="guard-type-input" v-model="formData.guardType">
                             <option value="" disabled selected>Choose...</option>
                             <option :value="guardType" v-for="guardType in guardTypes">{{guardType}}</option>
@@ -118,26 +120,26 @@
                     <table class="table table-hover text-centered date-table">
                         <thead>
                         <tr>
-                            <th>Start Time</th>
-                            <th>End Time</th>
+                            <th>Start Time<sup style="color: red">*</sup></th>
+                            <th>End Time<sup style="color: red">*</sup></th>
                             <th></th>
                         </tr>
                         <tr v-if="isEditable()">
                             <th class="col-xs-3">
                                 <div id="chooseStartDateTime" class ="input-group" onChange="setDateTime(this,'startdatetime')">
 										<span class="input-group-addon">
-											<i class="fa fa-calendar calendar-icon"></i>
+											<i class="fa fa-calendar calendar-icon" style="cursor: pointer"></i>
 										</span>
-                                    <input type="text" id="startdatetime" class="form-control" disabled="disabled"/>
+                                    <input type="text" id="startdatetime" class="form-control" required="required"/>
                                 </div>
                             </th>
 
                             <th class="col-xs-3">
                                 <div id="chooseEndDateTime" class ="input-group" onChange="setDateTime(this,'enddatetime')">
 										<span class="input-group-addon">
-											<i class="fa fa-calendar calendar-icon"></i>
+											<i class="fa fa-calendar calendar-icon" style="cursor: pointer"></i>
 										</span>
-                                    <input type="text" id="enddatetime" class="form-control" disabled="disabled"/>
+                                    <input type="text" id="enddatetime" class="form-control" required="required"/>
                                 </div>
                             </th>
 
@@ -156,7 +158,7 @@
                                 <span class="ml-2">{{dt.end}}</span>
                             </td>
                             <td>
-                                <i v-if="isEditable()" v-on:click="deleteDatetime(dt)" class="fa fa-trash-o trash-icon ml-1"></i>
+                                <i v-if="isEditable()" v-on:click="deleteDatetime(dt)" class="fa fa-trash-o trash-icon ml-1" style="cursor: pointer"></i>
                             </td>
                         </tr>
                         </tbody>
@@ -215,6 +217,7 @@
     </modal>
 </div>
 <script src="/js/jquery-3.2.1.min.js"></script>
+<script src="/js/bootstrap.bundle.min.js"></script>
 <script src="/js/vue.js"></script>
 <script src="/js/vue-resource.min.js"></script>
 <script src="/js/jquery.datetimepicker.full.js"></script>
@@ -396,85 +399,86 @@
 				}
 			}
 
-			function errorCallback() {
-				self.displayErrorModal();
-			}
-			//get value from phone-input
-			this.formData.phoneNumber = $("#phone-input").val();
-			if (this.isValid) {
-				this.$http.put("/api/form/update/" + this.formData.id, this.formData, {params : {
-					loggedOn : this.signedIn
-				}}).then(function (response) {
-					successCallback(response);
-					this.loading = false;
-				}, function () {
-					errorCallback();
-				});
-			}
-		},
+                function errorCallback() {
+                    self.displayErrorModal();
+                }
+                //get value from phone-input
+                this.formData.phoneNumber = $("#phone-input").val();
+	            this.formData.eventDates = generateEventDates(this.formData.eventDates);if (this.isValid) {
+		            this.$http.put("/api/form/update/" + this.formData.id, this.formData, {params : {
+			            loggedOn : this.signedIn
+		            }}).then(function (response) {
+			            successCallback(response);
+			            this.loading = false;
+		            }, function () {
+			            errorCallback();
+		            });
+	            }
+            },
 
-		addDatetime: function(){
-			this.startdatetime = getDateTime("chooseStartDateTime","startdatetime");
-			this.enddatetime = getDateTime("chooseEndDateTime","enddatetime");
-			if(this.startdatetime!='' && this.enddatetime!=''){
-				if(this.datetimelist.length==0){
-					this.formData.eventDates += this.startdatetime +"-"+ this.enddatetime;
-				}else{
-					this.formData.eventDates += ", "+this.startdatetime +"-"+ this.enddatetime;
-				}
-				this.datetimelist.push( {start: this.startdatetime, end: this.enddatetime} );
-				this.startdatetime = '';
-				this.enddatetime = '';
-			}
-		},
+            addDatetime: function(){
+            	this.startdatetime = getDateTime("chooseStartDateTime","startdatetime");
+            	this.enddatetime = getDateTime("chooseEndDateTime","enddatetime");
+            	if(this.startdatetime!='' && this.enddatetime!=''){
+            	    if(this.datetimelist.length==0){
+						this.formData.eventDates += this.startdatetime +"-"+ this.enddatetime;
+					}else{
+						this.formData.eventDates += ", "+this.startdatetime +"-"+ this.enddatetime;
+					}
+					this.datetimelist.push( {start: this.startdatetime, end: this.enddatetime} );
+					disableDateInput(true);this.startdatetime = '';
+					this.enddatetime = '';
+            	}
+            },
 
-		deleteDatetime: function(dt){
-			var index = this.datetimelist.indexOf(dt);
-			this.formData.eventDates = deleteEventDate(dt.start,dt.end,this.formData.eventDates,index,this.datetimelist.length);
-			this.datetimelist.splice(index,1);
-		},
+            deleteDatetime: function(dt){
+            	var index = this.datetimelist.indexOf(dt);
+            	this.formData.eventDates = deleteEventDate(dt.start,dt.end,this.formData.eventDates,index,this.datetimelist.length);
+            	this.datetimelist.splice(index,1);
+            if(this.datetimelist.length==0){
+            		disableDateInput(false);
+            	}},
 
-		getBadgeClassName: function(status) {
-			switch (status) {
-				case 'WAITING':
-					return 'badge-warning';
-					break;
-				case 'AUTHORIZED':
-					return 'badge-primary';
-					break;
-				case 'APPROVED':
-					return 'badge-success';
-					break;
-				case 'REJECTED':
-					return 'badge-danger';
-					break;
-				default:
-					return 'badge-default';
-					break;
-			}
-		},
-	},
-
-	created: function() {
-		let urlParams = getUrlParams(window.location);
-		this.$http.get("/api/form/get/user/" + urlParams.token, {
-		}).then(response  => {
-			if (response.status >= 200 && response.status <=300) {
-			let phoneNumber = response.data.phoneNumber;
-			$(document).ready(function(){
-				//initialize tooltips
-				$(function () {
-					//init input masks
-					$('#phone-input').mask("(999) 999-9999");
-					$('#phone-input').val(phoneNumber);
-				});
-			});
-			this.formData = response.data;
-			this.datetimelist = updateDateTime(this.formData.eventDates);
-		} else {
-			console.log(response.status);
-		}
-	});
+            getBadgeClassName: function(status) {
+                switch (status) {
+                    case 'WAITING':
+                        return 'badge-warning';
+                        break;
+	                case 'AUTHORIZED':
+		                return 'badge-primary';
+		                break;
+                    case 'APPROVED':
+                        return 'badge-success';
+                        break;
+                    case 'REJECTED':
+                        return 'badge-danger';
+                        break;
+                    default:
+                        return 'badge-default';
+                        break;
+                }
+            },
+        },
+        created: function() {
+            let urlParams = getUrlParams(window.location);
+            this.$http.get("/api/form/get/user/" + urlParams.token, {
+            }).then(response  => {
+                if (response.status >= 200 && response.status <=300) {
+                    let phoneNumber = response.data.phoneNumber;
+                    $(document).ready(function(){
+                        //initialize tooltips
+                        $(function () {
+                            $('[data-toggle="tooltip"]').tooltip();//init input masks
+                            $('#phone-input').mask("(999) 999-9999");
+                            $('#phone-input').val(phoneNumber);
+                        });
+                    });
+                    this.formData = response.data;
+                    this.datetimelist = updateDateTime(this.formData.eventDates);disableDateInput(true);
+                } else {
+                    console.log(response.status);
+                }
+            });
 
 	},
 
