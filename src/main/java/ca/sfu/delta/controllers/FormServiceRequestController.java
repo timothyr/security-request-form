@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.ObjectError;
@@ -284,10 +285,15 @@ public class FormServiceRequestController extends WebMvcConfigurerAdapter {
     }
 
     @PostMapping(value = "/api/form/save", produces = "text/plain")
-    public @ResponseBody ResponseEntity addForm(@RequestBody @Valid FormData form,
-                                                BindingResult result,
-                                                @RequestParam Optional<Boolean> loggedOn,
-                                                HttpServletRequest request) {
+    public @ResponseBody ResponseEntity addForm(
+            @RequestBody @Valid FormData form,
+            BindingResult result,
+            Authentication user,
+            HttpServletRequest request
+    ) {
+
+        boolean loggedOn = user != null;
+
 	    if (form == null) {
             System.out.println("A Null Form was not saved.");
 		    return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("ERROR: Form is null");
@@ -315,7 +321,7 @@ public class FormServiceRequestController extends WebMvcConfigurerAdapter {
         Date date = new Date();
         form.setRequestedOnDate(dateFormat.format(date));
 
-        if (loggedOn != null && loggedOn.isPresent() && loggedOn.get()) {
+        if (loggedOn) {
         	form.setRequestStatus(GlobalConstants.AUTHORIZED);
         }
         else {
