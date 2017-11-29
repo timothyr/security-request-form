@@ -115,8 +115,12 @@ public class FormServiceRequestController extends WebMvcConfigurerAdapter {
 
         //Get the real emails from the repository, instead of the IDs like we have now.
         List<String> distList = new ArrayList<String>();
-        for(String id : distListIDs) {
-            distList.add(distributionEmailRepository.findOne(Long.parseLong(id)).getEmail());
+        if(distListIDs != null) {
+            for(String id : distListIDs) {
+                if(id != null) {
+                 distList.add(distributionEmailRepository.findOne(Long.parseLong(id)).getEmail());
+                }
+            }
         }
 
 		try {

@@ -18,6 +18,7 @@
 </header>
 <div id="app">
     <form method="post" v-on:submit.prevent="submitForm">
+        <fieldset :disabled="!isEditable()">
         <div class="container col-md-10 offset-md-1 wrapper mb-5 col-lg-10">
             <div class="container col-md-10 mt-5">
                 <div class="row">
@@ -123,7 +124,7 @@
                             <th></th>
                         </tr>
                         <tr id="picker_div">
-                        <tr>
+                        <tr v-if="isEditable()" >
                             <th class="col-xs-3">
                                 <div id="chooseStartDateTime" class ="input-group" onChange="setDateTime(this,'startdatetime')">
 									<span class="input-group-addon">
@@ -157,7 +158,7 @@
                                 <span class="ml-2">{{dt.end}}</span>
                             </td>
                             <td>
-                                <i v-on:click="deleteDatetime(dt)" class="fa fa-trash-o trash-icon ml-1" style="cursor: pointer"></i>
+                                <i v-if="isEditable()" v-on:click="deleteDatetime(dt)" class="fa fa-trash-o trash-icon ml-1" style="cursor: pointer"></i>
                             </td>
                         </tr>
                         </tbody>
@@ -210,12 +211,13 @@
                 </div>
                 <div class="row mt-5">
                     <div class="col-md-12 text-center">
-                        <button class="btn btn-primary btn-lg col-md-8" v-bind:class="{disabled: !isValid}" v-on:click="updateForm()">Update</button>
+                       <button v-if="isEditable()" class="btn btn-primary btn-lg col-md-8" v-bind:class="{disabled: !isValid}" v-on:click="updateForm()">Update</button>
                     </div>
                 </div>
                 <div class="bottom-space"></div>
             </div>
         </div>
+        </fieldset>
     </form>
     <modal v-if="showModal" @close="app.showModal = false">
         <h3 slot="header">{{submittedFormHeader}}</h3>
@@ -398,6 +400,9 @@
         },
 
         methods: {
+            isEditable: function () {
+            	return this.formData.requestStatus === status.WAITING;
+            },
 
             setSubmittedFormHeader(header) {
                 this.submittedFormHeader=header;
