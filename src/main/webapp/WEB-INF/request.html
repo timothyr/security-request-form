@@ -211,7 +211,7 @@
             </div>
             <div class="row my-3">
                 <div class="col-md-3">
-                    <label for="regRate">Regular Rate</label>
+                    <label for="regRate">Regular Rate ($)</label>
                     <input class="form-control text-center" id="regRate" type="number" step="0.01" min="0"
                            v-model="g.regularRate" required="required">
                 </div>
@@ -221,7 +221,7 @@
                            v-model="g.regularHours" required="required">
                 </div>
                 <div class="col-md-3">
-                    <label for="overRate">Overtime Rate</label>
+                    <label for="overRate">Overtime Rate ($)</label>
                     <input class="form-control text-center" id="overRate" type="number" step="0.01" min="0"
                            v-model="g.overtimeRate" required="required">
                 </div>
@@ -244,8 +244,11 @@
 
         <div class="row my-3 text-center">
             <div class="col col-md-3"></div>
-            <div class="col">
-                <button type="button" class="btn btn-primary" v-on:click="addGuard">New Guard/SCSP</button>
+            <div class="col col-md-12">
+                <button type="button" class="btn btn-primary mr-2" v-on:click="addGuard">Add Guard/SCSP</button>
+                # to add:
+                <input id="numGuards" type="number" step="1" min="1" v-model="guardsToAdd">
+                <button type="button" class="btn btn-danger ml-4" v-on:click="deleteAllGuards">Remove All Guards/SCSPs</button>
             </div>
             <div class="col col-md-3"></div>
         </div>
@@ -380,6 +383,8 @@
             distEmails: [],
             distEmail_input: "",
             rejectLoading: false,
+
+            guardsToAdd: 1,
         },
 
         methods: {
@@ -394,21 +399,25 @@
             },
 
             addGuard: function () {
-                this.form.guards.push({
-                    guardID: '',
-                    location: '',
-                    startDate: '',
-                    endDate: '',
-                    startTime: '',
-                    endTime: '',
-                    name: '',
-                    telephone: '',
-                    type: 'Guard',
-                    regularHours: null,
-                    overtimeHours: null,
-                    regularRate: null,
-                    overtimeRate: null
-                })
+            	for (let i = 0; i < this.guardsToAdd; ++i) {
+					this.form.guards.push({
+						guardID: '',
+						location: '',
+						startDate: '',
+						endDate: '',
+						startTime: '',
+						endTime: '',
+						name: '',
+						telephone: '',
+						type: 'Guard',
+						regularHours: null,
+						overtimeHours: null,
+						regularRate: null,
+						overtimeRate: null
+					})
+				}
+
+				this.guardsToAdd = 1;
             },
 
             cloneGuard: function (guard) {
@@ -419,6 +428,10 @@
                 let index = this.form.guards.indexOf(guard);
                 this.form.guards.splice(index, 1);
             },
+
+            deleteAllGuards: function () {
+                this.form.guards = [];
+			},
 
             removeNull: function () {
                 for (let p in this.form) {
