@@ -304,10 +304,12 @@ public class FormServiceRequestController extends WebMvcConfigurerAdapter {
     }
 
     @PostMapping(value = "/api/form/save", produces = "text/plain")
-    public @ResponseBody ResponseEntity addForm(@RequestBody @Valid FormData form,
-                                                BindingResult result,
-                                                @RequestParam Optional<Boolean> loggedOn,
-                                                HttpServletRequest request, Authentication p) {
+    public @ResponseBody ResponseEntity addForm(
+            @RequestBody @Valid FormData form,
+            BindingResult result,
+            Authentication user,
+            HttpServletRequest request
+    ) {
 
 	    if (form == null) {
             System.out.println("A Null Form was not saved.");
@@ -336,8 +338,11 @@ public class FormServiceRequestController extends WebMvcConfigurerAdapter {
         Date date = new Date();
         form.setRequestedOnDate(dateFormat.format(date));
 
-        if (loggedOn != null && loggedOn.isPresent() && loggedOn.get()) {
+        boolean loggedOn = user != null;
+        if (loggedOn) {
         	form.setRequestStatus(GlobalConstants.AUTHORIZED);
+        	form.setAuthorizerID(user.getName());
+        	form.setAuthorizerEmailAddress(user.getName() + "@sfu.ca");
         }
         else {
 	        form.setRequestStatus(GlobalConstants.WAITING);
