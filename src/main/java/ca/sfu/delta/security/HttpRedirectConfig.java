@@ -19,6 +19,9 @@ public class HttpRedirectConfig {
 
     private final String PROTOCOL = "org.apache.coyote.http11.Http11NioProtocol";
 
+    @Value("${server.port}")
+    private Integer PORT;
+
     @Bean
     public EmbeddedServletContainerFactory servletContainerFactory() {
         TomcatEmbeddedServletContainerFactory tomcat = new TomcatEmbeddedServletContainerFactory() {
@@ -37,7 +40,7 @@ public class HttpRedirectConfig {
         connector.setScheme("http");
         connector.setPort(8080);
         connector.setSecure(false);
-        connector.setRedirectPort(8443);
+        connector.setRedirectPort(PORT);
 
         tomcat.addAdditionalTomcatConnectors(connector);
 

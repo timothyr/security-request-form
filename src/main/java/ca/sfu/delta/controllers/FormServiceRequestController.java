@@ -11,6 +11,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
+import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.config.annotation.ViewControllerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
@@ -43,9 +44,7 @@ public class FormServiceRequestController extends WebMvcConfigurerAdapter {
 
     @Override
     public void addViewControllers(ViewControllerRegistry registry) {
-        registry.addViewController("/securitylogin").setViewName("securitylogin.html");
         registry.addViewController("/updateform").setViewName("userupdateform");
-        //registry.addViewController("/securityview").setViewName("request.html");
     }
 
     @RequestMapping(value = "/api/form/get/{id}", method = RequestMethod.GET, produces = "application/json")
@@ -93,9 +92,15 @@ public class FormServiceRequestController extends WebMvcConfigurerAdapter {
     }
 
 	@RequestMapping(value = "/api/form/saveSecurity", method = RequestMethod.POST)
-	public @ResponseBody ResponseEntity saveSecurity(@RequestBody FormData form,
-	                                         @RequestParam(required = false) String additionalMessage)
-								throws MessagingException {
+	public @ResponseBody ResponseEntity saveSecurity(@RequestBody @Valid FormData form,
+                                                     BindingResult result,
+                                                     @RequestParam(required = false) String additionalMessage)
+            throws MessagingException {
+
+        if(result.hasErrors()) {
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("ERROR: Form was invalid");
+        }
+
 		String userName = form.getRequesterName();
 		String userEmailAddress = form.getEmailAddress();
 		String authEmailAddress = form.getAuthorizerEmailAddress();
@@ -103,20 +108,20 @@ public class FormServiceRequestController extends WebMvcConfigurerAdapter {
 
 		try {
 			//send email to User
-			if (userEmailAddress != null && form.getRequestStatus().compareTo("REJECTED") == 0) {
+			if (userEmailAddress != null && form.getRequestStatus().equals(GlobalConstants.REJECTED)) {
 				sendEmail.sendEventRequestRejection(userEmailAddress, userName,
 						trackingID, additionalMessage);
 			}
-			else if (userEmailAddress != null && form.getRequestStatus().compareTo("ACCEPTED") == 0) {
+			else if (userEmailAddress != null && form.getRequestStatus().equals(GlobalConstants.ACCEPTED)) {
 				sendEmail.sendEventRequestApproved(userEmailAddress, userName, trackingID);
 			}
 
 			//send email to Authorizer
-			if (authEmailAddress != null && form.getRequestStatus().compareTo("REJECTED") == 0) {
+			if (authEmailAddress != null && form.getRequestStatus().equals(GlobalConstants.REJECTED)) {
 				sendEmail.sendEventRequestRejection(authEmailAddress, null,
 						trackingID, additionalMessage);
 			}
-			else if (authEmailAddress != null && form.getRequestStatus().compareTo("ACCEPTED") == 0) {
+			else if (authEmailAddress != null && form.getRequestStatus().equals(GlobalConstants.ACCEPTED)) {
 				sendEmail.sendEventRequestApproved(authEmailAddress, null, trackingID);
 			}
 		} catch (Exception e) {
@@ -146,8 +151,7 @@ public class FormServiceRequestController extends WebMvcConfigurerAdapter {
     @RequestMapping(value = "/api/csv/guards/{id}-guards.csv", method = RequestMethod.GET, produces = "text/csv")
     @ResponseBody
     public String getGuardCSV(@PathVariable("id") String id) {
-        String csvString = new String();
-        FormData correctForm =  new FormData();
+        FormData correctForm = null;
         for (FormData form : formRepository.findAll()) {
 
             if(form.getRequestID().equals(id))
@@ -156,6 +160,11 @@ public class FormServiceRequestController extends WebMvcConfigurerAdapter {
                 break;
             }
         }
+
+        if(correctForm == null) {
+            return null;
+        }
+
         List<Guard> correctFormGuards = correctForm.getGuards();
 
         Boolean first = true;
@@ -273,19 +282,45 @@ public class FormServiceRequestController extends WebMvcConfigurerAdapter {
 		return token;
     }
 
-    @RequestMapping(value = "/api/form/save", method = RequestMethod.POST, produces = "text/plain")
-    public @ResponseBody ResponseEntity addForm(Authentication p, @RequestBody FormData form, HttpServletRequest request) {
+    @PostMapping(value = "/api/form/save", produces = "text/plain")
+    public @ResponseBody ResponseEntity addForm(@RequestBody @Valid FormData form,
+                                                BindingResult result,
+                                                @RequestParam Optional<Boolean> loggedOn,
+                                                HttpServletRequest request, Authentication p) {
+
 	    if (form == null) {
-		    return ResponseEntity.status(HttpStatus.NOT_FOUND).body("ERROR: form didn't save");
+            System.out.println("A Null Form was not saved.");
+		    return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("ERROR: Form is null");
 	    }
-	    p.getName();
+
+	    if(result.hasErrors()) {
+            System.out.println("An invalid Form was not saved. Here's why:");
+            ObjectError errorToDisplay = null;
+            int errorCount = 1;
+	        for(ObjectError e : result.getAllErrors()) {
+	            errorToDisplay = e;
+	            System.out.println(errorCount + ") " + e.getDefaultMessage());
+	            errorCount++;
+            }
+
+            if(errorToDisplay != null) {
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorToDisplay.getDefaultMessage());
+            } else {
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("ERROR: Form was invalid");
+            }
+        }
 
         //Set requestedOnDate to current date
         DateFormat dateFormat = new SimpleDateFormat("MM/dd/yyyy");
         Date date = new Date();
         form.setRequestedOnDate(dateFormat.format(date));
 
-        form.setRequestStatus("WAITING");
+        if (loggedOn != null && loggedOn.isPresent() && loggedOn.get()) {
+        	form.setRequestStatus(GlobalConstants.AUTHORIZED);
+        }
+        else {
+	        form.setRequestStatus(GlobalConstants.WAITING);
+        }
 
         if (form.getRequestID() == null || form.getRequestID().isEmpty()) {
             // Need to reserve a request id for this form
@@ -327,12 +362,24 @@ public class FormServiceRequestController extends WebMvcConfigurerAdapter {
 
 
     @RequestMapping(value = "/api/form/update/{id}", method = RequestMethod.PUT)
-    public ResponseEntity<FormData> updateForm(@PathVariable("id") long id, @RequestBody FormData data) {
+    public ResponseEntity<FormData> updateForm(@PathVariable("id") long id,
+                                               @RequestBody @Valid FormData data,
+                                               BindingResult result,
+                                               @RequestParam boolean loggedOn) {
         FormData form = formRepository.findOne(id);
-        if (form==null) {
+        if (form == null) {
             System.out.println("User with id " + id + " not found");
             return new ResponseEntity<FormData>(HttpStatus.NOT_FOUND);
         }
+
+        if(result.hasErrors()) {
+            return new ResponseEntity<FormData>(form, HttpStatus.BAD_REQUEST);
+        }
+
+        if (loggedOn && data.getRequestStatus().equals(GlobalConstants.WAITING)) {
+        	data.setRequestStatus(GlobalConstants.AUTHORIZED);
+        }
+
         formRepository.save(data);
         return new ResponseEntity<FormData>(form, HttpStatus.OK);
     }
@@ -342,8 +389,6 @@ public class FormServiceRequestController extends WebMvcConfigurerAdapter {
             @RequestParam(value = "ticket", required = false) String ticket,
             @RequestParam(value = "gateway", required = false) String gateway,
             HttpServletRequest request) {
-
-
         return "form";
     }
 
@@ -351,7 +396,6 @@ public class FormServiceRequestController extends WebMvcConfigurerAdapter {
     public String formRequest() {
         return "form";
     }
-
 
     @PostMapping("/")
     public String checkFormRequest(@Valid FormData serviceRequestForm, BindingResult bindingResult) {
@@ -366,15 +410,12 @@ public class FormServiceRequestController extends WebMvcConfigurerAdapter {
     }
 
     private void saveFormToDatabase(FormData formData) {
-    	System.out.println("Saving");
         if (formData.getRequestID() == null || formData.getRequestID().isEmpty()) {
     		// Need to reserve a request id
 		    formData.setRequestID(reserveNextRequestID());
 	    }
 
-
         formRepository.save(formData);
-
     }
 
     @ModelAttribute("FormData")

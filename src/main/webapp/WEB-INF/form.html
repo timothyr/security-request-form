@@ -53,8 +53,8 @@
 							<input type="email" id="email-input" class="form-control" v-model="formData.emailAddress" placeholder="example@sfu.ca" required="required"/>
 						</div>
 						<div class="form-group col-md-4">
-							<label for="fax-input">Fax (optional)</label>
-							<input type="text" id="fax-input" v-model="formData.faxNumber" class="form-control"/>
+							<label for="fax-input">Fax</label>
+							<input type="text" id="fax-input" v-model="formData.faxNumber" class="form-control" placeholder="(optional)"/>
 						</div>
 					</div>
 					<div class="row">
@@ -69,7 +69,7 @@
 								<option value="Burnaby">Burnaby</option>
 								<option value="Surrey">Surrey</option>
 								<option value="Vancouver">Vancouver</option>
-								<option value="Other">Other</option>
+								<option value="Other">Other (state in details)</option>
 							</select>
 						</div>
 						<div class="form-group col-md-4">
@@ -122,7 +122,7 @@
 								<th class="col-xs-3">
 									<div id="chooseStartDateTime" class ="input-group" onChange="setDateTime(this,'startdatetime')">
 									<span class="input-group-addon">
-										<i class="fa fa-calendar calendar-icon"></i>
+										<i class="fa fa-calendar calendar-icon" style="cursor: pointer"></i>
 									</span>
 										<input type="text" id="startdatetime" class="form-control" required="required"/>
 									</div>
@@ -131,7 +131,7 @@
 								<th class="col-xs-3">
 									<div id="chooseEndDateTime" class ="input-group" onChange="setDateTime(this,'enddatetime')">
 									<span class="input-group-addon">
-										<i class="fa fa-calendar calendar-icon"></i>
+										<i class="fa fa-calendar calendar-icon" style="cursor: pointer"></i>
 									</span>
 										<input type="text" id="enddatetime" class="form-control diabled" required="required"/>
 									</div>
@@ -177,7 +177,7 @@
                             <!--OPTION 1 -- AUTH OWN-->
                             <div v-if="authOption == 'authOwn'" class="col-md-12">
                                 <div class="form-group add-space-top text-center">
-                                    <a href="https://cas.sfu.ca/cas/login?service=https%3A%2F%2Flocalhost%3A8443%2Fj_spring_cas_security_check&redirect%3D%2F"
+                                    <a href="/login"
                                         role="button" id="sign-in" class="btn btn-danger">Authorize through SFU CAS
                                     </a>
                                         <div v-if="userName">
@@ -291,8 +291,8 @@
                 }
                 //persisting data on reload
                 window.onbeforeunload = function() {
-                    console.log(form.formData.requesterName);
                     console.log("unloading");
+                    form.formData.phoneNumber = $("#phone-input").val();
                     storeData();
                 };
 
@@ -319,6 +319,7 @@
 
         const errorHeader = "Something went wrong";
         const errorMessage = "Sorry, there was an error. Your form was not submitted. Please try again later.";
+        const errorMessageWithReason = "Sorry, there was an error. Your form was not submitted. The reason: ";
 
         const signInMessage = "Sign In";
         const signOutMessage = "Sign Out";
@@ -328,7 +329,7 @@
             LOGGED_IN_LOAD: 'Submitting Form',
             NOT_LOGGED_IN: 'Request Authorization',
             NOT_LOGGED_IN_LOAD: 'Requesting Authorization'
-        }
+        };
 
         const guardTypes = [
             "Guard",
@@ -365,51 +366,52 @@
             },
 
 			data: () => ({
-				 signedIn: false,
-				 signedInButtonMessage: signInMessage,
+		        signedIn: false,
+		        signedInButtonMessage: signInMessage,
 
-				 submittedFormHeader:'',
-				 submittedFormMessage: '',
-				 submittedFormLink: '',
+		        submittedFormHeader:'',
+		        submittedFormMessage: '',
+		        submittedFormLink: '',
 
-				 showAuthFields: true,
+		        showAuthFields: true,
 
-				 submitting: false,
-				 showModal: false,
-                formData: {
-                    department: '',
-                    requesterName: '',
-                    phoneNumber: '',
-                    requestedOnDate: '',
-                    requesterID: '',
-                    authorizationDate: '',
-                    paymentAccountCode: '',
-                    emailAddress: '',
-                    times: '',
-                    eventName: '',
-                    isLicensed: '',
-                    numAttendees: '0',
-                    authorizerId: '',
-                    authorizerPhoneNumber: '',
-                    serviceRequestNumber: '',
-                    eventLocation: '',
-                    authorizerName: '',
-                    eventDates: '',
-                    eventDetails: '',
-                    faxNumber: '',
-                    requestID: '',
-                    authorizerEmailAddress: '',
-	                guardType: '',
-	                numGuards: '0'
-                },
-                startdatetime: '',
-				enddatetime: '',
-				datetimelist: [],
-                departments: departments,
-	            guardTypes: guardTypes,
-				datetimelistsize: '0',
-                loading: false,
-                authOption: 'authOwn',
+		        submitting: false,
+		        showModal: false,
+                successfulSubmit: false,
+		        formData: {
+			        department: '',
+			        requesterName: '',
+			        phoneNumber: '',
+			        requestedOnDate: '',
+			        requesterID: '',
+			        authorizationDate: '',
+			        paymentAccountCode: '',
+			        emailAddress: '',
+			        times: '',
+			        eventName: '',
+			        isLicensed: '',
+			        numAttendees: '0',
+			        authorizerId: '',
+			        authorizerPhoneNumber: '',
+			        serviceRequestNumber: '',
+			        eventLocation: '',
+			        authorizerName: '',
+			        eventDates: '',
+			        eventDetails: '',
+			        faxNumber: '',
+			        requestID: '',
+			        authorizerEmailAddress: '',
+			        guardType: '',
+			        numGuards: '0'
+		        },
+		        startdatetime: '',
+		        enddatetime: '',
+		        datetimelist: [],
+		        departments: departments,
+		        guardTypes: guardTypes,
+		        datetimelistsize: '0',
+		        loading: false,
+		        authOption: 'authOwn',
                 userName: '',
             }),
 
@@ -484,6 +486,12 @@
                     this.showModal = true;
                 },
 
+                displayErrorModalWithReason : function (reason) {
+                    this.setSubmittedFormHeader(errorHeader);
+                    this.setSubmittedFormMessage(errorMessageWithReason + reason);
+                    this.showModal = true;
+                },
+
                 displayErrorModal : function () {
                     this.setSubmittedFormHeader(errorHeader);
                     this.setSubmittedFormMessage(errorMessage);
@@ -491,11 +499,17 @@
                 },
 
                 closeModal : function () {
-                    this.resetFields();
+                    if(this.successfulSubmit) {
+                        this.resetFields();
+					}
+					this.loading = false;
+                    this.submitting = false;
                 },
 
                 resetFields : function () {
                     Object.assign(this.$data, this.$options.data.call(this));
+                    //reset phone number field
+                    $("#phone-input").val("");
                 },
 
                 submitForm: function () {
@@ -503,17 +517,22 @@
                     this.loading = true;
                     function successCallback(response) {
                         if(response.ok) {
+                            self.successfulSubmit = true;
                             if(self.signedIn)
                                 self.displaySubmitSuccessModal(formGetAPI + response.body);
                             else
                                 self.displayRequestSuccessModal(formGetAPI + response.body);
                         } else {
-                            errorCallback();
+                            errorCallback(response);
                         }
                     }
 
-                    function errorCallback() {
-                        self.displayErrorModal();
+                    function errorCallback(response) {
+                        if(response.status == 400) {
+							self.displayErrorModalWithReason(response.body)
+						} else {
+                            self.displayErrorModal();
+						}
                     }
 
                     if (this.isValid && !this.submitting) {
@@ -523,12 +542,15 @@
                             this.formData.authorizerEmailAddress='';
                         }
                         this.formData.phoneNumber = $("#phone-input").val();
+                        this.formData.eventDates = generateEventDates(this.formData.eventDates);
 
-                        this.$http.post(formSaveAPI, this.formData).then(function (response) {
+                        this.$http.post(formSaveAPI, this.formData, {params : {
+	                        loggedOn : this.signedIn
+                        }}).then(function (response) {
 	                        successCallback(response);
 	                        this.loading = false;
-	                    }, function () {
-	                        errorCallback();
+	                    }, response => {
+	                        errorCallback(response);
 	                    });
                     }
                 },
@@ -569,10 +591,15 @@
                 },
             },
             mounted: function() {
-                this.formData = persistModule.getData()();
-                updateDateTime();
-                this.setUserName();
-                console.log("got data");
+                if (sessionStorage.getItem('storedData')) {
+                    this.formData = persistModule.getData()();
+                    //manually restore phone-number..
+                    $('#phone-input').val(this.formData.phoneNumber);
+
+                    //updateDateTime();
+                    this.setUserName();
+                    console.log("got data");
+                }
             },
 
             components: {Modal}

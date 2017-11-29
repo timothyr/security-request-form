@@ -295,6 +295,10 @@ svg path, svg rect {
     font-size: 1.0em
 }
 
+.sf {
+    font-size: 0.5em;
+}
+
 .line-break {
     border-top: 1px solid #CED4DA;
 }
