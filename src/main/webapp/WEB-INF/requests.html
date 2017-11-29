@@ -6,7 +6,7 @@
     <link rel="stylesheet" href="/css/bootstrap.min.css">
     <link rel="stylesheet" href="/css/font-awesome.min.css">
     <link rel="stylesheet" href="/css/style.css">
-    <link rel="icon" href="img/favicon.ico" type="image/x-icon"/>
+    <link rel="icon" href="/img/favicon.ico" type="image/x-icon"/>
 </head>
 <body>
     <div id="app">
@@ -26,6 +26,8 @@
                     </ul>
                 </div>
             </div>
+            <a class="d-inline blue-text" style="float: right; margin-right: 20px; margin-top: 20px;"
+                href="/security/admin" v-if="isAdmin">ADMIN</a>
         </header>
         <div class="container col-md-10 offset-md-1 wrapper mb-5 col-lg-10">
             <div class="container col-md-10">
@@ -150,6 +152,7 @@
             reversed: true,
             requests: [],
             userName: "",
+            isAdmin: false,
         },
         methods: {
             changeDates: function() {
@@ -190,15 +193,11 @@
                 window.location.assign("/api/csv/form/all.csv");
             },
             exportSelectedCSV: function() {
-                //TODO ADD ENPOINT AND LINK
                 let visibleRequests = this.getFilteredRequests().map(request => {
                     return request.requestID;
                 });
-                this.$http.post('ENDPOINT HERE', visibleRequests).then(function(response) {
-                    if (response == 200) {
-                        //REDIRECT TO CSV
-                    }
-                });
+                let url = "/api/csv/" + visibleRequests.join(',') + "/selectedRequests.csv";
+                window.location.assign(url);
             },
             getBadgeClassName: function(status) {
                 switch (status) {
@@ -246,6 +245,13 @@
                     }
                 });
             },
+            setAdmin: function() {
+                this.$http.get("/api/user/get").then(function(response) {
+                    if (response.status == 200 && response.data.privileges.includes("ADMIN")) {
+                        this.isAdmin = true;
+                    }
+                });
+            }
         },
         computed: {
             filteredRequests: {
@@ -257,7 +263,7 @@
         },
         created: function() {
             this.$http.get('/api/form/search', {
-                pageSize: 100,
+                pageSize: 1000,
                 pageNumber: 1
             }).then(response  => {
                 this.requests = response.data;
@@ -265,6 +271,7 @@
                 this.loading = false;
             });
             this.setUserName();
+            this.setAdmin();
         }
     });
 </script>

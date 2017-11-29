@@ -9,50 +9,23 @@
 </head>
 <body>
     <header>
-        <img class="logo" src="/img/sfu-logo@2x.png" alt="sfu-logo"/>
+        <a href="/security">
+            <img class="logo" src="/img/sfu-logo@2x.png" alt="sfu-logo"/>
+        </a>
     </header>
     <div class="container col-md-8 wrapper mb-5" id="app">
         <div class="container col-md-10 col-xl-10">
             <div class="row mt-5">
-                <svg class="mt-5 mr-4 back-arrow" viewBox="0 0 24 24">
-                    <path fill="#6D6D6D" d="M20,11V13H8L13.5,18.5L12.08,19.92L4.16,12L12.08,4.08L13.5,5.5L8,11H20Z" />
-                </svg>
+                <a href="/security">
+                    <svg class="mt-5 mr-4 back-arrow" viewBox="0 0 24 24">
+                        <path fill="#6D6D6D" d="M20,11V13H8L13.5,18.5L12.08,19.92L4.16,12L12.08,4.08L13.5,5.5L8,11H20Z" />
+                    </svg>
+                </a>
                 <h1 class="mt-5">Admin Settings</h1>
             </div>
-            <div class="distribution-form mb-5 mt-5 container">
-                <div class="row">
-                    <h3>Distribution</h3>
-                </div>
-                <div class="row mt-4">
-                    <table class="table table-striped">
-                        <thead>
-                        <tr>
-                            <th>Name</th>
-                            <th>Email</th>
-                            <th></th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        <tr v-for="entry in distEntries" class="tr-delete">
-                            <td>{{entry.name}}</td>
-                            <td>{{entry.email}}</td>
-                            <td>
-                                <button class="td-delete-button" v-on:click="removeDistEntry(entry)">x</button>
-                            </td>
-                        </tr>
-                        </tbody>
-                    </table>
-                </div>
-                <div class="row">
-                    <form action="" v-on:submit.prevent="addDistEntry" class="form-inline">
-                        <input type="text" placeholder="Name" class="mr-2 form-control" id="dist-name" v-model="distName">
-                        <input type="text" placeholder="Email" class="mr-2 form-control" id="dist-email" v-model="distEmail">
-                        <button class="btn btn-success submit">Add Email</button>
-                    </form>
-                </div>
-            </div>
+
             <div class="auth-form container">
-                <div class="row">
+                <div class="row mt-4">
                     <h3>Authorized Security</h3>
                 </div>
                 <div class="row mt-4">
@@ -67,7 +40,7 @@
                             <tr v-for="email in secEmails" class="tr-delete">
                                 <td>{{email.email}}</td>
                                 <td>
-                                    <button class="td-delete-button" v-on:click="removeSecEmail(email)">x</button>
+                                    <button class="td-delete-button" v-on:click="deleteSecEmail(email.id)">x</button>
                                 </td>
                             </tr>
                         </tbody>
@@ -76,7 +49,7 @@
                 <div class="row">
                     <form action="" v-on:submit.prevent="addSecEmail" class="form-inline">
                         <input type="text" placeholder="Email" class="mr-2 form-control" id="sec-email" v-model="secEmail">
-                        <button class="btn btn-success" type="submit">Add Email</button>
+                        <button class="btn btn-success" type="submit" v-on:click="addSecEmail()">Add Email</button>
                     </form>
                 </div>
             </div>
@@ -84,46 +57,35 @@
         <div class="bottom-space"></div>
     </div>
     <script src="/js/vue.js"></script>
+    <script src="/js/vue-resource.min.js"></script>
     <script>
         var app = new Vue({
             el: '#app',
             data: {
-                distName: '',
-                distEmail: '',
                 secEmail: '',
-                distEntries: [
-                    {
-                        name: "Security - Supervisor",
-                        email: "example@example.com"
-                    }
-                ],
-                secEmails: [
-                    {
-                        email: "example@example.com"
-                    }
-                ]
+                secEmails: []
             },
             created: function() {
-                //TODO GET
+                this.getSecEmails();
             },
             methods: {
-                //TODO API CALLS
-                addDistEntry: function() {
-                    this.distEntries.push({name: this.distName, email: this.distEmail});
-                    this.distName = '';
-                    this.distEmail = '';
-
+                getSecEmails: function() {
+                    this.$http.get('/api/authuser/all').then(function(response) {
+                        if (response.status == 200) {
+                            this.secEmails = response.data;
+                        }
+                    })
                 },
                 addSecEmail: function() {
-                    this.secEmails.push({email: this.secEmail});
+                    this.$http.post('/api/authuser/add', {email: this.secEmail, privilege: 'SECURITY'})
+                        .then(function(response) {
+                            this.getSecEmails();
+                    });
                 },
-                removeDistEntry: function(entry) {
-                    const index = this.distEntries.indexOf(entry);
-                    this.distEntries.splice(index, 1);
-                },
-                removeSecEmail: function(email) {
-                    const index = this.secEmails.indexOf(email);
-                    this.secEmails.splice(index, 1);
+                deleteSecEmail: function(id) {
+                    this.$http.delete('/api/authuser/delete/' + id).then(function(response) {
+                        this.getSecEmails();
+                    })
                 }
             }
 

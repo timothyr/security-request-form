@@ -26,14 +26,13 @@
 					<div class="row">
 						<h1 class="text-center form-heading">Security Service Request</h1>
 					</div>
-                    <p class="text-right"><sup><span style="color: red">*</span> : required</sup></p>
 					<div class="row mt-3">
 						<div class="form-group col-md-4">
-							<label for="requested-by-input">Requested By<sup style="color: red">*</sup></label>
+							<label for="requested-by-input">Requested By</label>
 							<input type="text" id="requested-by-input" v-model="formData.requesterName" class="form-control" required="required"/>
 						</div>
 						<div class="form-group col-md-4">
-							<label for="department-input">Department<sup style="color: red">*</sup></label>
+							<label for="department-input">Department</label>
                             <select required class="form-control" id="department-input" v-model="formData.department">
                                 <option value="" disabled selected>Choose...</option>
                                 <option :value="department" v-for="department in departments">{{department}}</option>
@@ -46,35 +45,35 @@
 					</div>
 					<div class="row">
 						<div class="form-group col-md-4">
-							<label for="phone-input">Phone<sup style="color: red">*</sup></label>
+							<label for="phone-input">Phone</label>
 							<input type="text" id="phone-input" class="form-control" required="required"/>
 						</div>
 						<div class="form-group col-md-4">
-							<label for="email-input">Email<sup style="color: red">*</sup></label>
+							<label for="email-input">Email</label>
 							<input type="email" id="email-input" class="form-control" v-model="formData.emailAddress" placeholder="example@sfu.ca" required="required"/>
 						</div>
 						<div class="form-group col-md-4">
 							<label for="fax-input">Fax</label>
-							<input type="text" id="fax-input" v-model="formData.faxNumber" class="form-control"/>
+							<input type="text" id="fax-input" v-model="formData.faxNumber" class="form-control" placeholder="(optional)"/>
 						</div>
 					</div>
 					<div class="row">
 						<div class="form-group col-md-4">
-							<label for="type-name-of-event-input">Type/Name of Event<sup style="color: red">*</sup></label>
+							<label for="type-name-of-event-input">Type/Name of Event</label>
 							<input type="text" id="type-name-of-event-input" v-model="formData.eventName" class="form-control" required="required"/>
 						</div>
 						<div class="form-group col-md-4">
-							<label for="location-input">Location<sup style="color: red">*</sup></label>
+							<label for="location-input">Location</label>
 							<select required class="form-control" id="location-input" v-model="formData.eventLocation">
                                 <option value="" disabled selected>Choose...</option>
 								<option value="Burnaby">Burnaby</option>
 								<option value="Surrey">Surrey</option>
 								<option value="Vancouver">Vancouver</option>
-								<option value="Other">Other</option>
+								<option value="Other">Other (state in details)</option>
 							</select>
 						</div>
 						<div class="form-group col-md-4">
-							<label for="number-of-attendees-input"># of Attendees<sup style="color: red">*</sup></label>
+							<label for="number-of-attendees-input">Approx. # of Attendees</label>
 							<input type="number" min="1" value="1" id="number-of-attendees-input" v-model="formData.numAttendees" class="form-control" required="required"/>
 						</div>
 					</div>
@@ -93,11 +92,11 @@
 					</div>
 					<div class="row">
 						<div class="form-group col-md-4">
-							<label for="number-of-guards-input"># of Guards Requested<sup style="color: red">*</sup></label>
+							<label for="number-of-guards-input"># of Guards Requested</label>
 							<input type="number" min="1" value="1" id="number-of-guards-input" v-model="formData.numGuards" class="form-control" required="required"/>
 						</div>
 						<div class="form-group col-md-4">
-							<label for="guard-type-input">Type of Guard Requested<sup style="color: red">*</sup></label>
+							<label for="guard-type-input">Type of Guard Requested</label>
 							<select required class="form-control" id="guard-type-input" v-model="formData.guardType">
 								<option value="" disabled selected>Choose...</option>
 								<option :value="guardType" v-for="guardType in guardTypes">{{guardType}}</option>
@@ -115,8 +114,8 @@
 						<table class="table table-hover text-centered date-table">
 							<thead>
 							<tr>
-								<th>Start Time<sup style="color: red">*</sup></th>
-								<th>End Time<sup style="color: red">*</sup></th>
+								<th>Start Time</th>
+								<th>End Time</th>
 								<th></th>
 							</tr>
 							<tr>
@@ -139,7 +138,7 @@
 								</th>
 
 								<th class="col-xs-1">
-									<button v-on:click="addDatetime" id="addDateTime" type="button" class="btn btn-danger ml-1">add</button>
+									<button v-on:click="addDatetime" id="addDateTime" type="button" class="btn btn-primary ml-1">add</button>
 								</th>
 							</tr>
 
@@ -161,47 +160,65 @@
 					</div>
 					<div>
 						<h3 class="auth-heading mt-4">Authorization</h3>
-                        <p>Your request has to be authorized before it can be approved.</p>
+                        <p><i class="fa fa-info-circle mr-1 ml-2 dark-text"></i>
+                            Your request has to be authorized before it can be approved by security.</p>
 					</div>
-                    <div class="row">
-                        <div class="btn-group mx-auto mt-3 mb-4" data-toggle="buttons">
-                            <div class="btn-group">
-                                <button class="btn toggle-button" v-bind:class="{active_toggle: authOption == 'authOwn'}" v-on:click="authOption = 'authOwn'">Authorize own request</button>
-                                <button class="btn toggle-button" v-bind:class="{active_toggle: authOption == 'passAuth'}" v-on:click="authOption = 'passAuth'">Send Authorization to someone else</button>
-                            </div>
+                    <div class="card card-block">
+                        <div class="row">
+                            <div class="btn-group mx-auto mt-3 mb-4" data-toggle="buttons">
+                                <div class="btn-group">
+                                    <button class="btn toggle-button" v-bind:class="{active_toggle: authOption == 'authOwn'}" v-on:click="authOption = 'authOwn'">Authorize own request</button>
+                                    <button class="btn toggle-button" v-bind:class="{active_toggle: authOption == 'passAuth'}" v-on:click="authOption = 'passAuth'">Send authorization to someone else</button>
+                                </div>
 
-                        </div>
-                    </div>
-                    <div class="row">
-                        <!--OPTION 1 -- AUTH OWN-->
-                        <div v-if="authOption == 'authOwn'" class="col-md-12">
-                            <div class="form-group add-space-top">
-                                <!--https://cas.sfu.ca/cas/login?service=https%3A%2F%2Flocalhost%3A8443%2Fj_spring_cas_security_check&redirect%3D%2F"-->
-                                <button type="button" id="sign-in" class="btn btn-danger" v-on:click="signedIn = true">Login SFU CAS</button>
                             </div>
-                            <div class="row">
-                                <div class="form-group col-md-6">
-                                    <label for="account-code-input">Account code<sup style="color: red">*</sup></label>
-                                    <input type="text" id="account-code-input" v-model="formData.paymentAccountCode" class="form-control" required="required"/>
+                        </div>
+                        <div class="row">
+                            <!--OPTION 1 -- AUTH OWN-->
+                            <div v-if="authOption == 'authOwn'" class="col-md-12">
+                                <div class="form-group add-space-top text-center">
+                                    <a href="/login"
+                                        role="button" id="sign-in" class="btn btn-danger">Authorize through SFU CAS
+                                    </a>
+                                        <div v-if="userName">
+                                            <p class="mt-3">Authorized as <span class="blue-text">
+                                                    {{userName}}@sfu.ca
+                                                <i class="fa fa-check green-text" aria-hidden="true"></i>
+                                                </span>
+                                            </p>
+                                        </div>
+                                        <p class="mt-3" v-if="!userName">
+                                            Not Authorized
+                                            <i class="fa fa-times red-text" aria-hidden="true"></i>
+                                        </p>
+                                </div>
+                                <div class="row">
+                                    <div class="form-group col-md-6 ml-3 mt-2 mx-auto">
+                                        <label for="account-code-input">Account code</label>
+                                        <input type="text" id="account-code-input" v-model="formData.paymentAccountCode" class="form-control" required="required"/>
+                                    </div>
+                                </div>
+                                <div class="row">
+
                                 </div>
                             </div>
+                            <!--OPTION 2 -- PASS AUTH-->
+                            <div v-if="authOption == 'passAuth'" class="form-group col-md-4 ml-3">
+                                <label for="authorizer-email-input">Email of Authorizer</label>
+                                <input type="email" id="authorizer-email-input" class="form-control" v-model="formData.authorizerEmailAddress" placeholder="example@example.ca" required/>
+                            </div>
                         </div>
-                        <!--OPTION 2 -- PASS AUTH-->
-                        <div v-if="authOption == 'passAuth'" class="form-group col-md-4">
-                            <label for="authorizer-email-input">Email of Authorizer<sup style="color: red">*</sup></label>
-                            <input type="email" id="authorizer-email-input" class="form-control" v-model="formData.authorizerEmailAddress" placeholder="example@sfu.ca" required/>
+                        <div class="form-group col-md-12 text-center" v-if="authOption == 'authOwn'">
+                            <input type="checkbox" id="invoice-input" class="mr-1"/>
+                            <label for="invoice-input">Please Invoice</label>
                         </div>
                     </div>
-					<div v-if="signedIn == 'passAuth'" class="form-group col-md-12">
-						<input type="checkbox" id="invoice-input" class="mr-1"/>
-						<label for="invoice-input">Please Invoice</label>
-					</div>
 				</div>
 					<div class="row mt-8">
 					</div>
 					<div class="row mt-5">
 						<div class="col-md-12 text-center">
-							<button id="submit" class="btn btn-danger btn-lg col-md-8" v-bind:class="{disabled: !isValid | loading}">
+							<button id="submit" class="btn btn-primary btn-lg col-md-8" v-bind:class="{disabled: !isValid | loading}">
                                 <div class="loading-icon mr-3" v-if="loading"></div>
                                 {{this.submitText}}
                             </button>
@@ -255,6 +272,41 @@
 	</script>
     <script src="/js/constants.js"></script>
 	<script>
+        var persistModule;
+        (function () {
+            persistModule = (function() {
+                var storeData = function() {
+                    if (typeof(Storage) !== "undefined") {
+                        // store data
+                        sessionStorage.setItem("storedData", JSON.stringify(form.formData));
+                    }
+                }
+                var getData = function() {
+                    if (typeof (Storage) !== "undefined") {
+                        let data = sessionStorage.getItem("storedData");
+                        if (data != null || data != "") {
+                            return JSON.parse(data);
+                        }
+                    }
+                }
+                //persisting data on reload
+                window.onbeforeunload = function() {
+                    console.log("unloading");
+                    form.formData.phoneNumber = $("#phone-input").val();
+                    storeData();
+                };
+
+                return {
+                    storeData: function() {
+                        return storeData;
+                    },
+                    getData: function() {
+                        return getData;
+                    }
+                }
+            })();
+        }());
+
         const emailValid = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
 		const formSaveAPI = 'api/form/save';
 		const formGetAPI = 'updateform?token=';
@@ -292,11 +344,6 @@
                 $('#phone-input').mask("(999) 999-9999");
             });
         });
-
-        //persisting data on reload
-        window.onbeforeunload = function() {
-
-        }
 
         var Modal = Vue.component('modal', {
             template: '#modal-template',
@@ -364,14 +411,17 @@
 		        guardTypes: guardTypes,
 		        datetimelistsize: '0',
 		        loading: false,
-		        authOption: 'authOwn'
+		        authOption: 'authOwn',
+                userName: '',
             }),
 
 			computed: {
 				validation: function () {
+				    let authed = (this.authOption == "authOwn") ? this.userName != "": true;
                     return {
-                        authorizerEmailAddress: this.signedIn || emailValid.test(this.formData.authorizerEmailAddress),
-                        emailAddress: emailValid.test(this.formData.emailAddress)
+                        //authorizerEmailAddress: this.signedIn || emailValid.test(this.formData.authorizerEmailAddress),
+                        emailAddress: emailValid.test(this.formData.emailAddress),
+                        authed: authed
                     }
 				},
 				isValid: function () {
@@ -460,6 +510,7 @@
                     Object.assign(this.$data, this.$options.data.call(this));
                     //reset phone number field
                     $("#phone-input").val("");
+                    sessionStorage.setItem("storedData", "undefined");
                 },
 
                 submitForm: function () {
@@ -521,7 +572,6 @@
 						this.enddatetime = '';
             		}
             	},
-
             	deleteDatetime: function(dt){
             		var index = this.datetimelist.indexOf(dt);
             		this.formData.eventDates = deleteEventDate(dt.start,dt.end,this.formData.eventDates, index,this.datetimelist.length);
@@ -530,6 +580,41 @@
             			disableDateInput(false);
             		}
             	},
+                setUserName: function() {
+                    this.$http.get("/api/user/get").then(function(response) {
+                        if (response.status == 200 && response.data && response.data.authenticated) {
+                            this.userName = response.data.username;
+                        } else {
+                            console.log("Failed getting username.");
+                            this.userName = null;
+                        }
+                    }).catch(error => console.log(error));
+                },
+                setRequiredDate: function() {
+                    if (this.datetimelist && this.datetimelist.length != 0) {
+                        //$('#startdatetime').removeAttr("required");
+                        //$('#enddatetime').removeAttr("required");
+                        disableDateInput(true);
+                        console.log("DATE IS NOT EMPTY, NOT REQUIRING DATE");
+                    } else {
+                        //$('#startdatetime').attr("required");
+                        //$('#enddatetime').attr("required");
+                        disableDateInput(false);
+                    }
+                }
+            },
+            mounted: function() {
+                if (sessionStorage.getItem('storedData')) {
+                    this.formData = persistModule.getData()();
+                    //manually restore phone-number..
+                    $('#phone-input').val(this.formData.phoneNumber);
+
+                    this.datetimelist = updateDateTime(this.formData.eventDates);
+                    // since it these are required fields and have to be non empty, but already loaded dates
+                    this.setRequiredDate();
+                    this.setUserName();
+                    console.log("got data");
+                }
             },
 
             components: {Modal}
@@ -538,6 +623,7 @@
         form = new FormApp({
             el: '#app'
         });
-	</script>
+
+    </script>
 </body>
 </html>

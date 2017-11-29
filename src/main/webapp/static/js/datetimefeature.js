@@ -20,11 +20,10 @@ $(document).ready(function(){
                 minDateTime: new Date(),
                 onClose: setStartMaxDate,
             });
-
-			document.getElementById("chooseStartDateTime").value = '';
-			document.getElementById("startdatetime").value = '';
-			document.getElementById("chooseEndDateTime").value = '';
-			document.getElementById("enddatetime").value = '';
+            $("#chooseStartDateTime").val("");
+            $("#chooseEndDateTime").val("");
+            $("#startdatetime").val("");
+            $("#enddatetime").val("");
 });
 
 		function setDateTime(e, inputId){

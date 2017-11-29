@@ -61,3 +61,8 @@ function generateEventDates(eventDates){
     return newEventDates;
 }
 
+function hidePickerDiv(val){
+    document.getElementById("picker_div").hidden = val;
+}
+
+
