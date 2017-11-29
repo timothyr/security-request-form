@@ -589,6 +589,16 @@
                         }
                     }).catch(error => console.log(error));
                 },
+                setRequiredDate: function() {
+                    if (this.datetimelist && this.datetimelist.length != 0) {
+                        $('#startdatetime').removeAttr("required");
+                        $('#enddatetime').removeAttr("required");
+                        console.log("DATE IS NOT EMPTY, NOT REQUIRING DATE");
+                    } else {
+                        $('#startdatetime').attr("required");
+                        $('#enddatetime').attr("required");
+                    }
+                }
             },
             mounted: function() {
                 if (sessionStorage.getItem('storedData')) {
@@ -597,6 +607,8 @@
                     $('#phone-input').val(this.formData.phoneNumber);
 
                     this.datetimelist = updateDateTime(this.formData.eventDates);
+                    // since it these are required fields and have to be non empty, but already loaded dates
+                    this.setRequiredDate();
                     this.setUserName();
                     console.log("got data");
                 }
