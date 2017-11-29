@@ -537,6 +537,7 @@
                 if (response.status >= 200 && response.status <=300) {
                     let phoneNumber = response.data.phoneNumber;
                     let authNumber = response.data.authorizerPhoneNumber;
+                    let statusFromServer = response.data.requestStatus;
                     $(document).ready(function(){
                         //initialize tooltips
                         $(function () {
@@ -565,6 +566,8 @@
                         //manually restore phone-number..
                         $('#phone-input').val(this.formData.phoneNumber);
                     }
+                    // replace sessionStatus with server status
+                    this.formData.requestStatus = statusFromServer;
                 } else {
                     console.log(response.status);
                 }
