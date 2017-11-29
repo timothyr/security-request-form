@@ -30,6 +30,9 @@ server.ssl.key-store-password=<KEYSTORE-PASSWORD>
 # Default https port is 8443 (or 443)
 server.port=8443
 
+# For redirect from http to https. Default http port is 8080 (or 80)
+server.http.port=8080
+
 # The base URL that the application will be running on (e.g., example.com).
 # By default set to localhost:8443, for running the server locally.
 server.baseUrl=localhost:8443
