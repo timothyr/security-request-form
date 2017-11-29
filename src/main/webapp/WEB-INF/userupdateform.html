@@ -197,7 +197,7 @@
                             </div>
                             <div class="form-group col-md-4">
                                 <label for="phone-of-authorizee-input">Phone</label>
-                                <input type="text" id="phone-of-authorizee-input" v-model="formData.authorizerPhoneNumber" class="form-control masked" pattern="[0-9]{3}[ |-][0-9]{3}[ |-][0-9]{4}" data-valid-example="000-000-0000"/>
+                                <input type="text" id="phone-of-authorizee-input" v-model="formData.authorizerPhoneNumber" class="form-control masked"/>
                             </div>
                         </div>
                         <div class="row mb-4">
@@ -444,7 +444,7 @@
                 this.formData.phoneNumber = $("#phone-input").val();
                 this.formData.eventDates = generateEventDates(this.formData.eventDates);
 	            if (this.isValid) {
-                    this.formData.authorizerEmailAddress = $("#phone-of-authorizee-input").val();
+                    this.formData.authorizerPhoneNumber = $("#phone-of-authorizee-input").val();
 
                     this.formData.eventDates = generateEventDates(this.formData.eventDates);
                     if (this.isValid) {
