@@ -4,6 +4,7 @@ import ca.sfu.delta.models.*;
 import ca.sfu.delta.repository.FormRepository;
 import ca.sfu.delta.repository.RequestIDRepository;
 import ca.sfu.delta.repository.URLTokenRepository;
+import ca.sfu.delta.repository.DistributionEmailRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
@@ -35,6 +36,8 @@ public class FormServiceRequestController extends WebMvcConfigurerAdapter {
     URLTokenRepository urlTokenRepository;
     @Autowired
     SendEmail sendEmail;
+    @Autowired
+    DistributionEmailRepository distributionEmailRepository;
 
     @Value("${server.baseUrl}")
     String baseUrl;
@@ -106,10 +109,16 @@ public class FormServiceRequestController extends WebMvcConfigurerAdapter {
 		String userEmailAddress = form.getEmailAddress();
 		String authEmailAddress = form.getAuthorizerEmailAddress();
 		String trackingID = form.getRequestID();
-        List<String> distList = form.getDistributionList();
+        List<String> distListIDs = form.getDistributionList();
         String token = createURLToken(form.getId());
         String requestURL = "https://" + baseUrl + formRequestURL + token;
         String eventName = form.getEventName();
+
+        //Get the real emails from the repository, instead of the IDs like we have now.
+        List<String> distList = new ArrayList<String>();
+        for(String id : distListIDs) {
+            distList.add(distributionEmailRepository.findOne(Long.parseLong(id)).getEmail());
+        }
 
 		try {
 			//send email to User
