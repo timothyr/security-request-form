@@ -14,8 +14,6 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.core.userdetails.AuthenticationUserDetailsService;
-import org.springframework.security.web.authentication.logout.LogoutFilter;
-import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
 
 @Configuration
 @EnableWebSecurity
@@ -80,23 +78,18 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 		http.logout().permitAll().logoutSuccessUrl("https://cas.sfu.ca/cas/logout");
 
 		http.authenticationProvider(casAuthenticationProvider())
-				// Public access
-				.authorizeRequests().antMatchers(
-					"/css/**",
-					"/fonts/**",
-					"/img/**",
-					"/js/**",
-					"/api/get/user/**",
-					"/api/form/save/**",
-					"/api/form/update/**",
-					"/logout",
-					"/updateform",
-					"/api/form/get/user/**",
-					"/"
-				).permitAll().and()
+				.authorizeRequests()
 
-				// Access to Security and Admin
-				.authorizeRequests().antMatchers(
+				// Administrative pages
+				.antMatchers(
+					"/api/admin/**",
+					"/api/authuser/**"
+				).hasAuthority(
+					AuthorizedUser.Privilege.ADMIN.toString()
+				)
+
+				// Secure pages
+				.antMatchers(
 					"/security/**",
 					"/api/authuser/**",
 					"/api/dist/**",
@@ -110,14 +103,10 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 				).hasAnyAuthority(
 					AuthorizedUser.Privilege.ADMIN.toString(),
 					AuthorizedUser.Privilege.SECURITY.toString()
-				).anyRequest().authenticated().and()
+				)
 
-				// Access to Admin only
-				.authorizeRequests().antMatchers(
-						"/api/admin/**",
-						"/api/authuser/**"
-				).hasAnyAuthority(AuthorizedUser.Privilege.ADMIN.toString())
-				.anyRequest().authenticated();
+				// Everything else is publicly accessible
+				.antMatchers("/**").permitAll();
 	}
 
 	@Override
