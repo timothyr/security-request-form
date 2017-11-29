@@ -20,11 +20,10 @@ $(document).ready(function(){
                 minDateTime: new Date(),
                 onClose: setStartMaxDate,
             });
-
-			document.getElementById("chooseStartDateTime").value = '';
-			document.getElementById("startdatetime").value = '';
-			document.getElementById("chooseEndDateTime").value = '';
-			document.getElementById("enddatetime").value = '';
+            $("#chooseStartDateTime").val("");
+            $("#chooseEndDateTime").val("");
+            $("#startdatetime").val("");
+            $("#enddatetime").val("");
 });
 
 		function setDateTime(e, inputId){
@@ -39,8 +38,12 @@ $(document).ready(function(){
 		}
 
 		function disableDateInput(val){
-		    document.getElementById("startdatetime").disabled = val;
-		    document.getElementById("enddatetime").disabled = val;
+		    var start =  document.getElementById("startdatetime");
+		    var end =  document.getElementById("enddatetime");
+		    if(start!=null && end!= null){
+		        start.disabled = val;
+		        end.disabled = val;
+		    }
 		}
 
 

@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.ObjectError;
@@ -46,9 +47,7 @@ public class FormServiceRequestController extends WebMvcConfigurerAdapter {
 
     @Override
     public void addViewControllers(ViewControllerRegistry registry) {
-        registry.addViewController("/securitylogin").setViewName("securitylogin.html");
         registry.addViewController("/updateform").setViewName("userupdateform");
-        //registry.addViewController("/securityview").setViewName("request.html");
     }
 
     @RequestMapping(value = "/api/form/get/{id}", method = RequestMethod.GET, produces = "application/json")
@@ -309,10 +308,13 @@ public class FormServiceRequestController extends WebMvcConfigurerAdapter {
     }
 
     @PostMapping(value = "/api/form/save", produces = "text/plain")
-    public @ResponseBody ResponseEntity addForm(@RequestBody @Valid FormData form,
-                                                BindingResult result,
-                                                @RequestParam Optional<Boolean> loggedOn,
-                                                HttpServletRequest request) {
+    public @ResponseBody ResponseEntity addForm(
+            @RequestBody @Valid FormData form,
+            BindingResult result,
+            Authentication user,
+            HttpServletRequest request
+    ) {
+
 	    if (form == null) {
             System.out.println("A Null Form was not saved.");
 		    return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("ERROR: Form is null");
@@ -336,12 +338,15 @@ public class FormServiceRequestController extends WebMvcConfigurerAdapter {
         }
 
         //Set requestedOnDate to current date
-        DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
+        DateFormat dateFormat = new SimpleDateFormat("MM/dd/yyyy");
         Date date = new Date();
         form.setRequestedOnDate(dateFormat.format(date));
 
-        if (loggedOn != null && loggedOn.isPresent() && loggedOn.get()) {
+        boolean loggedOn = user != null;
+        if (loggedOn) {
         	form.setRequestStatus(GlobalConstants.AUTHORIZED);
+        	form.setAuthorizerID(user.getName());
+        	form.setAuthorizerEmailAddress(user.getName() + "@sfu.ca");
         }
         else {
 	        form.setRequestStatus(GlobalConstants.WAITING);

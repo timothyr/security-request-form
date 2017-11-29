@@ -30,4 +30,9 @@ public class SecurityController {
         return "/requests";
     }
 
+    @RequestMapping("/admin")
+    public String adminView() {
+        return "/admin";
+    }
+
 }
