@@ -106,6 +106,10 @@ public class FormServiceRequestController extends WebMvcConfigurerAdapter {
 		String userEmailAddress = form.getEmailAddress();
 		String authEmailAddress = form.getAuthorizerEmailAddress();
 		String trackingID = form.getRequestID();
+        List<String> distList = form.getDistributionList();
+        String token = createURLToken(form.getId());
+        String requestURL = "https://" + baseUrl + formRequestURL + token;
+        String eventName = form.getEventName();
 
 		try {
 			//send email to User
@@ -125,6 +129,14 @@ public class FormServiceRequestController extends WebMvcConfigurerAdapter {
 			else if (authEmailAddress != null && form.getRequestStatus().equals(GlobalConstants.ACCEPTED)) {
 				sendEmail.sendEventRequestApproved(authEmailAddress, null, trackingID);
 			}
+
+            //if approved, send emails to distribution list
+            if ( distList != null && form.getRequestStatus().equals(GlobalConstants.ACCEPTED)) {
+                for(String email : distList) {
+                    sendEmail.sendDistributionEmail(email, eventName, requestURL);
+                }
+            }
+
 		} catch (Exception e) {
 			System.out.print("Error sending the emails: " + e.getMessage());
 		}
