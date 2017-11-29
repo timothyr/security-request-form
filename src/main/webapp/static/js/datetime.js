@@ -44,7 +44,7 @@ function updateDateTime(aString){
 }
 
 function generateEventDates(eventDates){
-    var newEventDates = eventDates;
+    var newEventDate = eventDate;
     var start = document.getElementById("chooseStartDateTime").value;
     var end = document.getElementById("chooseEndDateTime").value;
     if(start!=''&&end!=''){
