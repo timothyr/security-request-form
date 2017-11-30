@@ -115,9 +115,13 @@ public class FormServiceRequestController extends WebMvcConfigurerAdapter {
 
         //Get the real emails from the repository, instead of the IDs like we have now.
         List<String> distList = new ArrayList<String>();
-        for(String id : distListIDs) {
-            System.out.println(distributionEmailRepository.findOne(Long.parseLong(id)).getEmail());
-            distList.add(distributionEmailRepository.findOne(Long.parseLong(id)).getEmail());
+
+        if(distListIDs != null) {
+            for(String id : distListIDs) {
+                if(id != null) {
+                 distList.add(distributionEmailRepository.findOne(Long.parseLong(id)).getEmail());
+                }
+            }
         }
 
 		try {
@@ -147,8 +151,6 @@ public class FormServiceRequestController extends WebMvcConfigurerAdapter {
                         sendEmail.sendDistributionEmail(email, eventName, requestURL);
                     }
                 }
-            } else {
-                System.out.println(form.getRequestStatus() + " and " + GlobalConstants.APPROVED);
             }
 
 		} catch (Exception e) {
@@ -310,10 +312,12 @@ public class FormServiceRequestController extends WebMvcConfigurerAdapter {
     }
 
     @PostMapping(value = "/api/form/save", produces = "text/plain")
-    public @ResponseBody ResponseEntity addForm(@RequestBody @Valid FormData form,
-                                                BindingResult result,
-                                                @RequestParam Optional<Boolean> loggedOn,
-                                                HttpServletRequest request, Authentication p) {
+    public @ResponseBody ResponseEntity addForm(
+            @RequestBody @Valid FormData form,
+            BindingResult result,
+            Authentication user,
+            HttpServletRequest request
+    ) {
 
 	    if (form == null) {
             System.out.println("A Null Form was not saved.");
@@ -342,8 +346,16 @@ public class FormServiceRequestController extends WebMvcConfigurerAdapter {
         Date date = new Date();
         form.setRequestedOnDate(dateFormat.format(date));
 
-        if (loggedOn != null && loggedOn.isPresent() && loggedOn.get()) {
+        boolean loggedOn = user != null;
+        if (loggedOn) {
         	form.setRequestStatus(GlobalConstants.AUTHORIZED);
+        	form.setAuthorizerID(user.getName());
+        	if (user.getName() != null && !user.getName().isEmpty()) {
+        	    form.setAuthorizerPhoneNumber(form.getPhoneNumber());
+        	    form.setAuthorizerName(form.getRequesterName());
+            }
+        	form.setAuthorizerName(form.getRequesterName());
+        	form.setAuthorizerEmailAddress(user.getName() + "@sfu.ca");
         }
         else {
 	        form.setRequestStatus(GlobalConstants.WAITING);

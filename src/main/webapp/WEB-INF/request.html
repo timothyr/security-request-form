@@ -35,7 +35,7 @@
                 </div>
                 <div class="row">
                     <div class="" v-if="form.requestStatus !== null">
-                        <span class="badge white-text badge-med" v-bind:class="getBadgeClassName(form.requestStatus)">{{form.requestStatus}}</span>
+                        <span class="badge white-text badge-med" v-bind:class="getBadgeClassName(form.requestStatus)" data-toggle="tooltip" data-placement="right" v-bind:title="statusToolTip">{{form.requestStatus}}</span>
                     </div>
                 </div>
                 <div class="row pull-right">
@@ -241,37 +241,38 @@
             </div>
             <hr/>
         </div>
-
-        <div class="row my-3 text-center">
-            <div class="col col-md-3"></div>
-            <div class="col col-md-12">
-                <button type="button" class="btn btn-primary mr-2" v-on:click="addGuard">Add Guard/SCSP</button>
-                # to add:
-                <input id="numGuards" type="number" step="1" min="1" v-model="guardsToAdd">
-                <button type="button" class="btn btn-danger ml-4" v-on:click="deleteAllGuards">Remove All Guards/SCSPs</button>
+        <div class="row mb-5 mt-3 text-center">
+            <div class="col col-lg-6">
+                <div class="input-group">
+                    <span class="input-group-addon"># of Guards/SCSPs</span>
+                    <input id="numGuards" class="form-control" type="number" step="1" min="1" v-model="guardsToAdd"/>
+                    <span class="input-group-btn">
+                        <button type="button" class="btn btn-primary" v-on:click="addGuard">Add</button>
+                    </span>
+                </div>
             </div>
-            <div class="col col-md-3"></div>
+            <div class="col col-lg-6">
+                <button type="button" class="btn btn-danger" v-on:click="deleteAllGuards">Remove All Guards/SCSPs</button>
+            </div>
         </div>
-
-                <div class="row text-center">
-                    <div class="col-md-4">
-                        <p class="d-block">Estimated Personnel Cost:</p>
-                        <span class="money-style d-block">${{cost}}</span>
-                    </div>
-                    <div class="col-md-4">
-                        <p class="d-block">Total Hours:</p>
-                        <span class="money-style d-block">{{totalHours}} Hours</span>
-                    </div>
-                    <div class="col-md-4">
-                        <p class="d-block">Hours per Guard/SCSP:</p>
-                        <span class="money-style d-block">{{avgHours}} Hours</span>
-                    </div>
-                </div>
-
-                <div class="form-group my-5">
-                    <label for="remarksField">Security Remarks</label>
-                    <textarea class="form-control" rows="4" placeholder="Remarks" v-model="form.securityRemarks" id="remarksField"></textarea>
-                </div>
+        <div class="row text-center">
+            <div class="col-md-4">
+                <p class="d-block">Estimated Personnel Cost:</p>
+                <span class="money-style d-block">${{cost}}</span>
+            </div>
+            <div class="col-md-4">
+                <p class="d-block">Total Hours:</p>
+                <span class="money-style d-block">{{totalHours}} Hours</span>
+            </div>
+            <div class="col-md-4">
+                <p class="d-block">Hours per Guard/SCSP:</p>
+                <span class="money-style d-block">{{avgHours}} Hours</span>
+            </div>
+        </div>
+        <div class="form-group my-5">
+            <label for="remarksField">Security Remarks</label>
+            <textarea class="form-control" rows="4" placeholder="Remarks" v-model="form.securityRemarks" id="remarksField"></textarea>
+        </div>
 
         <div class="row">
             <div class="col-md-12">
@@ -381,6 +382,7 @@
 <script src="/js/vue-resource.min.js"></script>
 <script src="/js/datetime.js"></script>
 <script>
+
     var app = new Vue({
         el: '#app',
 
@@ -701,8 +703,29 @@
                     }
                     this.selectedEmails = selected;
                 }
+            },
+            statusToolTip: function() {
+                switch(this.form.requestStatus) {
+                    case 'APPROVED':
+                        return "Request has been authorized and approved by security";
+                        break;
+                    case 'AUTHORIZED':
+                        return "Waiting for security to review this request";
+                    case 'WAITING':
+                        return "Your request has to be authorized before security reviews this request";
+                        break;
+                    case 'REJECTED':
+                        return "This request has been rejected by security";
+                        break;
+                }
             }
         }
+    });
+    $(document).ready(function(){
+        //initialize tooltips
+        $(function () {
+            $('[data-toggle="tooltip"]').tooltip();
+        });
     });
 </script>
 

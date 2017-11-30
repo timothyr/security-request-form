@@ -80,29 +80,22 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 		http.logout().permitAll().logoutSuccessUrl("https://cas.sfu.ca/cas/logout");
 
 		http.authenticationProvider(casAuthenticationProvider())
-				// Public access
-				.authorizeRequests().antMatchers(
-					"/css/**",
-					"/fonts/**",
-					"/img/**",
-					"/js/**",
-					"/api/get/user/**",
-					"/api/form/save/**",
-					"/api/form/update/**",
-					"/logout",
-					"/updateform",
-					"/api/form/get/user/**",
-					"/"
-				).permitAll().and()
+				.authorizeRequests()
 
-				// Access to Security and Admin
-				.authorizeRequests().antMatchers(
+				// Administrative pages
+				.antMatchers(
+					"/api/admin/**",
+					"/api/authuser/**"
+				).hasAuthority(
+					AuthorizedUser.Privilege.ADMIN.toString()
+				)
+
+				// Secure pages
+				.antMatchers(
 					"/security/**",
 					"/api/authuser/**",
 					"/api/dist/**",
-					"/api/user/**",
 					"/api/form/getByRequestID/**",
-					"/api/form/get/**",
 					"/api/form/search",
 					"/api/form/saveSecurity",
 					"/api/csv/**",
@@ -110,14 +103,10 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 				).hasAnyAuthority(
 					AuthorizedUser.Privilege.ADMIN.toString(),
 					AuthorizedUser.Privilege.SECURITY.toString()
-				).anyRequest().authenticated().and()
+				)
 
-				// Access to Admin only
-				.authorizeRequests().antMatchers(
-						"/api/admin/**",
-						"/api/authuser/**"
-				).hasAnyAuthority(AuthorizedUser.Privilege.ADMIN.toString())
-				.anyRequest().authenticated();
+				// Everything else is publicly accessible
+				.antMatchers("/**").permitAll();
 	}
 
 	@Override

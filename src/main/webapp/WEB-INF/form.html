@@ -510,6 +510,7 @@
                     Object.assign(this.$data, this.$options.data.call(this));
                     //reset phone number field
                     $("#phone-input").val("");
+                    sessionStorage.setItem("storedData", "undefined");
                 },
 
                 submitForm: function () {
