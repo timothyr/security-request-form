@@ -116,33 +116,39 @@ public class FormServiceRequestController extends WebMvcConfigurerAdapter {
         //Get the real emails from the repository, instead of the IDs like we have now.
         List<String> distList = new ArrayList<String>();
         for(String id : distListIDs) {
+            System.out.println(distributionEmailRepository.findOne(Long.parseLong(id)).getEmail());
             distList.add(distributionEmailRepository.findOne(Long.parseLong(id)).getEmail());
         }
 
 		try {
 			//send email to User
-			if (userEmailAddress != null && form.getRequestStatus().equals(GlobalConstants.REJECTED)) {
+			if (userEmailAddress != null && !userEmailAddress.isEmpty() && form.getRequestStatus().equals(GlobalConstants.REJECTED)) {
 				sendEmail.sendEventRequestRejection(userEmailAddress, userName,
 						trackingID, additionalMessage);
 			}
-			else if (userEmailAddress != null && form.getRequestStatus().equals(GlobalConstants.ACCEPTED)) {
+			else if (userEmailAddress != null && form.getRequestStatus().equals(GlobalConstants.APPROVED)) {
 				sendEmail.sendEventRequestApproved(userEmailAddress, userName, trackingID);
 			}
 
 			//send email to Authorizer
-			if (authEmailAddress != null && form.getRequestStatus().equals(GlobalConstants.REJECTED)) {
+			if (authEmailAddress != null && !authEmailAddress.isEmpty() && form.getRequestStatus().equals(GlobalConstants.REJECTED)) {
 				sendEmail.sendEventRequestRejection(authEmailAddress, null,
 						trackingID, additionalMessage);
 			}
-			else if (authEmailAddress != null && form.getRequestStatus().equals(GlobalConstants.ACCEPTED)) {
+			else if (authEmailAddress != null && !authEmailAddress.isEmpty() && form.getRequestStatus().equals(GlobalConstants.APPROVED)) {
 				sendEmail.sendEventRequestApproved(authEmailAddress, null, trackingID);
 			}
 
             //if approved, send emails to distribution list
-            if ( distList != null && form.getRequestStatus().equals(GlobalConstants.ACCEPTED)) {
+            if ( distList != null && form.getRequestStatus().equals(GlobalConstants.APPROVED)) {
+                System.out.println("TEST");
                 for(String email : distList) {
-                    sendEmail.sendDistributionEmail(email, eventName, requestURL);
+                    if (!email.isEmpty()) {
+                        sendEmail.sendDistributionEmail(email, eventName, requestURL);
+                    }
                 }
+            } else {
+                System.out.println(form.getRequestStatus() + " and " + GlobalConstants.APPROVED);
             }
 
 		} catch (Exception e) {

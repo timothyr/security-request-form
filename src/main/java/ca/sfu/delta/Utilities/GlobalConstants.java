@@ -12,6 +12,6 @@ public class GlobalConstants {
 	// These are the status options
 	public static final String WAITING = "WAITING";
 	public static final String AUTHORIZED = "AUTHORIZED";
-	public static final String ACCEPTED = "ACCEPTED";
+	public static final String APPROVED = "APPROVED";
 	public static final String REJECTED = "REJECTED";
 }
