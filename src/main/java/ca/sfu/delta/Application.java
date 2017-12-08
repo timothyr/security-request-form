@@ -24,16 +24,15 @@ public class Application {
 	    SpringApplication.run(Application.class, args);
 	}
 
-    //TODO remove this in production
-	@Bean
-    InitializingBean addUsers() {
-        return () -> {
-            authorizedUserRepository.save(new AuthorizedUser("jeldridg@sfu.ca", AuthorizedUser.Privilege.SECURITY));
-            authorizedUserRepository.save(new AuthorizedUser("jkrasuin@sfu.ca", AuthorizedUser.Privilege.SECURITY));
-            authorizedUserRepository.save(new AuthorizedUser("jlawclav@sfu.ca", AuthorizedUser.Privilege.SECURITY));
-            authorizedUserRepository.save(new AuthorizedUser("security@sfu.ca", AuthorizedUser.Privilege.SECURITY));
-        };
-    }
+//	@Bean
+//    InitializingBean addUsers() {
+//        return () -> {
+//            authorizedUserRepository.save(new AuthorizedUser("jeldridg@sfu.ca", AuthorizedUser.Privilege.SECURITY));
+//            authorizedUserRepository.save(new AuthorizedUser("jkrasuin@sfu.ca", AuthorizedUser.Privilege.SECURITY));
+//            authorizedUserRepository.save(new AuthorizedUser("jlawclav@sfu.ca", AuthorizedUser.Privilege.SECURITY));
+//            authorizedUserRepository.save(new AuthorizedUser("security@sfu.ca", AuthorizedUser.Privilege.SECURITY));
+//        };
+//    }
     /* COMMENT OUT THIS FOR DEBUGGING (SHOW WHITELABEL PAGES) */
     @Bean
     public EmbeddedServletContainerCustomizer containerCustomizer() {

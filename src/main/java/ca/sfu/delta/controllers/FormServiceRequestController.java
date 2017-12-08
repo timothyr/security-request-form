@@ -115,6 +115,7 @@ public class FormServiceRequestController extends WebMvcConfigurerAdapter {
 
         //Get the real emails from the repository, instead of the IDs like we have now.
         List<String> distList = new ArrayList<String>();
+
         if(distListIDs != null) {
             for(String id : distListIDs) {
                 if(id != null) {
@@ -125,27 +126,30 @@ public class FormServiceRequestController extends WebMvcConfigurerAdapter {
 
 		try {
 			//send email to User
-			if (userEmailAddress != null && form.getRequestStatus().equals(GlobalConstants.REJECTED)) {
+			if (userEmailAddress != null && !userEmailAddress.isEmpty() && form.getRequestStatus().equals(GlobalConstants.REJECTED)) {
 				sendEmail.sendEventRequestRejection(userEmailAddress, userName,
 						trackingID, additionalMessage);
 			}
-			else if (userEmailAddress != null && form.getRequestStatus().equals(GlobalConstants.ACCEPTED)) {
+			else if (userEmailAddress != null && form.getRequestStatus().equals(GlobalConstants.APPROVED)) {
 				sendEmail.sendEventRequestApproved(userEmailAddress, userName, trackingID);
 			}
 
 			//send email to Authorizer
-			if (authEmailAddress != null && form.getRequestStatus().equals(GlobalConstants.REJECTED)) {
+			if (authEmailAddress != null && !authEmailAddress.isEmpty() && form.getRequestStatus().equals(GlobalConstants.REJECTED)) {
 				sendEmail.sendEventRequestRejection(authEmailAddress, null,
 						trackingID, additionalMessage);
 			}
-			else if (authEmailAddress != null && form.getRequestStatus().equals(GlobalConstants.ACCEPTED)) {
+			else if (authEmailAddress != null && !authEmailAddress.isEmpty() && form.getRequestStatus().equals(GlobalConstants.APPROVED)) {
 				sendEmail.sendEventRequestApproved(authEmailAddress, null, trackingID);
 			}
 
             //if approved, send emails to distribution list
-            if ( distList != null && form.getRequestStatus().equals(GlobalConstants.ACCEPTED)) {
+            if ( distList != null && form.getRequestStatus().equals(GlobalConstants.APPROVED)) {
+                System.out.println("TEST");
                 for(String email : distList) {
-                    sendEmail.sendDistributionEmail(email, eventName, requestURL);
+                    if (!email.isEmpty()) {
+                        sendEmail.sendDistributionEmail(email, eventName, requestURL);
+                    }
                 }
             }
 
@@ -346,6 +350,11 @@ public class FormServiceRequestController extends WebMvcConfigurerAdapter {
         if (loggedOn) {
         	form.setRequestStatus(GlobalConstants.AUTHORIZED);
         	form.setAuthorizerID(user.getName());
+        	if (user.getName() != null && !user.getName().isEmpty()) {
+        	    form.setAuthorizerPhoneNumber(form.getPhoneNumber());
+        	    form.setAuthorizerName(form.getRequesterName());
+            }
+        	form.setAuthorizerName(form.getRequesterName());
         	form.setAuthorizerEmailAddress(user.getName() + "@sfu.ca");
         }
         else {

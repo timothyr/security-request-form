@@ -35,7 +35,7 @@
                 </div>
                 <div class="row">
                     <div class="" v-if="form.requestStatus !== null">
-                        <span class="badge white-text badge-med" v-bind:class="getBadgeClassName(form.requestStatus)">{{form.requestStatus}}</span>
+                        <span class="badge white-text badge-med" v-bind:class="getBadgeClassName(form.requestStatus)" data-toggle="tooltip" data-placement="right" v-bind:title="statusToolTip">{{form.requestStatus}}</span>
                     </div>
                 </div>
                 <div class="row pull-right">
@@ -283,10 +283,34 @@
                     <button class="btn btn-primary col-sm-12 col-md-2 mt-3" v-on:click="submit('update')" :disabled=!canAccept>
                         Update
                     </button>
-                    <button class="btn btn-danger col-sm-12 col-md-2 mt-3" v-on:click="submit('reject')" v-bind:class="{disabled: rejectLoading}">
+                    <button class="btn btn-danger col-sm-12 col-md-2 mt-3" v-bind:class="{disabled: rejectLoading}" data-toggle="modal" data-target="#rejectRequest">
 						<div class="loading-icon mr-3" v-if="rejectLoading" style="width: 20px; height: 20px"></div>
 						Reject
 					</button>
+                    <div id="rejectRequest" class="modal fade" role="dialog">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                                <div class="container mb-4">
+                                    <div class="col-md-10 mt-5 ml-4">
+                                        <div class="row mb-3">
+                                            <h3 class="dark-text">Rejection #{{requestID}}</h3>
+                                        </div>
+                                        <div class="row text-left">
+                                            <p class="grey-text">Please enter a rejection message. This will be sent to the requester.</p>
+                                        </div>
+                                        <div class="row">
+                                            <textarea class="mx-auto form-control" v-model="additionalMessage"></textarea>
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-danger" data-dismiss="model" v-on:click="submit('reject')">Reject</button>
+                                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
                 </div>
                 <div id="emailModal" class="modal fade" role="dialog">
                     <div class="modal-dialog">
@@ -358,6 +382,7 @@
 <script src="/js/vue-resource.min.js"></script>
 <script src="/js/datetime.js"></script>
 <script>
+
     var app = new Vue({
         el: '#app',
 
@@ -503,8 +528,6 @@
                 });
             },
             setSecFields: function () {
-                this.form.distributionList = this.selectedEmails;
-
                 let i, len;
                 len = this.form.guards.length || 0;
                 for (i = 0; i < len; ++i) {
@@ -530,6 +553,8 @@
                 }
 
                 this.rejectLoading = true;
+                // TODO TEST
+                this.form.distributionList = this.selectedEmails;
                 this.$http.post('/api/form/saveSecurity', this.form,
                     {params: {additionalMessage: this.additionalMessage}}).then(function (response) {
                     console.log('Successfully sent form');
@@ -678,8 +703,29 @@
                     }
                     this.selectedEmails = selected;
                 }
+            },
+            statusToolTip: function() {
+                switch(this.form.requestStatus) {
+                    case 'APPROVED':
+                        return "Request has been authorized and approved by security";
+                        break;
+                    case 'AUTHORIZED':
+                        return "Waiting for security to review this request";
+                    case 'WAITING':
+                        return "Your request has to be authorized before security reviews this request";
+                        break;
+                    case 'REJECTED':
+                        return "This request has been rejected by security";
+                        break;
+                }
             }
         }
+    });
+    $(document).ready(function(){
+        //initialize tooltips
+        $(function () {
+            $('[data-toggle="tooltip"]').tooltip();
+        });
     });
 </script>
 

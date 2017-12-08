@@ -93,9 +93,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 					"/security/**",
 					"/api/authuser/**",
 					"/api/dist/**",
-					"/api/user/**",
 					"/api/form/getByRequestID/**",
-					"/api/form/get/**",
 					"/api/form/search",
 					"/api/form/saveSecurity",
 					"/api/csv/**",
@@ -104,6 +102,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 					AuthorizedUser.Privilege.ADMIN.toString(),
 					AuthorizedUser.Privilege.SECURITY.toString()
 				)
+
+                .antMatchers("/login").authenticated()
 
 				// Everything else is publicly accessible
 				.antMatchers("/**").permitAll();
