@@ -1,10 +1,8 @@
-# Team Delta Project
+# Security Request Form
 
-This is the project for team Delta of CMPT 373's fall 2017 offering, and the latest version is hosted at http://cmpt373-1177d.cmpt.sfu.ca:8080.
+Developed by Tim Robertson, Raymond Eng, Răzvan Crețu, Aidan Wessel, Carol-Anne Binnie, Harjot Lotey, SeongJin Kim (Jon Kim), Lance Hannestad.
 
 ## Setting up the Database
-
-I'm taking sections from this tutorial: https://spring.io/guides/gs/accessing-data-mysql/
 
 Open your MySql client in the terminal. On Linux, you can do this with the following command:
 
